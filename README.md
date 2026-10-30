@@ -9,6 +9,7 @@ Practice site for Cambridge International AS & A Level Computer Science (9618), 
 | `paper3.html` | Paper 3 – Advanced Theory | 373 |
 | `paper4.html` | Paper 4 – Practical (Python) | 242 |
 
+<<<<<<< HEAD
 There are two versions of the site in this repository.
 
 ## 1. Static version (no setup)
@@ -100,3 +101,11 @@ All routes except register/login need an `Authorization: Bearer <token>` header.
 | GET | `/api/bookmarks` | Saved questions |
 | GET | `/api/stats` | Totals, weakest topics, recent answers, streak |
 | DELETE | `/api/progress?paper=N` | Clear your answers for one paper (or all, without `paper`) |
+=======
+`index.html` is the home page. Each paper page is a self-contained static HTML file with questions grouped by chapter, a mark scheme for every part, and progress tracking. Papers 2–4 also have mock exams.
+
+Progress is saved in the browser (localStorage), with a separate store per paper. AI marking and the AI tutor are not active in this static version, so students mark their own answers against the mark scheme. A backend/database is planned.
+
+Run locally: open `index.html` in a browser.
+# Next-Level
+>>>>>>> 2ad62f5d6b11c390baa2deaf7a7ca3a7c05ecbe4
