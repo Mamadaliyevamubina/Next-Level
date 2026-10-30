@@ -1,0 +1,257 @@
+import { Router } from 'express';
+import { query } from '../db.js';
+import { requireAuth, wrap } from '../auth.js';
+
+const router = Router();
+router.use(requireAuth);
+
+const ORDER = 'q.chapter, q.subtopic, q.exam_code, q.id';
+
+const paperNumber = (value) => {
+  const n = Number(value);
+  return [1, 2, 3, 4].includes(n) ? n : null;
+};
+
+// Papers with their chapters and how far this student has got in each.
+router.get('/papers', wrap(async (req, res) => {
+  const papers = await query('SELECT * FROM papers ORDER BY number');
+  const chapters = await query(
+    `SELECT c.paper, c.number, c.name,
+            count(q.id)::int AS questions,
+            count(la.id)::int AS attempted,
+            coalesce(sum(la.awarded), 0)::int AS earned,
+            coalesce(sum(la.marks), 0)::int AS available
+       FROM chapters c
+       LEFT JOIN questions q ON q.paper = c.paper AND q.chapter = c.number
+       LEFT JOIN latest_attempts la ON la.question_id = q.id AND la.user_id = $1
+      GROUP BY c.paper, c.number, c.name
+      ORDER BY c.paper, c.number`,
+    [req.userId],
+  );
+  const exams = await query('SELECT code, paper, label FROM exam_papers ORDER BY paper, code');
+  res.json({
+    papers: papers.rows.map((p) => {
+      const chs = chapters.rows.filter((c) => c.paper === p.number);
+      const sum = (k) => chs.reduce((t, c) => t + c[k], 0);
+      return {
+        ...p,
+        questions: sum('questions'),
+        attempted: sum('attempted'),
+        earned: sum('earned'),
+        available: sum('available'),
+        chapters: chs,
+        exams: exams.rows.filter((e) => e.paper === p.number),
+      };
+    }),
+  });
+}));
+
+// Question list for one paper, with filters.
+router.get('/papers/:paper/questions', wrap(async (req, res) => {
+  const paper = paperNumber(req.params.paper);
+  if (!paper) return res.status(404).json({ error: 'No such paper.' });
+
+  const params = [req.userId, paper];
+  const where = ['q.paper = $2'];
+  const add = (sql, value) => { params.push(value); where.push(sql.replaceAll('?', `$${params.length}`)); };
+
+  if (req.query.chapter) add('q.chapter = ?', Number(req.query.chapter));
+  if (req.query.exam) add('q.exam_code = ?', String(req.query.exam));
+  if (req.query.type) add('q.answer_type = ?', String(req.query.type));
+  if (req.query.search) {
+    add('(q.prompt ILIKE ? OR q.subtopic ILIKE ?)', `%${String(req.query.search).trim()}%`);
+  }
+  if (req.query.status === 'new') where.push('la.id IS NULL');
+  if (req.query.status === 'review') where.push('la.awarded < la.marks');
+  if (req.query.status === 'done') where.push('la.awarded >= la.marks');
+  if (req.query.bookmarked === '1') where.push('b.user_id IS NOT NULL');
+
+  const { rows } = await query(
+    `SELECT q.id, q.label, q.marks, q.chapter, q.subtopic, q.answer_type, q.exam_code,
+            e.label AS exam_label, left(q.prompt, 180) AS preview,
+            la.awarded, (b.user_id IS NOT NULL) AS bookmarked
+       FROM questions q
+       LEFT JOIN exam_papers e ON e.code = q.exam_code
+       LEFT JOIN latest_attempts la ON la.question_id = q.id AND la.user_id = $1
+       LEFT JOIN bookmarks b ON b.question_id = q.id AND b.user_id = $1
+      WHERE ${where.join(' AND ')}
+      ORDER BY ${ORDER}`,
+    params,
+  );
+  res.json({ questions: rows });
+}));
+
+// Picks a question to practise next: unanswered first, then ones that lost marks.
+router.get('/papers/:paper/next', wrap(async (req, res) => {
+  const paper = paperNumber(req.params.paper);
+  if (!paper) return res.status(404).json({ error: 'No such paper.' });
+  const params = [req.userId, paper];
+  let chapterFilter = '';
+  if (req.query.chapter) { params.push(Number(req.query.chapter)); chapterFilter = 'AND q.chapter = $3'; }
+  const { rows } = await query(
+    `SELECT q.id
+       FROM questions q
+       LEFT JOIN latest_attempts la ON la.question_id = q.id AND la.user_id = $1
+      WHERE q.paper = $2 ${chapterFilter}
+      ORDER BY CASE WHEN la.id IS NULL THEN 0 WHEN la.awarded < la.marks THEN 1 ELSE 2 END, random()
+      LIMIT 1`,
+    params,
+  );
+  res.json({ id: rows[0]?.id || null });
+}));
+
+router.get('/questions/:id', wrap(async (req, res) => {
+  const { rows } = await query(
+    `SELECT q.*, e.label AS exam_label, e.qp_url, e.ms_url, c.name AS chapter_name,
+            (b.user_id IS NOT NULL) AS bookmarked
+       FROM questions q
+       LEFT JOIN exam_papers e ON e.code = q.exam_code
+       LEFT JOIN chapters c ON c.paper = q.paper AND c.number = q.chapter
+       LEFT JOIN bookmarks b ON b.question_id = q.id AND b.user_id = $2
+      WHERE q.id = $1`,
+    [req.params.id, req.userId],
+  );
+  const question = rows[0];
+  if (!question) return res.status(404).json({ error: 'Question not found.' });
+
+  const nav = await query(
+    `SELECT prev_id, next_id FROM (
+       SELECT q.id, lag(q.id) OVER w AS prev_id, lead(q.id) OVER w AS next_id
+         FROM questions q WHERE q.paper = $2
+       WINDOW w AS (ORDER BY ${ORDER})
+     ) t WHERE id = $1`,
+    [question.id, question.paper],
+  );
+  const attempts = await query(
+    `SELECT id, answer, ticked, awarded, marks, created_at FROM attempts
+      WHERE user_id = $1 AND question_id = $2 ORDER BY created_at DESC, id DESC`,
+    [req.userId, question.id],
+  );
+  res.json({ question, ...nav.rows[0], attempts: attempts.rows });
+}));
+
+// Save a self-marked attempt. The mark is checked against the question's maximum.
+router.post('/questions/:id/attempts', wrap(async (req, res) => {
+  const { rows } = await query('SELECT marks, criteria FROM questions WHERE id = $1', [req.params.id]);
+  const question = rows[0];
+  if (!question) return res.status(404).json({ error: 'Question not found.' });
+
+  const points = question.criteria.length;
+  const ticked = [...new Set((Array.isArray(req.body.ticked) ? req.body.ticked : [])
+    .map(Number).filter((i) => Number.isInteger(i) && i >= 0 && i < points))].sort((a, b) => a - b);
+  const requested = Number.isInteger(req.body.awarded) ? req.body.awarded : ticked.length;
+  const awarded = Math.max(0, Math.min(question.marks, requested));
+  const answer = String(req.body.answer || '').slice(0, 20000);
+
+  const saved = await query(
+    `INSERT INTO attempts (user_id, question_id, answer, ticked, awarded, marks)
+     VALUES ($1, $2, $3, $4, $5, $6) RETURNING id, answer, ticked, awarded, marks, created_at`,
+    [req.userId, req.params.id, answer, ticked, awarded, question.marks],
+  );
+  res.status(201).json({ attempt: saved.rows[0] });
+}));
+
+router.put('/questions/:id/bookmark', wrap(async (req, res) => {
+  const found = await query('SELECT 1 FROM questions WHERE id = $1', [req.params.id]);
+  if (!found.rowCount) return res.status(404).json({ error: 'Question not found.' });
+  await query(
+    'INSERT INTO bookmarks (user_id, question_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
+    [req.userId, req.params.id],
+  );
+  res.json({ bookmarked: true });
+}));
+
+router.delete('/questions/:id/bookmark', wrap(async (req, res) => {
+  await query('DELETE FROM bookmarks WHERE user_id = $1 AND question_id = $2', [req.userId, req.params.id]);
+  res.json({ bookmarked: false });
+}));
+
+router.get('/bookmarks', wrap(async (req, res) => {
+  const { rows } = await query(
+    `SELECT q.id, q.paper, q.label, q.marks, q.subtopic, e.label AS exam_label,
+            left(q.prompt, 180) AS preview, la.awarded, b.created_at
+       FROM bookmarks b
+       JOIN questions q ON q.id = b.question_id
+       LEFT JOIN exam_papers e ON e.code = q.exam_code
+       LEFT JOIN latest_attempts la ON la.question_id = q.id AND la.user_id = b.user_id
+      WHERE b.user_id = $1
+      ORDER BY b.created_at DESC`,
+    [req.userId],
+  );
+  res.json({ bookmarks: rows });
+}));
+
+router.get('/stats', wrap(async (req, res) => {
+  const uid = [req.userId];
+  const totals = await query(
+    `SELECT count(*)::int AS answered,
+            coalesce(sum(awarded), 0)::int AS earned,
+            coalesce(sum(marks), 0)::int AS available,
+            count(*) FILTER (WHERE awarded >= marks)::int AS full_marks,
+            (SELECT count(*)::int FROM attempts WHERE user_id = $1) AS attempts,
+            (SELECT count(*)::int FROM questions) AS questions
+       FROM latest_attempts WHERE user_id = $1`,
+    uid,
+  );
+  const weakest = await query(
+    `SELECT q.paper, q.chapter, q.subtopic,
+            sum(la.awarded)::int AS earned, sum(la.marks)::int AS available, count(*)::int AS answered
+       FROM latest_attempts la JOIN questions q ON q.id = la.question_id
+      WHERE la.user_id = $1
+      GROUP BY q.paper, q.chapter, q.subtopic
+     HAVING sum(la.marks) > 0 AND sum(la.awarded) < sum(la.marks)
+      ORDER BY sum(la.awarded)::float / sum(la.marks), sum(la.marks) DESC
+      LIMIT 6`,
+    uid,
+  );
+  const recent = await query(
+    `SELECT a.id, a.question_id, a.awarded, a.marks, a.created_at, q.paper, q.label, e.label AS exam_label
+       FROM attempts a
+       JOIN questions q ON q.id = a.question_id
+       LEFT JOIN exam_papers e ON e.code = q.exam_code
+      WHERE a.user_id = $1
+      ORDER BY a.created_at DESC, a.id DESC
+      LIMIT 8`,
+    uid,
+  );
+  const days = await query(
+    `SELECT DISTINCT (created_at AT TIME ZONE 'UTC')::date AS day
+       FROM attempts WHERE user_id = $1 ORDER BY day DESC LIMIT 400`,
+    uid,
+  );
+  res.json({
+    totals: totals.rows[0],
+    weakest: weakest.rows,
+    recent: recent.rows,
+    streak: dayStreak(days.rows.map((r) => r.day)),
+  });
+}));
+
+// Clear a student's attempts, for one paper or for everything.
+router.delete('/progress', wrap(async (req, res) => {
+  const paper = req.query.paper ? paperNumber(req.query.paper) : null;
+  if (req.query.paper && !paper) return res.status(400).json({ error: 'No such paper.' });
+  const result = paper
+    ? await query(
+      'DELETE FROM attempts a USING questions q WHERE a.question_id = q.id AND a.user_id = $1 AND q.paper = $2',
+      [req.userId, paper],
+    )
+    : await query('DELETE FROM attempts WHERE user_id = $1', [req.userId]);
+  res.json({ deleted: result.rowCount });
+}));
+
+// Number of consecutive days, ending today or yesterday, with at least one attempt.
+function dayStreak(days) {
+  const key = (d) => new Date(d).toISOString().slice(0, 10);
+  const set = new Set(days.map(key));
+  const day = new Date();
+  if (!set.has(key(day))) day.setUTCDate(day.getUTCDate() - 1);
+  let streak = 0;
+  while (set.has(key(day))) {
+    streak += 1;
+    day.setUTCDate(day.getUTCDate() - 1);
+  }
+  return streak;
+}
+
+export default router;
