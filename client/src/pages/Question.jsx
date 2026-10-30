@@ -5,6 +5,16 @@ import Markdown from '../components/Markdown.jsx';
 import { ScoreBadge } from '../components/Meter.jsx';
 
 const CODE_TYPES = new Set(['code', 'pseudocode', 'sql', 'trace']);
+
+// Diagrams, tables and flowcharts cropped from the past paper or mark scheme.
+function Figures({ list, alt }) {
+  if (!list?.length) return null;
+  return (
+    <div className="figures">
+      {list.map((src) => <img key={src} src={`/${src}`} alt={alt} loading="lazy" />)}
+    </div>
+  );
+}
 const draftKey = (id) => `nl-draft-${id}`;
 
 export default function Question() {
@@ -81,7 +91,7 @@ function QuestionView({ data, setData }) {
   return (
     <article className="question">
       <nav className="crumbs small">
-        <Link to={`/paper/${q.paper}`}>Paper {q.paper}</Link> ›{' '}
+        <Link to={`/paper/${q.paper}`}>{q.paper_label}</Link> ›{' '}
         <Link to={`/paper/${q.paper}?chapter=${q.chapter}`}>{q.chapter_name}</Link> › {q.subtopic}
       </nav>
 
@@ -96,7 +106,10 @@ function QuestionView({ data, setData }) {
       </header>
 
       {q.context_note && <div className="card context"><Markdown>{q.context_note}</Markdown></div>}
-      <div className="card"><Markdown>{q.prompt}</Markdown></div>
+      <div className="card">
+        <Markdown>{q.prompt}</Markdown>
+        <Figures list={q.figures} alt={`Figure for ${q.exam_label} Q${q.label}`} />
+      </div>
 
       <label className="answer">
         <span className="muted small">Your answer {phase === 'answer' && '(saved as a draft while you type)'}</span>
@@ -140,10 +153,11 @@ function QuestionView({ data, setData }) {
               <ul>{q.rejects.map((r, i) => <li key={i}>{r}</li>)}</ul>
             </div>
           )}
-          {q.final_answer && (
-            <details>
+          {(q.final_answer || q.answer_figures?.length > 0) && (
+            <details open={q.answer_figures?.length > 0 && q.criteria.length === 1}>
               <summary>Model answer</summary>
-              {CODE_TYPES.has(q.answer_type) && !q.final_answer.includes('```')
+              <Figures list={q.answer_figures} alt="Mark scheme answer" />
+              {q.final_answer.startsWith('Answer matches the mark scheme answer shown') ? null : CODE_TYPES.has(q.answer_type) && !q.final_answer.includes('```')
                 ? <pre><code>{q.final_answer}</code></pre>
                 : <Markdown>{q.final_answer}</Markdown>}
             </details>

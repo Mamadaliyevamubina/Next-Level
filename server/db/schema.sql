@@ -110,6 +110,13 @@ CREATE TABLE IF NOT EXISTS bookmarks (
   PRIMARY KEY (user_id, question_id)
 );
 
+-- Courses: each paper belongs to a subject (9618 A Level or 0478 IGCSE) and has a display label.
+ALTER TABLE papers ADD COLUMN IF NOT EXISTS subject_id INTEGER REFERENCES subjects(id) ON DELETE SET NULL;
+ALTER TABLE papers ADD COLUMN IF NOT EXISTS label TEXT NOT NULL DEFAULT '';
+-- Images cropped from the question paper (diagrams, tables, flowcharts) and from the mark scheme.
+ALTER TABLE questions ADD COLUMN IF NOT EXISTS figures JSONB NOT NULL DEFAULT '[]';
+ALTER TABLE questions ADD COLUMN IF NOT EXISTS answer_figures JSONB NOT NULL DEFAULT '[]';
+
 -- Students with their subject and teacher, for approving accounts in pgAdmin:
 -- open the users table and change status to 'approved'.
 CREATE OR REPLACE VIEW student_accounts AS

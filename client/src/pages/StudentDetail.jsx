@@ -70,7 +70,7 @@ export default function StudentDetail() {
           <ul className="plain">
             {papers.map((p) => (
               <li key={p.paper}>
-                <Meter earned={p.earned} available={p.available} label={`Paper ${p.paper} · ${p.title}`} />
+                <Meter earned={p.earned} available={p.available} label={`${p.label} · ${p.title}`} />
                 <span className="muted small">{p.answered} / {p.questions} answered</span>
               </li>
             ))}
@@ -82,7 +82,7 @@ export default function StudentDetail() {
             <ul className="plain">
               {weakest.map((w) => (
                 <li key={`${w.paper}-${w.subtopic}`}>
-                  <Meter earned={w.earned} available={w.available} label={`Paper ${w.paper} · ${w.subtopic}`} />
+                  <Meter earned={w.earned} available={w.available} label={`${w.paper_label} · ${w.subtopic}`} />
                 </li>
               ))}
             </ul>
@@ -95,7 +95,7 @@ export default function StudentDetail() {
         <div className="chapter-grid">
           {chapters.map((c) => (
             <div key={`${c.paper}-${c.number}`} className="chapter-cell">
-              <Meter earned={c.earned} available={c.available} label={`P${c.paper} · ${c.number}. ${c.name}`} />
+              <Meter earned={c.earned} available={c.available} label={`${c.paper_label} · ${c.number}. ${c.name}`} />
               <span className="muted small">{c.answered} / {c.questions} answered</span>
             </div>
           ))}
@@ -111,7 +111,7 @@ export default function StudentDetail() {
                 <details className="answer-row">
                   <summary>
                     <span className="grow">
-                      <b>Paper {r.paper} · {r.exam_label} · Q{r.label}</b>
+                      <b>{r.paper_label} · {r.exam_label} · Q{r.label}</b>
                       <span className="muted small"> · {r.subtopic} · {new Date(r.created_at).toLocaleString()}</span>
                     </span>
                     <ScoreBadge awarded={r.awarded} marks={r.marks} />

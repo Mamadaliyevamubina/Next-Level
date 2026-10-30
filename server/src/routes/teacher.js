@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { query } from '../db.js';
 import { requireAuth, requireTeacher, wrap } from '../auth.js';
 import * as stats from '../stats.js';
+import { visiblePapers } from '../scope.js';
 
 const router = Router();
 router.use(requireAuth, requireTeacher);
@@ -46,16 +47,20 @@ router.get('/students', wrap(async (req, res) => {
            FROM attempts WHERE user_id = s.id
        ) act ON true
        LEFT JOIN LATERAL (
-         SELECT json_agg(json_build_object('paper', paper, 'earned', earned, 'available', available) ORDER BY paper) AS papers
-           FROM (SELECT q.paper, sum(l.awarded)::int AS earned, sum(l.marks)::int AS available
-                   FROM latest_attempts l JOIN questions q ON q.id = l.question_id
-                  WHERE l.user_id = s.id GROUP BY q.paper) x
+         SELECT json_agg(json_build_object('paper', paper, 'label', label, 'earned', earned, 'available', available) ORDER BY paper) AS papers
+           FROM (SELECT q.paper, p.label, sum(l.awarded)::int AS earned, sum(l.marks)::int AS available
+                   FROM latest_attempts l JOIN questions q ON q.id = l.question_id JOIN papers p ON p.number = q.paper
+                  WHERE l.user_id = s.id GROUP BY q.paper, p.label) x
        ) pp ON true
       WHERE ${sql}
       ORDER BY CASE s.status WHEN 'pending' THEN 0 WHEN 'approved' THEN 1 ELSE 2 END, s.class_name, s.name`,
     params,
   );
-  res.json({ students: rows });
+  const papers = await query(
+    'SELECT number, label FROM papers WHERE number = ANY($1) ORDER BY number',
+    [await visiblePapers(req.userId, req.role)],
+  );
+  res.json({ students: rows, papers: papers.rows });
 }));
 
 // Class summaries and the topics the teacher's approved students lose most marks on.
@@ -77,13 +82,14 @@ router.get('/overview', wrap(async (req, res) => {
     params,
   );
   const topics = await query(
-    `SELECT q.paper, q.subtopic, count(DISTINCT l.user_id)::int AS students,
+    `SELECT q.paper, p.label AS paper_label, q.subtopic, count(DISTINCT l.user_id)::int AS students,
             sum(l.awarded)::int AS earned, sum(l.marks)::int AS available
        FROM latest_attempts l
        JOIN users s ON s.id = l.user_id
        JOIN questions q ON q.id = l.question_id
+       JOIN papers p ON p.number = q.paper
       WHERE ${sql} AND s.status = 'approved'
-      GROUP BY q.paper, q.subtopic
+      GROUP BY q.paper, p.label, q.subtopic
      HAVING sum(l.marks) >= 3 AND sum(l.awarded) < sum(l.marks)
       ORDER BY sum(l.awarded)::float / sum(l.marks), sum(l.marks) DESC
       LIMIT 8`,
@@ -97,8 +103,9 @@ router.get('/students/:id', wrap(async (req, res) => {
   const student = await findStudent(req, Number(req.params.id));
   if (!student) return res.status(404).json({ error: 'Student not found.' });
   const id = student.id;
+  const course = await visiblePapers(id, 'student');
   const [totals, papers, chapters, weakest, recent, streak, activity] = await Promise.all([
-    stats.totals(id), stats.byPaper(id), stats.byChapter(id), stats.weakest(id, 10),
+    stats.totals(id, course), stats.byPaper(id, course), stats.byChapter(id, course), stats.weakest(id, 10),
     stats.recent(id, 25, true), stats.streak(id), stats.activity(id, 28),
   ]);
   res.json({ student, totals, papers, chapters, weakest, recent, streak, activity });

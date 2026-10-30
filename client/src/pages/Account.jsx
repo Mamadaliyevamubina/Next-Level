@@ -3,6 +3,7 @@ import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../components/Icon.jsx';
 import { initials, roleLabel } from '../components/Layout.jsx';
+import { usePapers } from '../papers.js';
 
 const ACCENTS = [
   ['purple', 'Dombit purple', '#8e00d5'],
@@ -215,6 +216,7 @@ function Appearance() {
 
 function Study() {
   const [s, update, error] = useSetting();
+  const papers = usePapers() || [];
   return (
     <div className="stack">
       <h2>Study preferences</h2>
@@ -229,7 +231,7 @@ function Study() {
         label="Main paper on the home page"
         value={s.defaultPaper}
         onChange={(defaultPaper) => update({ defaultPaper })}
-        options={[[null, 'None'], [1, 'Paper 1'], [2, 'Paper 2'], [3, 'Paper 3'], [4, 'Paper 4']]}
+        options={[[null, 'None'], ...papers.map((p) => [p.number, p.label])]}
       />
       <Toggle label="Show practice streak" checked={s.showStreak} onChange={(showStreak) => update({ showStreak })} />
       {error && <p className="error">{error}</p>}

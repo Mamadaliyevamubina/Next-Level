@@ -2,20 +2,32 @@ import { Router } from 'express';
 import { query } from '../db.js';
 import { requireApproved, requireAuth, wrap } from '../auth.js';
 import * as stats from '../stats.js';
+import { visiblePapers } from '../scope.js';
 
 const router = Router();
 router.use(requireAuth, requireApproved);
 
+// Papers this account may use, worked out once per request.
+router.use(wrap(async (req, res, next) => {
+  req.papers = await visiblePapers(req.userId, req.role);
+  next();
+}));
+
 const ORDER = 'q.chapter, q.subtopic, q.exam_code, q.id';
 
-const paperNumber = (value) => {
+const paperNumber = (req, value) => {
   const n = Number(value);
-  return [1, 2, 3, 4].includes(n) ? n : null;
+  return req.papers.includes(n) ? n : null;
 };
 
 // Papers with their chapters and how far this student has got in each.
 router.get('/papers', wrap(async (req, res) => {
-  const papers = await query('SELECT * FROM papers ORDER BY number');
+  const papers = await query(
+    `SELECT p.*, s.code AS subject_code, s.name AS subject_name
+       FROM papers p LEFT JOIN subjects s ON s.id = p.subject_id
+      WHERE p.number = ANY($1) ORDER BY p.number`,
+    [req.papers],
+  );
   const chapters = await query(
     `SELECT c.paper, c.number, c.name,
             count(q.id)::int AS questions,
@@ -49,7 +61,7 @@ router.get('/papers', wrap(async (req, res) => {
 
 // Question list for one paper, with filters.
 router.get('/papers/:paper/questions', wrap(async (req, res) => {
-  const paper = paperNumber(req.params.paper);
+  const paper = paperNumber(req, req.params.paper);
   if (!paper) return res.status(404).json({ error: 'No such paper.' });
 
   const params = [req.userId, paper];
@@ -84,7 +96,7 @@ router.get('/papers/:paper/questions', wrap(async (req, res) => {
 
 // Picks a question to practise next: unanswered first, then ones that lost marks.
 router.get('/papers/:paper/next', wrap(async (req, res) => {
-  const paper = paperNumber(req.params.paper);
+  const paper = paperNumber(req, req.params.paper);
   if (!paper) return res.status(404).json({ error: 'No such paper.' });
   const params = [req.userId, paper];
   let chapterFilter = '';
@@ -104,13 +116,14 @@ router.get('/papers/:paper/next', wrap(async (req, res) => {
 router.get('/questions/:id', wrap(async (req, res) => {
   const { rows } = await query(
     `SELECT q.*, e.label AS exam_label, e.qp_url, e.ms_url, c.name AS chapter_name,
-            (b.user_id IS NOT NULL) AS bookmarked
+            p.label AS paper_label, (b.user_id IS NOT NULL) AS bookmarked
        FROM questions q
        LEFT JOIN exam_papers e ON e.code = q.exam_code
        LEFT JOIN chapters c ON c.paper = q.paper AND c.number = q.chapter
+       LEFT JOIN papers p ON p.number = q.paper
        LEFT JOIN bookmarks b ON b.question_id = q.id AND b.user_id = $2
-      WHERE q.id = $1`,
-    [req.params.id, req.userId],
+      WHERE q.id = $1 AND q.paper = ANY($3)`,
+    [req.params.id, req.userId, req.papers],
   );
   const question = rows[0];
   if (!question) return res.status(404).json({ error: 'Question not found.' });
@@ -133,7 +146,7 @@ router.get('/questions/:id', wrap(async (req, res) => {
 
 // Save a self-marked attempt. The mark is checked against the question's maximum.
 router.post('/questions/:id/attempts', wrap(async (req, res) => {
-  const { rows } = await query('SELECT marks, criteria FROM questions WHERE id = $1', [req.params.id]);
+  const { rows } = await query('SELECT marks, criteria FROM questions WHERE id = $1 AND paper = ANY($2)', [req.params.id, req.papers]);
   const question = rows[0];
   if (!question) return res.status(404).json({ error: 'Question not found.' });
 
@@ -153,7 +166,7 @@ router.post('/questions/:id/attempts', wrap(async (req, res) => {
 }));
 
 router.put('/questions/:id/bookmark', wrap(async (req, res) => {
-  const found = await query('SELECT 1 FROM questions WHERE id = $1', [req.params.id]);
+  const found = await query('SELECT 1 FROM questions WHERE id = $1 AND paper = ANY($2)', [req.params.id, req.papers]);
   if (!found.rowCount) return res.status(404).json({ error: 'Question not found.' });
   await query(
     'INSERT INTO bookmarks (user_id, question_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',
@@ -169,10 +182,11 @@ router.delete('/questions/:id/bookmark', wrap(async (req, res) => {
 
 router.get('/bookmarks', wrap(async (req, res) => {
   const { rows } = await query(
-    `SELECT q.id, q.paper, q.label, q.marks, q.subtopic, e.label AS exam_label,
+    `SELECT q.id, q.paper, p.label AS paper_label, q.label, q.marks, q.subtopic, e.label AS exam_label,
             left(q.prompt, 180) AS preview, la.awarded, b.created_at
        FROM bookmarks b
        JOIN questions q ON q.id = b.question_id
+       JOIN papers p ON p.number = q.paper
        LEFT JOIN exam_papers e ON e.code = q.exam_code
        LEFT JOIN latest_attempts la ON la.question_id = q.id AND la.user_id = b.user_id
       WHERE b.user_id = $1
@@ -184,7 +198,7 @@ router.get('/bookmarks', wrap(async (req, res) => {
 
 router.get('/stats', wrap(async (req, res) => {
   const [totals, weakest, recent, streak, activity] = await Promise.all([
-    stats.totals(req.userId), stats.weakest(req.userId), stats.recent(req.userId),
+    stats.totals(req.userId, req.papers), stats.weakest(req.userId), stats.recent(req.userId),
     stats.streak(req.userId), stats.activity(req.userId, 14),
   ]);
   res.json({ totals, weakest, recent, streak, activity });
@@ -192,7 +206,7 @@ router.get('/stats', wrap(async (req, res) => {
 
 // Clear a student's attempts, for one paper or for everything.
 router.delete('/progress', wrap(async (req, res) => {
-  const paper = req.query.paper ? paperNumber(req.query.paper) : null;
+  const paper = req.query.paper ? paperNumber(req, req.query.paper) : null;
   if (req.query.paper && !paper) return res.status(400).json({ error: 'No such paper.' });
   const result = paper
     ? await query(

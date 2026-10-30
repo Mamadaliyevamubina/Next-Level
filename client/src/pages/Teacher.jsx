@@ -22,6 +22,7 @@ export function timeAgo(date) {
 export default function Teacher() {
   const { user } = useAuth();
   const [students, setStudents] = useState(null);
+  const [paperCols, setPaperCols] = useState([]);
   const [overview, setOverview] = useState(null);
   const [error, setError] = useState('');
   const [search, setSearch] = useState('');
@@ -29,7 +30,7 @@ export default function Teacher() {
   const [status, setStatus] = useState('approved');
 
   const load = () => Promise.all([api('/teacher/students'), api('/teacher/overview')])
-    .then(([s, o]) => { setStudents(s.students); setOverview(o); })
+    .then(([s, o]) => { setStudents(s.students); setPaperCols(s.papers); setOverview(o); })
     .catch((e) => setError(e.message));
 
   useEffect(() => { load(); }, []);
@@ -117,7 +118,7 @@ export default function Teacher() {
             <ul className="plain">
               {overview.topics.map((t) => (
                 <li key={`${t.paper}-${t.subtopic}`}>
-                  <Meter earned={t.earned} available={t.available} label={`Paper ${t.paper} · ${t.subtopic}`} />
+                  <Meter earned={t.earned} available={t.available} label={`${t.paper_label} · ${t.subtopic}`} />
                   <span className="muted small">{t.students} student{t.students === 1 ? '' : 's'} answered</span>
                 </li>
               ))}
@@ -147,7 +148,7 @@ export default function Teacher() {
               <thead>
                 <tr>
                   <th>Student</th><th>Class</th><th>Answered</th><th>Score</th>
-                  <th>P1</th><th>P2</th><th>P3</th><th>P4</th><th>Last 7 days</th><th>Last active</th><th />
+                  {paperCols.map((p) => <th key={p.number} title={p.label}>{p.label.replace('IGCSE Paper ', 'IG').replace('Paper ', 'P')}</th>)}<th>Last 7 days</th><th>Last active</th><th />
                 </tr>
               </thead>
               <tbody>
@@ -162,7 +163,7 @@ export default function Teacher() {
                     <td>{s.class_name}</td>
                     <td>{s.answered}</td>
                     <td className="score-cell"><Meter earned={s.earned} available={s.available} /></td>
-                    {[1, 2, 3, 4].map((p) => {
+                    {paperCols.map(({ number: p }) => {
                       const row = s.papers.find((x) => x.paper === p);
                       const v = row ? pct(row.earned, row.available) : null;
                       return <td key={p}><PctChip value={v} /></td>;

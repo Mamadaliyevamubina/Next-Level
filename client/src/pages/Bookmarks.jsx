@@ -29,7 +29,7 @@ export default function Bookmarks() {
           {items.map((b) => (
             <li key={b.id} className="card qrow">
               <div className="row spread">
-                <Link to={`/question/${b.id}`}><strong>Paper {b.paper} · {b.exam_label} · Q{b.label}</strong></Link>
+                <Link to={`/question/${b.id}`}><strong>{b.paper_label} · {b.exam_label} · Q{b.label}</strong></Link>
                 <span className="row">
                   <ScoreBadge awarded={b.awarded} marks={b.marks} />
                   <button type="button" className="link small" onClick={() => remove(b.id)}>Remove</button>

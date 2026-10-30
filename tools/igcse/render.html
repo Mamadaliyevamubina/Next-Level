@@ -1,0 +1,18 @@
+<!doctype html><script type="module">
+import * as pdfjs from './pdf.min.mjs';
+pdfjs.GlobalWorkerOptions.workerSrc = './pdf.worker.min.mjs';
+window.renderPdf = async (url, scale) => {
+  const doc = await pdfjs.getDocument(url).promise;
+  const out = [];
+  for (let i = 1; i <= doc.numPages; i++) {
+    const page = await doc.getPage(i);
+    const vp = page.getViewport({ scale });
+    const c = document.createElement('canvas'); c.width = vp.width; c.height = vp.height;
+    const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+    await page.render({ canvasContext: ctx, viewport: vp }).promise;
+    out.push(c.toDataURL('image/png'));
+  }
+  return out;
+};
+window.ready = true;
+</script>

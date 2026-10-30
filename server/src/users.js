@@ -12,7 +12,7 @@ const SETTING_RULES = {
   reduceMotion: 'boolean',
   compact: 'boolean',
   showStreak: 'boolean',
-  defaultPaper: [null, 1, 2, 3, 4],
+  defaultPaper: [null, 1, 2, 3, 4, 11, 12],
   dailyGoal: 'goal',
 };
 

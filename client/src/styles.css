@@ -402,3 +402,8 @@ pre.past { white-space: pre-wrap; background: var(--surface2); border: 1px solid
   .topnav { order: 3; flex-basis: 100%; justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
   .avatar-name { display: none; }
 }
+
+/* Figures cropped from past papers: always on white so scans read well in dark mode too. */
+.figures { display: grid; gap: 10px; margin-top: 14px; }
+.figures img { width: 100%; max-width: 760px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 6px; }
+code, pre, .mono, textarea.mono { font-variant-ligatures: none; }

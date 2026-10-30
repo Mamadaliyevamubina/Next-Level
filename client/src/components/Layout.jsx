@@ -3,18 +3,19 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
 import { api } from '../api.js';
 import { isTeacher, useAuth } from '../auth.jsx';
 import { effectiveTheme } from '../theme.js';
+import { usePapers } from '../papers.js';
 import Logo from './Logo.jsx';
 import Icon from './Icon.jsx';
-
-const PAPERS = [1, 2, 3, 4];
 
 export const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join('');
 
 export default function Layout({ limited = false }) {
   const { user, logout, setUser } = useAuth();
+  const course = user.subject_name || '';
   const [menu, setMenu] = useState(false);
   const menuRef = useRef(null);
   const location = useLocation();
+  const papers = usePapers();
 
   useEffect(() => setMenu(false), [location.pathname]);
   useEffect(() => {
@@ -35,11 +36,11 @@ export default function Layout({ limited = false }) {
   return (
     <div className="shell">
       <header className="topbar">
-        <Link to="/" className="topbar-logo"><Logo /></Link>
+        <Link to="/" className="topbar-logo"><Logo sub={/0478|IGCSE/.test(course) ? 'IGCSE · Computer Science' : 'A Level · Computer Science'} /></Link>
         {!limited && (
           <nav className="topnav">
             <NavLink to="/" end>Home</NavLink>
-            {PAPERS.map((p) => <NavLink key={p} to={`/paper/${p}`}>Paper {p}</NavLink>)}
+            {(papers || []).map((p) => <NavLink key={p.number} to={`/paper/${p.number}`}>{p.label}</NavLink>)}
             <NavLink to="/bookmarks">Saved</NavLink>
             {isTeacher(user) && <NavLink to="/teacher" className="teacher-link">My students</NavLink>}
           </nav>
@@ -71,7 +72,7 @@ export default function Layout({ limited = false }) {
         <Outlet />
       </main>
       <footer className="foot muted small">
-        Next Level · Cambridge International AS &amp; A Level Computer Science 9618
+        Next Level · Dombit International School · {/0478|IGCSE/.test(course) ? 'Cambridge IGCSE Computer Science 0478' : 'Cambridge International AS & A Level Computer Science 9618'}
       </footer>
     </div>
   );

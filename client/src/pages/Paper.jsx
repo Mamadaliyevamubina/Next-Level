@@ -48,7 +48,7 @@ export default function Paper() {
   };
 
   const reset = async () => {
-    if (!window.confirm(`Delete all your saved answers for Paper ${paper}? This cannot be undone.`)) return;
+    if (!window.confirm(`Delete all your saved answers for ${info.label}? This cannot be undone.`)) return;
     await api(`/progress?paper=${paper}`, { method: 'DELETE' });
     setReload((n) => n + 1);
   };
@@ -61,7 +61,7 @@ export default function Paper() {
   return (
     <div className="split">
       <aside className="rail card">
-        <h2>Paper {info.number}</h2>
+        <h2>{info.label}</h2>
         <p className="muted small">{info.title}</p>
         <button type="button" className={`rail-item ${chapter ? '' : 'active'}`} onClick={() => filter('chapter', '')}>
           <Meter earned={info.earned} available={info.available} label="All chapters" />
@@ -77,7 +77,7 @@ export default function Paper() {
             <span className="muted small">{c.attempted} / {c.questions} answered</span>
           </button>
         ))}
-        <button type="button" className="link danger small" onClick={reset}>Reset my Paper {info.number} progress</button>
+        <button type="button" className="link danger small" onClick={reset}>Reset my {info.label} progress</button>
       </aside>
 
       <section>

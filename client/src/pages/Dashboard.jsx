@@ -40,14 +40,14 @@ export default function Dashboard() {
     <div className="stack-lg">
       <section className="card hero-card dash-hero">
         <div className="grow">
-          <p className="eyebrow">{user.class_name ? `Class ${user.class_name}` : 'A Level Computer Science'}{user.teacher_name ? ` · ${user.teacher_name}` : ''}</p>
+          <p className="eyebrow">{user.class_name ? `Class ${user.class_name}` : (user.subject_name || 'Computer Science')}{user.teacher_name ? ` · ${user.teacher_name}` : ''}</p>
           <h1>Hi {user.name.split(' ')[0]}, ready to level up?</h1>
           <p className="muted">
             {t.today >= goal ? `Daily goal done: ${t.today} questions today. Great work.` : `${t.today} of ${goal} questions done today.`}
           </p>
           <div className="row">
-            <button type="button" className="btn primary" onClick={() => practise(main?.number || 1)}>
-              Practise {main ? `Paper ${main.number}` : 'now'} <Icon name="arrow" />
+            <button type="button" className="btn primary" onClick={() => practise(main?.number || papers[0].number)}>
+              Practise {main ? main.label : 'now'} <Icon name="arrow" />
             </button>
             {isTeacher(user) && <Link to="/teacher" className="btn"><Icon name="users" /> My students</Link>}
           </div>
@@ -67,8 +67,8 @@ export default function Dashboard() {
       <div className="grid">
         {ordered.map((p) => (
           <section key={p.number} className={`card paper-card ${p === main ? 'main' : ''}`}>
-            <p className="eyebrow">{p === main ? 'Your main paper' : `Paper ${p.number}`}</p>
-            <h2><Link to={`/paper/${p.number}`}>Paper {p.number}</Link></h2>
+            <p className="eyebrow">{p === main ? 'Your main paper' : p.subject_name}</p>
+            <h2><Link to={`/paper/${p.number}`}>{p.label}</Link></h2>
             <p className="muted small">{p.title}</p>
             <Meter earned={p.earned} available={p.available} />
             <p className="small muted">{p.attempted} / {p.questions} answered</p>
@@ -92,7 +92,7 @@ export default function Dashboard() {
                   <Link to={`/paper/${w.paper}?chapter=${w.chapter}&status=review`}>
                     <Meter earned={w.earned} available={w.available} label={w.subtopic} />
                   </Link>
-                  <span className="muted small">Paper {w.paper} · {chapterName(w.paper, w.chapter)}</span>
+                  <span className="muted small">{w.paper_label} · {chapterName(w.paper, w.chapter)}</span>
                 </li>
               ))}
             </ul>

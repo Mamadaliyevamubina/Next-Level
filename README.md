@@ -1,6 +1,17 @@
-# 9618 Computer Science Practice
+# Computer Science Practice · IGCSE 0478 and A Level 9618
 
-Practice site for Cambridge International AS & A Level Computer Science (9618), covering all four papers:
+Practice site for Dombit International School covering Cambridge IGCSE Computer Science (0478) and Cambridge International AS & A Level Computer Science (9618).
+
+**IGCSE 0478** (2023–2026 syllabus, every question paper from Feb/March 2023 to May/June 2026: 50 papers):
+
+| Paper | Topics | Question parts |
+|---|---|---|
+| IGCSE Paper 1 – Computer Systems | 1 Data representation · 2 Data transmission · 3 Hardware · 4 Software · 5 The internet and its uses · 6 Automated and emerging technologies | 807 |
+| IGCSE Paper 2 – Algorithms, Programming and Logic | 7 Algorithm design and problem-solving · 8 Programming · 9 Databases · 10 Boolean logic | 504 |
+
+The questions and mark schemes are in `data/igcse-paper1.json` and `data/igcse-paper2.json`. Diagrams, tables, flowcharts and logic circuits are images in `public/figures/igcse/`. Static page: `igcse.html` (rebuild with `node tools/build-igcse-page.mjs`). How the bank was built, and how to add new papers: [tools/igcse/README.md](tools/igcse/README.md).
+
+**A Level 9618:**
 
 | Page | Paper | Question parts |
 |---|---|---|
@@ -13,7 +24,7 @@ There are two versions of the site in this repository.
 
 ## 1. Static version (no setup)
 
-Open `index.html` in a browser. Each paper page is a self-contained HTML file with questions grouped by chapter, a mark scheme for every part, and progress saved in the browser (localStorage).
+Open `index.html` in a browser. `igcse.html` has both IGCSE papers. Each 9618 paper page is a self-contained HTML file with questions grouped by chapter, a mark scheme for every part, and progress saved in the browser (localStorage).
 
 ## 2. Full app: React + Node.js + PostgreSQL
 
@@ -48,7 +59,7 @@ You need [Node.js](https://nodejs.org) 20+ and PostgreSQL (the installer from po
    npm install
    npm run db:setup
    ```
-   This creates a `next_level` database, creates the tables and loads every question from `paper1.html`–`paper4.html`. It is safe to run again; it updates questions without touching student data.
+   This creates a `next_level` database, creates the tables and loads every question: 9618 from `paper1.html`–`paper4.html` and IGCSE 0478 from `data/`. It is safe to run again; it updates questions without touching student data.
 
 4. **Start the API** (keep this terminal open):
    ```bash
@@ -68,7 +79,9 @@ You need [Node.js](https://nodejs.org) 20+ and PostgreSQL (the installer from po
    npm run create-user -- --role teacher --username ms.karimova --name "Dilnoza Karimova" --password "choose-a-password" --subject 9618
    npm run create-user -- --role admin --username admin --name "School Admin" --password "choose-a-password"
    ```
-   Running it with an existing login name turns that account into a teacher/admin instead. Subjects live in the `subjects` table; `9618` (Computer Science) is added by `db:setup`, and you can add more rows in pgAdmin.
+   For an IGCSE teacher use `--subject 0478`; a teacher of both uses `--subject 9618,0478`. Running it with an existing login name turns that account into a teacher/admin instead. Subjects live in the `subjects` table; `9618` and `0478` are added by `db:setup`.
+
+**Courses:** a student who chooses *Computer Science IGCSE (0478)* sees only IGCSE Papers 1 and 2; a *Computer Science (9618)* student sees Papers 1–4. Teachers see the papers of the subjects they teach, and the admin sees everything.
 
 ### Approving students
 
@@ -87,8 +100,8 @@ In pgAdmin open **Servers → PostgreSQL 16 → Databases → next_level → Sch
 
 | Table | What it holds |
 |---|---|
-| `papers`, `chapters`, `exam_papers` | Paper titles, chapter names and each past paper sitting |
-| `questions` | Every question with its mark scheme (`criteria` is JSON) |
+| `papers`, `chapters`, `exam_papers` | Paper titles, chapter names and each past paper sitting. IGCSE papers are numbers 11 and 12, linked to subject 0478 |
+| `questions` | Every question with its mark scheme (`criteria` is JSON). IGCSE ids start with `ig-`; `figures` / `answer_figures` list the images |
 | `users` | Every account: `username` (login name), `role` (student/teacher/admin), `status` (pending/approved/rejected), `class_name`, `subject_id`, `teacher_id`, `settings` (JSON). Passwords are stored hashed, never as plain text |
 | `subjects`, `teacher_subjects` | Subjects, and which teacher teaches which subject |
 | `student_accounts` (view) | Students with their subject, teacher and class |

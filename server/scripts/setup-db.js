@@ -1,5 +1,5 @@
-// Creates the database (if missing), creates the tables, and loads every
-// question from the paper1-4.html pages in the project root.
+// Creates the database (if missing), creates the tables, and loads every question:
+// A Level 9618 from the paper1-4.html pages, IGCSE 0478 from data/igcse-paper1-2.json.
 // Run with: npm run db:setup
 import fs from 'node:fs';
 import path from 'node:path';
@@ -10,12 +10,29 @@ import 'dotenv/config';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, '../..');
 
-const PAPERS = {
-  1: { title: 'Theory Fundamentals', description: 'AS Level theory: data representation, hardware, networks, security, databases.' },
-  2: { title: 'Fundamental Problem-solving and Programming Skills', description: 'AS Level pseudocode, algorithms and program design.' },
-  3: { title: 'Advanced Theory', description: 'A Level theory: floating point, protocols, AI, further programming.' },
-  4: { title: 'Practical (Python)', description: 'A Level practical programming in Python.' },
+const SUBJECTS = {
+  9618: 'Computer Science (9618)',
+  '0478': 'Computer Science IGCSE (0478)',
 };
+
+// number: internal paper id (IGCSE papers are 11 and 12 so they never clash with 9618 Papers 1-4).
+const PAPERS = [
+  { number: 1, subject: '9618', label: 'Paper 1', title: 'Theory Fundamentals', description: 'AS Level theory: data representation, hardware, networks, security, databases.', source: 'paper1.html' },
+  { number: 2, subject: '9618', label: 'Paper 2', title: 'Fundamental Problem-solving and Programming Skills', description: 'AS Level pseudocode, algorithms and program design.', source: 'paper2.html' },
+  { number: 3, subject: '9618', label: 'Paper 3', title: 'Advanced Theory', description: 'A Level theory: floating point, protocols, AI, further programming.', source: 'paper3.html' },
+  { number: 4, subject: '9618', label: 'Paper 4', title: 'Practical (Python)', description: 'A Level practical programming in Python.', source: 'paper4.html' },
+  { number: 11, subject: '0478', label: 'IGCSE Paper 1', title: 'Computer Systems', description: 'IGCSE theory: data, transmission, hardware, software, the internet, emerging technologies.', source: 'data/igcse-paper1.json', examPrefix: 'ig-' },
+  { number: 12, subject: '0478', label: 'IGCSE Paper 2', title: 'Algorithms, Programming and Logic', description: 'IGCSE algorithms, pseudocode programming, databases and Boolean logic.', source: 'data/igcse-paper2.json', examPrefix: 'ig-' },
+];
+
+function loadBank(source) {
+  const text = fs.readFileSync(path.join(root, source), 'utf8');
+  if (source.endsWith('.json')) {
+    const bank = JSON.parse(text);
+    return { bank, chapters: bank.chapters };
+  }
+  return { bank: readEmbedded(text, 'bank'), chapters: readChapters(text) };
+}
 
 function readEmbedded(html, id) {
   const m = html.match(new RegExp(`<script id="${id}" type="application/json">([\\s\\S]*?)</script>`));
@@ -56,21 +73,26 @@ async function main() {
   console.log('Tables ready');
 
   await client.query('BEGIN');
-  await client.query(
-    `INSERT INTO subjects (code, name) VALUES ('9618', 'Computer Science (9618)')
-     ON CONFLICT (code) DO NOTHING`,
-  );
+  const subjectIds = {};
+  for (const [code, name] of Object.entries(SUBJECTS)) {
+    const { rows } = await client.query(
+      `INSERT INTO subjects (code, name) VALUES ($1, $2)
+       ON CONFLICT (code) DO UPDATE SET name = EXCLUDED.name RETURNING id`,
+      [code, name],
+    );
+    subjectIds[code] = rows[0].id;
+  }
   let total = 0;
-  for (const [num, info] of Object.entries(PAPERS)) {
-    const paper = Number(num);
-    const html = fs.readFileSync(path.join(root, `paper${paper}.html`), 'utf8');
-    const bank = readEmbedded(html, 'bank');
-    const chapters = readChapters(html);
+  for (const info of PAPERS) {
+    const paper = info.number;
+    const prefix = info.examPrefix || '';
+    const { bank, chapters } = loadBank(info.source);
 
     await client.query(
-      `INSERT INTO papers (number, title, description) VALUES ($1, $2, $3)
-       ON CONFLICT (number) DO UPDATE SET title = EXCLUDED.title, description = EXCLUDED.description`,
-      [paper, info.title, info.description],
+      `INSERT INTO papers (number, title, description, subject_id, label) VALUES ($1, $2, $3, $4, $5)
+       ON CONFLICT (number) DO UPDATE SET title = EXCLUDED.title, description = EXCLUDED.description,
+         subject_id = EXCLUDED.subject_id, label = EXCLUDED.label`,
+      [paper, info.title, info.description, subjectIds[info.subject], info.label],
     );
     for (const [ch, name] of Object.entries(chapters)) {
       await client.query(
@@ -83,32 +105,35 @@ async function main() {
       await client.query(
         `INSERT INTO exam_papers (code, paper, label, qp_url, ms_url) VALUES ($1, $2, $3, $4, $5)
          ON CONFLICT (code) DO UPDATE SET label = EXCLUDED.label, qp_url = EXCLUDED.qp_url, ms_url = EXCLUDED.ms_url`,
-        [code, paper, p.code, p.qp?.startsWith('http') ? p.qp : '', p.ms?.startsWith('http') ? p.ms : ''],
+        [prefix + code, paper, p.code, p.qp?.startsWith('http') ? p.qp : '', p.ms?.startsWith('http') ? p.ms : ''],
       );
     }
     for (const q of bank.items) {
       const examCode = `${q.session}-${q.variant}`;
       await client.query(
         `INSERT INTO questions (id, paper, exam_code, session, variant, label, marks, chapter, subtopic, prompt,
-                                context_note, answer_type, criteria, max_note, rejects, final_answer, confidence)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
+                                context_note, answer_type, criteria, max_note, rejects, final_answer, confidence,
+                                figures, answer_figures)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19)
          ON CONFLICT (id) DO UPDATE SET
            paper = EXCLUDED.paper, exam_code = EXCLUDED.exam_code, session = EXCLUDED.session,
            variant = EXCLUDED.variant, label = EXCLUDED.label, marks = EXCLUDED.marks,
            chapter = EXCLUDED.chapter, subtopic = EXCLUDED.subtopic, prompt = EXCLUDED.prompt,
            context_note = EXCLUDED.context_note, answer_type = EXCLUDED.answer_type,
            criteria = EXCLUDED.criteria, max_note = EXCLUDED.max_note, rejects = EXCLUDED.rejects,
-           final_answer = EXCLUDED.final_answer, confidence = EXCLUDED.confidence`,
+           final_answer = EXCLUDED.final_answer, confidence = EXCLUDED.confidence,
+           figures = EXCLUDED.figures, answer_figures = EXCLUDED.answer_figures`,
         [
-          q.id, paper, bank.papers[examCode] ? examCode : null, q.session, q.variant, q.q, q.marks,
+          q.id, paper, bank.papers[examCode] ? prefix + examCode : null, q.session, q.variant, q.q, q.marks,
           q.chapter, q.subtopic || '', q.prompt, q.context_note || '', q.answer_type || 'text',
           JSON.stringify(q.criteria || []), q.max_note || '', JSON.stringify(q.rejects || []),
           q.final_answer || '', q.confidence || '',
+          JSON.stringify(q.figures || []), JSON.stringify(q.answer_figures || []),
         ],
       );
     }
     total += bank.items.length;
-    console.log(`Paper ${paper}: ${bank.items.length} questions`);
+    console.log(`${info.subject} ${info.label}: ${bank.items.length} questions`);
   }
   await client.query('COMMIT');
   await client.end();
