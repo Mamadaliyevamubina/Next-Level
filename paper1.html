@@ -1,25 +1,25 @@
 <!doctype html><html><head><meta charset="utf-8"><title>9618 Paper 1 Practice</title><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* Layout: chapter rail on the left, one question at a time in the centre column, marking feedback directly under the answer box. */
 :root{
-  --bg:#f1f3f7; --surface:#ffffff; --surface2:#f6f8fb; --ink:#15202b; --ink2:#566474; --line:#d9e0e8;
-  --accent:#2c49b5; --accent-soft:#e3e9fb; --ok:#1a7a47; --ok-soft:#dff3e8; --warn:#a9640a; --warn-soft:#fbefd8; --bad:#b0372b; --bad-soft:#fbe6e3;
-  --f-display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
-  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --bg:#f6f0fd; --surface:#ffffff; --surface2:#f7f2fc; --ink:#1e002b; --ink2:#6f667c; --line:#e6dcf2;
+  --accent:#8e00d5; --accent-soft:#f1e3fb; --ok:#1a7a47; --ok-soft:#dff3e8; --warn:#a9640a; --warn-soft:#fbefd8; --bad:#b0372b; --bad-soft:#fbe6e3;
+  --f-display:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0f141b; --surface:#171e27; --surface2:#1c2530; --ink:#e7edf4; --ink2:#9aa8b8; --line:#2b3643;
-    --accent:#8aa0ff; --accent-soft:#222c52; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; color-scheme:dark;
+    --bg:#12051c; --surface:#26103a; --surface2:#2e1645; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
+    --accent:#c77dff; --accent-soft:#3a1a55; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0f141b; --surface:#171e27; --surface2:#1c2530; --ink:#e7edf4; --ink2:#9aa8b8; --line:#2b3643;
-  --accent:#8aa0ff; --accent-soft:#222c52; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; color-scheme:dark;
+  --bg:#12051c; --surface:#26103a; --surface2:#2e1645; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
+  --accent:#c77dff; --accent-soft:#3a1a55; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;margin:0;padding-inline:16px;padding-block:0 60px}
@@ -123,6 +123,10 @@ h2{font-family:var(--f-display);font-size:1.2rem;margin:26px 0 8px} h2:first-chi
   .li{grid-template-columns:1fr 70px}
   .li .track{display:none}
 }
+
+/* Dombit International School look */
+body{background:radial-gradient(900px 500px at 8% -10%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 70%),radial-gradient(800px 600px at 100% 20%,color-mix(in srgb,var(--accent) 8%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
+h1,h2,h3{letter-spacing:-.02em}
 </style>
 
 <div class="app">

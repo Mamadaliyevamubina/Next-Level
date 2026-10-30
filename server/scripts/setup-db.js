@@ -56,6 +56,10 @@ async function main() {
   console.log('Tables ready');
 
   await client.query('BEGIN');
+  await client.query(
+    `INSERT INTO subjects (code, name) VALUES ('9618', 'Computer Science (9618)')
+     ON CONFLICT (code) DO NOTHING`,
+  );
   let total = 0;
   for (const [num, info] of Object.entries(PAPERS)) {
     const paper = Number(num);

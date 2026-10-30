@@ -2,6 +2,8 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
+import accountRoutes from './routes/account.js';
+import teacherRoutes from './routes/teacher.js';
 import practiceRoutes from './routes/practice.js';
 import { pool } from './db.js';
 
@@ -19,6 +21,9 @@ app.get('/api/health', async (req, res) => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/account', accountRoutes);
+app.use('/api/teacher', teacherRoutes);
+// Practice routes are mounted last: they need an approved account for everything under /api.
 app.use('/api', practiceRoutes);
 
 app.use('/api', (req, res) => res.status(404).json({ error: 'Not found.' }));

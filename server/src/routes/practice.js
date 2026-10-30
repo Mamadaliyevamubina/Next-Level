@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { query } from '../db.js';
-import { requireAuth, wrap } from '../auth.js';
+import { requireApproved, requireAuth, wrap } from '../auth.js';
+import * as stats from '../stats.js';
 
 const router = Router();
-router.use(requireAuth);
+router.use(requireAuth, requireApproved);
 
 const ORDER = 'q.chapter, q.subtopic, q.exam_code, q.id';
 
@@ -182,49 +183,11 @@ router.get('/bookmarks', wrap(async (req, res) => {
 }));
 
 router.get('/stats', wrap(async (req, res) => {
-  const uid = [req.userId];
-  const totals = await query(
-    `SELECT count(*)::int AS answered,
-            coalesce(sum(awarded), 0)::int AS earned,
-            coalesce(sum(marks), 0)::int AS available,
-            count(*) FILTER (WHERE awarded >= marks)::int AS full_marks,
-            (SELECT count(*)::int FROM attempts WHERE user_id = $1) AS attempts,
-            (SELECT count(*)::int FROM questions) AS questions
-       FROM latest_attempts WHERE user_id = $1`,
-    uid,
-  );
-  const weakest = await query(
-    `SELECT q.paper, q.chapter, q.subtopic,
-            sum(la.awarded)::int AS earned, sum(la.marks)::int AS available, count(*)::int AS answered
-       FROM latest_attempts la JOIN questions q ON q.id = la.question_id
-      WHERE la.user_id = $1
-      GROUP BY q.paper, q.chapter, q.subtopic
-     HAVING sum(la.marks) > 0 AND sum(la.awarded) < sum(la.marks)
-      ORDER BY sum(la.awarded)::float / sum(la.marks), sum(la.marks) DESC
-      LIMIT 6`,
-    uid,
-  );
-  const recent = await query(
-    `SELECT a.id, a.question_id, a.awarded, a.marks, a.created_at, q.paper, q.label, e.label AS exam_label
-       FROM attempts a
-       JOIN questions q ON q.id = a.question_id
-       LEFT JOIN exam_papers e ON e.code = q.exam_code
-      WHERE a.user_id = $1
-      ORDER BY a.created_at DESC, a.id DESC
-      LIMIT 8`,
-    uid,
-  );
-  const days = await query(
-    `SELECT DISTINCT (created_at AT TIME ZONE 'UTC')::date AS day
-       FROM attempts WHERE user_id = $1 ORDER BY day DESC LIMIT 400`,
-    uid,
-  );
-  res.json({
-    totals: totals.rows[0],
-    weakest: weakest.rows,
-    recent: recent.rows,
-    streak: dayStreak(days.rows.map((r) => r.day)),
-  });
+  const [totals, weakest, recent, streak, activity] = await Promise.all([
+    stats.totals(req.userId), stats.weakest(req.userId), stats.recent(req.userId),
+    stats.streak(req.userId), stats.activity(req.userId, 14),
+  ]);
+  res.json({ totals, weakest, recent, streak, activity });
 }));
 
 // Clear a student's attempts, for one paper or for everything.
@@ -239,19 +202,5 @@ router.delete('/progress', wrap(async (req, res) => {
     : await query('DELETE FROM attempts WHERE user_id = $1', [req.userId]);
   res.json({ deleted: result.rowCount });
 }));
-
-// Number of consecutive days, ending today or yesterday, with at least one attempt.
-function dayStreak(days) {
-  const key = (d) => new Date(d).toISOString().slice(0, 10);
-  const set = new Set(days.map(key));
-  const day = new Date();
-  if (!set.has(key(day))) day.setUTCDate(day.getUTCDate() - 1);
-  let streak = 0;
-  while (set.has(key(day))) {
-    streak += 1;
-    day.setUTCDate(day.getUTCDate() - 1);
-  }
-  return streak;
-}
 
 export default router;

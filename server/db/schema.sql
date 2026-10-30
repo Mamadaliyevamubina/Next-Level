@@ -45,14 +45,49 @@ CREATE TABLE IF NOT EXISTS questions (
 );
 CREATE INDEX IF NOT EXISTS questions_paper_chapter_idx ON questions (paper, chapter);
 
+CREATE TABLE IF NOT EXISTS subjects (
+  id   SERIAL PRIMARY KEY,
+  code TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS users (
   id            SERIAL PRIMARY KEY,
   name          TEXT NOT NULL,
-  email         TEXT NOT NULL,
+  email         TEXT,
   password_hash TEXT NOT NULL,
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 CREATE UNIQUE INDEX IF NOT EXISTS users_email_idx ON users (lower(email));
+
+-- Accounts: students sign up themselves and wait as "pending" until their teacher
+-- (or you, in pgAdmin) sets status to 'approved'. Teachers are created by an admin.
+ALTER TABLE users ALTER COLUMN email DROP NOT NULL;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS username TEXT;
+UPDATE users SET username = lower(split_part(email, '@', 1)) || id WHERE username IS NULL;
+ALTER TABLE users ALTER COLUMN username SET NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS users_username_idx ON users (lower(username));
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS role TEXT NOT NULL DEFAULT 'student'
+  CHECK (role IN ('student', 'teacher', 'admin'));
+-- Accounts that existed before approvals were added stay usable; new sign-ups start as pending.
+ALTER TABLE users ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'approved'
+  CHECK (status IN ('pending', 'approved', 'rejected'));
+ALTER TABLE users ALTER COLUMN status SET DEFAULT 'pending';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS class_name TEXT NOT NULL DEFAULT '';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS subject_id INTEGER REFERENCES subjects(id) ON DELETE SET NULL;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS teacher_id INTEGER REFERENCES users(id) ON DELETE SET NULL;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS settings JSONB NOT NULL DEFAULT '{}';
+ALTER TABLE users ADD COLUMN IF NOT EXISTS approved_at TIMESTAMPTZ;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS last_seen_at TIMESTAMPTZ;
+CREATE INDEX IF NOT EXISTS users_teacher_idx ON users (teacher_id);
+
+-- Which subjects each teacher teaches (students pick a teacher for their subject).
+CREATE TABLE IF NOT EXISTS teacher_subjects (
+  teacher_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  subject_id INTEGER NOT NULL REFERENCES subjects(id) ON DELETE CASCADE,
+  PRIMARY KEY (teacher_id, subject_id)
+);
 
 -- Every time a student marks an answer, a new attempt is stored.
 -- "ticked" holds the indexes of the mark-scheme points the student earned.
@@ -74,6 +109,15 @@ CREATE TABLE IF NOT EXISTS bookmarks (
   created_at  TIMESTAMPTZ NOT NULL DEFAULT now(),
   PRIMARY KEY (user_id, question_id)
 );
+
+-- Students with their subject and teacher, for approving accounts in pgAdmin:
+-- open the users table and change status to 'approved'.
+CREATE OR REPLACE VIEW student_accounts AS
+SELECT s.id, s.username, s.name, s.status, s.class_name, sub.name AS subject, t.name AS teacher, s.created_at
+FROM users s
+LEFT JOIN subjects sub ON sub.id = s.subject_id
+LEFT JOIN users t ON t.id = s.teacher_id
+WHERE s.role = 'student';
 
 -- Latest attempt per student per question, handy for browsing in pgAdmin.
 CREATE OR REPLACE VIEW latest_attempts AS

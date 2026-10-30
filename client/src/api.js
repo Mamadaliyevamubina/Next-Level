@@ -25,7 +25,9 @@ export async function api(path, { method = 'GET', body } = {}) {
   }
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
-    if (res.status === 401) window.dispatchEvent(new Event('nl-logout'));
+    // A 401 means the session is gone; a "pending" 403 means a teacher has not approved (or re-approved) the account.
+    if (res.status === 401 && token) window.dispatchEvent(new Event('nl-logout'));
+    if (res.status === 403 && data.code === 'pending') window.dispatchEvent(new Event('nl-refresh'));
     throw new ApiError(data.error || `Request failed (${res.status})`, res.status);
   }
   return data;

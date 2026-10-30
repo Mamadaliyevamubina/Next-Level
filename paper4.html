@@ -1,24 +1,24 @@
 <!doctype html><html><head><meta charset="utf-8"><title>9618 Paper 4 Practice</title><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif;background:#f7f7f5}img{max-width:100%}[hidden]{display:none!important}</style></head><body><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* Layout: chapter rail on the left, one question at a time in the centre column, marking feedback directly under the answer box. */
 :root{
-  --bg:#f1f3f7; --surface:#ffffff; --surface2:#f6f8fb; --ink:#15202b; --ink2:#566474; --line:#d9e0e8;
-  --accent:#2c49b5; --accent-soft:#e3e9fb; --ok:#1a7a47; --ok-soft:#dff3e8; --warn:#a9640a; --warn-soft:#fbefd8; --bad:#b0372b; --bad-soft:#fbe6e3; --redo:#0c8a8c; --redo-soft:#d6f0f0;
-  --f-display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
-  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --bg:#f6f0fd; --surface:#ffffff; --surface2:#f7f2fc; --ink:#1e002b; --ink2:#6f667c; --line:#e6dcf2;
+  --accent:#8e00d5; --accent-soft:#f1e3fb; --ok:#1a7a47; --ok-soft:#dff3e8; --warn:#a9640a; --warn-soft:#fbefd8; --bad:#b0372b; --bad-soft:#fbe6e3; --redo:#0c8a8c; --redo-soft:#d6f0f0;
+  --f-display:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0f141b; --surface:#171e27; --surface2:#1c2530; --ink:#e7edf4; --ink2:#9aa8b8; --line:#2b3643;
-    --accent:#8aa0ff; --accent-soft:#222c52; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; --redo:#4fd6d4; --redo-soft:#123639; color-scheme:dark;
+    --bg:#12051c; --surface:#26103a; --surface2:#2e1645; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
+    --accent:#c77dff; --accent-soft:#3a1a55; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; --redo:#4fd6d4; --redo-soft:#123639; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0f141b; --surface:#171e27; --surface2:#1c2530; --ink:#e7edf4; --ink2:#9aa8b8; --line:#2b3643;
-  --accent:#8aa0ff; --accent-soft:#222c52; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; --redo:#4fd6d4; --redo-soft:#123639; color-scheme:dark;
+  --bg:#12051c; --surface:#26103a; --surface2:#2e1645; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
+  --accent:#c77dff; --accent-soft:#3a1a55; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; --redo:#4fd6d4; --redo-soft:#123639; color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;margin:0;padding-inline:16px;padding-block:0 60px}
@@ -344,6 +344,10 @@ h2{font-family:var(--f-display);font-size:1.2rem;margin:26px 0 8px} h2:first-chi
 .ubar.today i{background:var(--ok)} .ubar.zero i{background:var(--line)}
 .ubar span{font-family:var(--f-mono);font-size:.68rem;color:var(--ink2)}
 .ubar em{font-style:normal;font-family:var(--f-mono);font-size:.66rem;color:var(--ink2);min-height:1em}
+
+/* Dombit International School look */
+body{background:radial-gradient(900px 500px at 8% -10%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 70%),radial-gradient(800px 600px at 100% 20%,color-mix(in srgb,var(--accent) 8%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
+h1,h2,h3{letter-spacing:-.02em}
 </style>
 
 <div class="app">
@@ -1649,13 +1653,8 @@ ans,
       finish(it, res, ans, secs);
     }).catch(function(e){
       busy=false; var code=(e&&e.code)||"error";
-<<<<<<< HEAD
       var m = code==="not_granted" ? "Marking needs your permission to use AI on this page. Reload and allow it, or use the self-marking button below." :
               code==="rate_limited" ? "Too many marking requests, or your AI usage limit was reached. Wait a minute and press Mark again." :
-=======
-      var m = code==="not_granted" ? "Marking needs your permission to use Claude on this page. Reload and allow it, or use the self-marking button below." :
-              code==="rate_limited" ? "Too many marking requests, or your Claude usage limit was reached. Wait a minute and press Mark again." :
->>>>>>> 2ad62f5d6b11c390baa2deaf7a7ca3a7c05ecbe4
               "The marking did not come back ("+esc(code)+"). Your answer is still here. Press Mark again.";
       $("#out").innerHTML="<div class='msg err'>"+m+" <button class='btn' id='selfm'>Mark it myself instead</button></div>";
       var b=$("#selfm"); if(b) b.onclick=function(){ selfMark(it, ans, secs); };
@@ -1760,11 +1759,7 @@ ans,
     if(wording.length){
       h+="<div class='list'>"+wording.map(function(w){ var it=byId(w.id); return "<div class='wording'>"+inline(w.m)+"<small>"+esc(it?it.subtopic+" · "+PAPERS[it.session+"-"+it.variant].code+" Q"+it.q:"")+"</small></div>"; }).join("")+"</div>";
     } else { h+="<div class='card'><div class='empty'>Fills up as you lose marks on examiner-marked answers.</div></div>"; }
-<<<<<<< HEAD
     h+="<h2>Coach's read</h2><p class='note'>Asks AI to read your recent wrong answers together and name the few habits costing you most.</p><div class='row'><button class='btn primary' id='coach'"+(sampleFn?"":" disabled")+">"+(sampleFn?"Analyse my mistakes":"Needs AI access")+"</button></div><div id='coachOut'></div>";
-=======
-    h+="<h2>Coach's read</h2><p class='note'>Asks Claude to read your recent wrong answers together and name the few habits costing you most.</p><div class='row'><button class='btn primary' id='coach'"+(sampleFn?"":" disabled")+">"+(sampleFn?"Analyse my mistakes":"Needs Claude access")+"</button></div><div id='coachOut'></div>";
->>>>>>> 2ad62f5d6b11c390baa2deaf7a7ca3a7c05ecbe4
     h+="<h2>Start over</h2><div class='row'><button class='btn' id='reset'>Clear my attempts</button><span id='resetNote' class='note'></span></div>";
     main.innerHTML=uCardHtml()+h;
     var cb=$("#coach"); if(cb) cb.onclick=function(){ coach(ids, latestBy, ch, sub, err); };
@@ -1920,11 +1915,7 @@ var P4GUIDE = [{"id": "g1", "title": "How Paper 4 works", "blocks": [["p", "Pape
   function renderAbout(){
     var codes=Object.keys(PAPERS).sort().map(function(k){ return PAPERS[k]; });
     var h="<div class='card prose'><h2>How the marking works</h2>"+
-<<<<<<< HEAD
     "<p>Each answer is marked by AI acting as a strict examiner. It sees the question, every mark-scheme point, the exact terms the scheme needs, what is never credited, and your answer. It must give you a yes or no on every single point, quote the words of yours that earned it, and explain in a sentence or two why a point was lost.</p>"+
-=======
-    "<p>Each answer is marked by Claude acting as a strict examiner. It sees the question, every mark-scheme point, the exact terms the scheme needs, what is never credited, and your answer. It must give you a yes or no on every single point, quote the words of yours that earned it, and explain in a sentence or two why a point was lost.</p>"+
->>>>>>> 2ad62f5d6b11c390baa2deaf7a7ca3a7c05ecbe4
     "<p><b>Why it is strict.</b> A real examiner cannot guess what you meant. So:</p><ul>"+
     "<li>A point earns a mark only if you wrote that idea clearly. Vague versions earn nothing, because the scheme asks for the specific thing.</li>"+
     "<li>Where the scheme needs an exact term, your wording must use it or mean exactly the same, with no ambiguity.</li>"+
@@ -1943,21 +1934,13 @@ var P4GUIDE = [{"id": "g1", "title": "How Paper 4 works", "blocks": [["p", "Pape
     "<ul>"+codes.map(function(p){ return "<li>"+esc(p.code)+" — <a href='"+esc(p.qp)+"' target='_blank' rel='noopener'>paper</a>, <a href='"+esc(p.ms)+"' target='_blank' rel='noopener'>mark scheme</a></li>"; }).join("")+"</ul>"+
     "<h2>Left out</h2><p>Parts that only ask you to <b>run the program and paste a screenshot</b> (usually 1 to 3 marks per question) are not here, and neither are one-mark parts that change a single line. In the real exam run your program with the exact test data the question gives, and make sure the screenshot shows all the output. Programs that read the paper's source files are described in words: the file layout is given in the question.</p>"+
     "<h2>Your attempts</h2><p>Your answers and marks are saved in this browser. When the page's store is available, a copy is saved there too so your tutor can read it and go deeper on your mistakes in a chat.</p>"+
-<<<<<<< HEAD
     "<p>"+(sampleFn?"AI marking is available on this page.":"AI marking is not available in this view. You can still practise and mark yourself against the scheme.")+" "+(DB?"The page store is connected.":"The page store is not connected in this view.")+"</p></div>";
-=======
-    "<p>"+(sampleFn?"Claude marking is available on this page.":"Claude marking is not available in this view. You can still practise and mark yourself against the scheme.")+" "+(DB?"The page store is connected.":"The page store is not connected in this view.")+"</p></div>";
->>>>>>> 2ad62f5d6b11c390baa2deaf7a7ca3a7c05ecbe4
     $("#main").innerHTML=h;
   }
 
   /* ---------- shell ---------- */
   /* ---------- mock exam (a whole paper, timed, marked at the end) ---------- */
-<<<<<<< HEAD
   var MKKEY = KEY + "-mock", mockTimer = null, sampleSettled = !(window.aiRuntime && window.aiRuntime.use);
-=======
-  var MKKEY = KEY + "-mock", mockTimer = null, sampleSettled = !(window.claude && window.claude.use);
->>>>>>> 2ad62f5d6b11c390baa2deaf7a7ca3a7c05ecbe4
   var MK = {key:"s26-41", phase:"setup", start:0, dur:8280, ans:{}, res:{}, err:{}, prog:0, total:0, summary:""};
   function mkLoad(){
     try{
@@ -2006,11 +1989,7 @@ var P4GUIDE = [{"id": "g1", "title": "How Paper 4 works", "blocks": [["p", "Pape
       "<h2>Before you start</h2><ul><li>Use paper for rough work, as in the exam. Type your final answers in the boxes. Test your code in your own Python editor if you want, as in the exam, then paste or type the final code into the box.</li>"+
       "<li>Your answers save on this device every few seconds, and the clock keeps running from the real time even if you close the page. You can come back to a started mock.</li>"+
       "<li>The questions here are reworded from the Cambridge paper, so for the exact printed wording open the question paper (link on the results page). The source files (such as TheData.txt) that come with the real paper are not on this page: each question describes the layout of the file it needs.</li>"+
-<<<<<<< HEAD
       "<li>Marks come from the mark scheme points, applied strictly by AI. Treat the total as accurate to about plus or minus 5 marks, and check any surprise against the official mark scheme.</li></ul></div>";
-=======
-      "<li>Marks come from the mark scheme points, applied strictly by Claude. Treat the total as accurate to about plus or minus 5 marks, and check any surprise against the official mark scheme.</li></ul></div>";
->>>>>>> 2ad62f5d6b11c390baa2deaf7a7ca3a7c05ecbe4
     $("#main").innerHTML = h;
     $("#mkPaper").onchange = function(){ MK.key = this.value; };
     $("#mkStart").onclick = function(){
@@ -2127,11 +2106,7 @@ var P4GUIDE = [{"id": "g1", "title": "How Paper 4 works", "blocks": [["p", "Pape
 
   function mkRenderSelf(){
     var its = mkItems(MK.key).filter(function(it){ return !MK.res[it.id]; });
-<<<<<<< HEAD
     var h = "<div class='card prose'><h1 style='margin:0 0 6px;font-size:1.4rem'>Mark it yourself</h1><p>AI marking is not available here, so tick only the points your answer states clearly, in these words or an exactly equivalent wording. Be harsh. The model answer is under each part.</p>";
-=======
-    var h = "<div class='card prose'><h1 style='margin:0 0 6px;font-size:1.4rem'>Mark it yourself</h1><p>Claude marking is not available here, so tick only the points your answer states clearly, in these words or an exactly equivalent wording. Be harsh. The model answer is under each part.</p>";
->>>>>>> 2ad62f5d6b11c390baa2deaf7a7ca3a7c05ecbe4
     its.forEach(function(it,qi){
       var ans = mkAns(it);
       h += "<div class='card' style='margin:10px 0'><div class='meta'><span class='marks'>"+it.marks+"</span><span>Part "+esc(it.q)+"</span></div><div class='q'>"+md(DRAWKIND[it.id]?dgClean(it.prompt):it.prompt)+"</div><div class='box'><h4>Your answer</h4><pre style='white-space:pre-wrap;margin:0'>"+esc(ans||"(blank)")+"</pre></div>";
@@ -2161,11 +2136,7 @@ var P4GUIDE = [{"id": "g1", "title": "How Paper 4 works", "blocks": [["p", "Pape
     var h = "<div class='card prose gd'><h1 style='margin:0 0 4px;font-size:1.4rem'>"+esc(paper.code)+" result</h1>"+
       "<div class='res'><div class='score "+(gr.i<=1?"full":gr.i<=3?"part":"zero")+"'><b>"+got+" / "+total+"</b><span>"+pct+"% · scaled to 75 marks: "+Math.round(got*75/Math.max(1,total))+" · grade "+gr.g+" on "+esc(gr.name)+" thresholds"+(MK.used?" · time used "+mkClock(MK.used):"")+"</span></div></div>"+
       "<div class='box fix'><h4>Grade "+gr.g+"</h4>"+(gr.g==="U"?"You need "+(th[4]-got)+" more marks for an E.":gapText(got, th, names, gr.i))+(gr.own?"":" These thresholds are from "+esc(gr.name)+" because this paper's own thresholds are not on the Grade check page.")+"</div>"+ladder(th, names, got)+
-<<<<<<< HEAD
       "<p class='note'>"+(selfNote?"Part of this was marked by you, so it is only as accurate as your honesty. ":"")+"AI marks strictly against the scheme points, so treat the total as accurate to about plus or minus 5 marks. Open the <a href='"+esc(paper.qp)+"' target='_blank' rel='noopener'>question paper</a> and the <a href='"+esc(paper.ms)+"' target='_blank' rel='noopener'>official mark scheme</a> to check any surprise.</p>";
-=======
-      "<p class='note'>"+(selfNote?"Part of this was marked by you, so it is only as accurate as your honesty. ":"")+"Claude marks strictly against the scheme points, so treat the total as accurate to about plus or minus 5 marks. Open the <a href='"+esc(paper.qp)+"' target='_blank' rel='noopener'>question paper</a> and the <a href='"+esc(paper.ms)+"' target='_blank' rel='noopener'>official mark scheme</a> to check any surprise.</p>";
->>>>>>> 2ad62f5d6b11c390baa2deaf7a7ca3a7c05ecbe4
     // by chapter
     var byCh = {}; its.forEach(function(it){ var r = MK.res[it.id]; var c = byCh[it.chapter] = byCh[it.chapter]||{a:0,m:0}; c.m += it.marks; c.a += (r?r.awarded:0); });
     h += "<h2>By chapter</h2><div class='wrap'><table><tr><th>Chapter</th><th>You got</th><th>Out of</th><th>%</th></tr>"+Object.keys(byCh).sort().map(function(c){ var x = byCh[c]; return "<tr><td>"+c+". "+esc(CHAPS[c])+"</td><td>"+x.a+"</td><td>"+x.m+"</td><td>"+Math.round(100*x.a/x.m)+"%</td></tr>"; }).join("")+"</table></div>";
@@ -2383,13 +2354,8 @@ var P4GUIDE = [{"id": "g1", "title": "How Paper 4 works", "blocks": [["p", "Pape
         if(u >= 0 && th[u] && th[u].r === "u") th.splice(u, 1);
         if(err && err.code !== "cancelled"){
           var c = err.code||"error";
-<<<<<<< HEAD
           AI.err = c==="not_granted" ? "The tutor needs your permission to use AI on this page. Reload the page and allow it."
                  : c==="rate_limited" ? "Too many requests, or your AI usage limit was reached. Wait a minute and try again."
-=======
-          AI.err = c==="not_granted" ? "The tutor needs your permission to use Claude on this page. Reload the page and allow it."
-                 : c==="rate_limited" ? "Too many requests, or your Claude usage limit was reached. Wait a minute and try again."
->>>>>>> 2ad62f5d6b11c390baa2deaf7a7ca3a7c05ecbe4
                  : "The tutor did not answer ("+c+"). Try again.";
           AI.pending = text;
         }
@@ -2715,15 +2681,9 @@ var P4GUIDE = [{"id": "g1", "title": "How Paper 4 works", "blocks": [["p", "Pape
   for(var i=0;i<queue.length;i++){ if(!latest(queue[i].id)){ idx=i; break; } }
   renderAll();
 
-<<<<<<< HEAD
   if(window.aiRuntime && window.aiRuntime.use){
     window.aiRuntime.use("sample").then(function(s){ if(s){ sampleFn=s; } sampleSettled=true; if(!(tab==="mock"&&MK.phase==="exam"&&MK.start+MK.dur>Date.now()/1000)) renderAll(); }).catch(function(){ sampleSettled=true; if(!(tab==="mock"&&MK.phase==="exam"&&MK.start+MK.dur>Date.now()/1000)) renderAll(); });
     window.aiRuntime.use("db").then(function(d){ if(d){ DB=d; pullDb(); drPull(); } }).catch(function(){});
-=======
-  if(window.claude && window.claude.use){
-    window.claude.use("sample").then(function(s){ if(s){ sampleFn=s; } sampleSettled=true; if(!(tab==="mock"&&MK.phase==="exam"&&MK.start+MK.dur>Date.now()/1000)) renderAll(); }).catch(function(){ sampleSettled=true; if(!(tab==="mock"&&MK.phase==="exam"&&MK.start+MK.dur>Date.now()/1000)) renderAll(); });
-    window.claude.use("db").then(function(d){ if(d){ DB=d; pullDb(); drPull(); } }).catch(function(){});
->>>>>>> 2ad62f5d6b11c390baa2deaf7a7ca3a7c05ecbe4
   }
 })();
 </script>

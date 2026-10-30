@@ -7,25 +7,25 @@
 <meta name="description" content="Cambridge 9618 Computer Science past-paper practice for Papers 1 to 4, marked against the mark scheme.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f1f3f7; --surface:#ffffff; --surface2:#f6f8fb; --ink:#15202b; --ink2:#566474; --line:#d9e0e8;
-  --accent:#2c49b5; --accent-soft:#e3e9fb;
-  --f-display:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
-  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --bg:#f6f0fd; --surface:#ffffff; --surface2:#f7f2fc; --ink:#1e002b; --ink2:#6f667c; --line:#e6dcf2;
+  --accent:#8e00d5; --accent-soft:#f1e3fb;
+  --f-display:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0f141b; --surface:#171e27; --surface2:#1c2530; --ink:#e7edf4; --ink2:#9aa8b8; --line:#2b3643;
-    --accent:#8aa0ff; --accent-soft:#222c52; color-scheme:dark;
+    --bg:#12051c; --surface:#26103a; --surface2:#2e1645; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
+    --accent:#c77dff; --accent-soft:#3a1a55; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#0f141b; --surface:#171e27; --surface2:#1c2530; --ink:#e7edf4; --ink2:#9aa8b8; --line:#2b3643;
-  --accent:#8aa0ff; --accent-soft:#222c52; color-scheme:dark;
+  --bg:#12051c; --surface:#26103a; --surface2:#2e1645; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
+  --accent:#c77dff; --accent-soft:#3a1a55; color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;margin:0;padding:0 16px 60px}
@@ -45,6 +45,10 @@ h1{font-family:var(--f-display);font-size:clamp(1.7rem,4vw,2.4rem);margin:0;lett
 .note{margin-top:28px;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:.92rem;color:var(--ink2);max-width:70ch}
 .note b{color:var(--ink)}
 @media (prefers-reduced-motion:reduce){.paper{transition:none}.paper:hover{transform:none}}
+
+/* Dombit International School look */
+body{background:radial-gradient(900px 500px at 8% -10%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 70%),radial-gradient(800px 600px at 100% 20%,color-mix(in srgb,var(--accent) 8%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
+h1,h2,h3{letter-spacing:-.02em}
 </style>
 </head>
 <body>

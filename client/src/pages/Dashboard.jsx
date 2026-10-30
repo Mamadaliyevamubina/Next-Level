@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
-import { useAuth } from '../auth.jsx';
+import { isTeacher, useAuth } from '../auth.jsx';
+import Icon from '../components/Icon.jsx';
 import Meter, { ScoreBadge } from '../components/Meter.jsx';
+import { Stat } from './Teacher.jsx';
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -25,35 +27,60 @@ export default function Dashboard() {
   if (error) return <p className="error">{error}</p>;
   if (!papers || !stats) return <p className="muted">Loading…</p>;
 
+  const s = user.settings;
   const t = stats.totals;
+  const goal = s.dailyGoal;
+  const goalPct = Math.min(100, Math.round((t.today / goal) * 100));
+  const main = papers.find((p) => p.number === s.defaultPaper);
+  const ordered = main ? [main, ...papers.filter((p) => p !== main)] : papers;
   const chapterName = (paper, ch) => papers.find((p) => p.number === paper)?.chapters.find((c) => c.number === ch)?.name;
+  const maxDay = Math.max(1, ...stats.activity.map((d) => d.attempts));
 
   return (
-    <>
-      <h1>Hi {user.name.split(' ')[0]}</h1>
+    <div className="stack-lg">
+      <section className="card hero-card dash-hero">
+        <div className="grow">
+          <p className="eyebrow">{user.class_name ? `Class ${user.class_name}` : 'A Level Computer Science'}{user.teacher_name ? ` · ${user.teacher_name}` : ''}</p>
+          <h1>Hi {user.name.split(' ')[0]}, ready to level up?</h1>
+          <p className="muted">
+            {t.today >= goal ? `Daily goal done: ${t.today} questions today. Great work.` : `${t.today} of ${goal} questions done today.`}
+          </p>
+          <div className="row">
+            <button type="button" className="btn primary" onClick={() => practise(main?.number || 1)}>
+              Practise {main ? `Paper ${main.number}` : 'now'} <Icon name="arrow" />
+            </button>
+            {isTeacher(user) && <Link to="/teacher" className="btn"><Icon name="users" /> My students</Link>}
+          </div>
+        </div>
+        <div className="goal-ring" style={{ '--p': goalPct }} title={`${t.today} / ${goal} today`}>
+          <span><b>{t.today}</b>/{goal}<small>today</small></span>
+        </div>
+      </section>
+
       <div className="stats">
-        <div className="stat"><b>{t.answered}</b><span>of {t.questions} questions answered</span></div>
-        <div className="stat"><b>{t.available ? Math.round((t.earned / t.available) * 100) : 0}%</b><span>{t.earned} / {t.available} marks on latest tries</span></div>
-        <div className="stat"><b>{t.full_marks}</b><span>questions with full marks</span></div>
-        <div className="stat"><b>{stats.streak} {stats.streak === 1 ? 'day' : 'days'}</b><span>practice streak</span></div>
+        <Stat icon="book" value={t.answered} label={`of ${t.questions} questions answered`} />
+        <Stat icon="chart" value={`${t.available ? Math.round((t.earned / t.available) * 100) : 0}%`} label={`${t.earned} / ${t.available} marks on latest tries`} />
+        <Stat icon="check" value={t.full_marks} label="questions with full marks" />
+        {s.showStreak && <Stat icon="flame" value={`${stats.streak} ${stats.streak === 1 ? 'day' : 'days'}`} label="practice streak" />}
       </div>
 
       <div className="grid">
-        {papers.map((p) => (
-          <section key={p.number} className="card paper-card">
+        {ordered.map((p) => (
+          <section key={p.number} className={`card paper-card ${p === main ? 'main' : ''}`}>
+            <p className="eyebrow">{p === main ? 'Your main paper' : `Paper ${p.number}`}</p>
             <h2><Link to={`/paper/${p.number}`}>Paper {p.number}</Link></h2>
             <p className="muted small">{p.title}</p>
             <Meter earned={p.earned} available={p.available} />
             <p className="small muted">{p.attempted} / {p.questions} answered</p>
             <div className="row">
-              <button type="button" className="primary" onClick={() => practise(p.number)}>Practise next</button>
-              <Link to={`/paper/${p.number}`} className="button">Browse</Link>
+              <button type="button" className="btn primary sm" onClick={() => practise(p.number)}>Practise next</button>
+              <Link to={`/paper/${p.number}`} className="btn sm">Browse</Link>
             </div>
           </section>
         ))}
       </div>
 
-      <div className="grid two">
+      <div className="grid three">
         <section className="card">
           <h2>Topics to work on</h2>
           {stats.weakest.length === 0 ? (
@@ -86,7 +113,18 @@ export default function Dashboard() {
             </ul>
           )}
         </section>
+        <section className="card">
+          <h2>Last 2 weeks</h2>
+          <div className="bars short" role="img" aria-label="Questions answered per day over the last 14 days">
+            {stats.activity.map((d) => (
+              <span key={d.day} className="bar" title={`${d.day}: ${d.attempts}`}>
+                <span style={{ height: `${(d.attempts / maxDay) * 100}%` }} />
+              </span>
+            ))}
+          </div>
+          <p className="muted small">{stats.activity.reduce((n, d) => n + d.attempts, 0)} tries in 14 days</p>
+        </section>
       </div>
-    </>
+    </div>
   );
 }
