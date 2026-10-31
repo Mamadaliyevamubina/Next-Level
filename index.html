@@ -3,110 +3,298 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Computer Science Practice · IGCSE 0478 and A Level 9618</title>
-<meta name="description" content="Cambridge 9618 Computer Science past-paper practice for Papers 1 to 4, marked against the mark scheme.">
+<title>Next Level · Computer Science Practice · Dombit International School</title>
+<meta name="description" content="Cambridge IGCSE (0478) and AS & A Level (9618) Computer Science past-paper practice for Dombit International School, marked against the mark scheme.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#f6f0fd; --surface:#ffffff; --surface2:#f7f2fc; --ink:#1e002b; --ink2:#6f667c; --line:#e6dcf2;
-  --accent:#8e00d5; --accent-soft:#f1e3fb;
-  --f-display:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  --bg:#f6f0fd; --bg2:#fbf8ff; --surface:#ffffff; --surface2:#f7f2fc; --ink:#1e002b; --ink2:#6f667c; --line:#e9def5;
+  --accent:#8e00d5; --accent-soft:#f1e3fb; --brand:#623697;
+  --shadow:0 14px 40px rgba(98,54,151,.10),0 2px 6px rgba(98,54,151,.05);
   color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --bg:#12051c; --bg2:#1a0828; --surface:#22102f; --surface2:#2b1640; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
+  --accent:#c77dff; --accent-soft:#3a1a55; --shadow:0 14px 40px rgba(0,0,0,.35); color-scheme:dark;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#12051c; --surface:#26103a; --surface2:#2e1645; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
-    --accent:#c77dff; --accent-soft:#3a1a55; color-scheme:dark;
+    --bg:#12051c; --bg2:#1a0828; --surface:#22102f; --surface2:#2b1640; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
+    --accent:#c77dff; --accent-soft:#3a1a55; --shadow:0 14px 40px rgba(0,0,0,.35); color-scheme:dark;
   }
 }
-:root[data-theme="dark"]{
-  --bg:#12051c; --surface:#26103a; --surface2:#2e1645; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
-  --accent:#c77dff; --accent-soft:#3a1a55; color-scheme:dark;
-}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;margin:0;padding:0 16px 60px}
-.app{max-width:1000px;margin-inline:auto}
-header{padding:48px 0 24px}
-h1{font-family:var(--f-display);font-size:clamp(1.7rem,4vw,2.4rem);margin:0;letter-spacing:-.015em;line-height:1.15}
-.lede{color:var(--ink2);max-width:60ch;margin:10px 0 0}
-.papers{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
-.paper{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px 20px;color:inherit;text-decoration:none;transition:border-color .15s,transform .15s}
-.paper:hover{border-color:var(--accent);transform:translateY(-2px)}
-.paper:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.num{font-family:var(--f-mono);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
-.paper h2{font-family:var(--f-display);font-size:1.2rem;margin:0;line-height:1.25}
-.paper p{margin:0;color:var(--ink2);font-size:.92rem}
-.count{margin-top:auto;padding-top:10px;font-family:var(--f-mono);font-size:.8rem;color:var(--ink2)}
-.go{font-weight:700;color:var(--accent);font-size:.92rem}
-.note{margin-top:28px;background:var(--surface2);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:.92rem;color:var(--ink2);max-width:70ch}
-.note b{color:var(--ink)}
-@media (prefers-reduced-motion:reduce){.paper{transition:none}.paper:hover{transform:none}}
+html{background:var(--bg2)}
+body{margin:0;color:var(--ink);font:17px/1.6 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  background:radial-gradient(1000px 600px at 5% -10%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 70%),
+             radial-gradient(900px 700px at 100% 15%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 70%),
+             linear-gradient(180deg,var(--bg),var(--bg2));background-attachment:fixed}
+a{color:var(--accent)}
+h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
 
-/* Dombit International School look */
-body{background:radial-gradient(900px 500px at 8% -10%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 70%),radial-gradient(800px 600px at 100% 20%,color-mix(in srgb,var(--accent) 8%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
-h1,h2,h3{letter-spacing:-.02em}
-.level{font-size:1rem;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin:28px 0 12px}
+/* Hero: glassy purple card, like the school's homepage */
+.hero{margin-top:22px;border-radius:32px;overflow:hidden;position:relative;color:#fff;padding:clamp(28px,5vw,60px);
+  display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center;
+  background:radial-gradient(700px 420px at 15% 10%,rgba(184,61,255,.55),transparent 70%),
+             radial-gradient(600px 600px at 95% 100%,rgba(98,54,151,.95),transparent 70%),
+             linear-gradient(150deg,#3b0a63,#1e002b 75%);box-shadow:0 30px 70px rgba(59,10,99,.35)}
+.hero::before{content:"";position:absolute;inset:0;opacity:.12;pointer-events:none;
+  background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px);
+  background-size:46px 46px;-webkit-mask-image:radial-gradient(circle at 30% 30%,#000,transparent 75%);mask-image:radial-gradient(circle at 30% 30%,#000,transparent 75%)}
+.hero > *{position:relative}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.09em;font-size:.76rem;font-weight:700;
+  padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+.hero h1{font-size:clamp(2.2rem,5vw,3.7rem);font-weight:800;margin:18px 0 14px}
+.hero h1 span{background:linear-gradient(90deg,#e7c6ff,#b98be8);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:rgba(255,255,255,.82);font-size:1.1rem;max-width:52ch;margin:0}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:999px;font-weight:700;text-decoration:none;transition:transform .15s,filter .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.light{background:#fff;color:#4a0b7a;box-shadow:0 10px 26px rgba(0,0,0,.25)}
+.btn.ghost{color:#fff;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08)}
+.facts{display:flex;flex-wrap:wrap;gap:22px;margin-top:30px}
+.facts div b{display:block;font-size:1.6rem;font-weight:800;letter-spacing:-.02em}
+.facts div span{font-size:.85rem;color:rgba(255,255,255,.72)}
+
+.code-card{border-radius:22px;background:rgba(20,0,32,.55);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);
+  box-shadow:0 20px 50px rgba(0,0,0,.35);overflow:hidden;transform:rotate(1.5deg)}
+.code-top{display:flex;align-items:center;gap:6px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.1);font-size:.78rem;color:rgba(255,255,255,.65)}
+.code-top i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.25)}
+.code-top i:nth-child(1){background:#ff6b8b}.code-top i:nth-child(2){background:#ffc85c}.code-top i:nth-child(3){background:#5fd08c}
+.code-top span{margin-left:auto}
+.code-card pre{margin:0;padding:18px 20px;font:13.5px/1.75 "JetBrains Mono",ui-monospace,monospace;color:#efe4fb;font-variant-ligatures:none;overflow-x:auto}
+.code-card .k{color:#d9a6ff}.code-card .s{color:#9be8b4}.code-card .n{color:#ffcf8a}.code-card .c{color:rgba(255,255,255,.4)}
+.mark-chip{display:flex;justify-content:space-between;gap:10px;margin:0 16px 16px;padding:10px 14px;border-radius:14px;
+  background:rgba(95,208,140,.16);border:1px solid rgba(95,208,140,.35);font-size:.85rem}
+.mark-chip b{color:#7ee2a6}
+
+/* Feature tiles */
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:22px}
+.feature{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--shadow)}
+.tile{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);margin-bottom:12px}
+.feature h3{font-size:1rem;margin-bottom:4px}
+.feature p{margin:0;color:var(--ink2);font-size:.9rem;line-height:1.5}
+
+/* Courses */
+.course{margin-top:56px}
+.course-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:18px}
+.label{text-transform:uppercase;letter-spacing:.09em;font-size:.78rem;font-weight:700;color:var(--accent)}
+.course-head h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;margin-top:4px}
+.course-head p{margin:6px 0 0;color:var(--ink2);max-width:62ch}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:.85rem;font-weight:600;color:var(--ink2)}
+.papers{display:grid;gap:18px}
+.papers.two{grid-template-columns:repeat(2,1fr)}
+.papers.four{grid-template-columns:repeat(4,1fr)}
+.paper{position:relative;display:flex;flex-direction:column;gap:8px;padding:24px;border-radius:26px;background:var(--surface);border:1px solid var(--line);
+  color:inherit;text-decoration:none;box-shadow:var(--shadow);transition:transform .2s,border-color .2s,box-shadow .2s;overflow:hidden}
+.paper::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,color-mix(in srgb,var(--accent) 16%,transparent),transparent 70%);transition:transform .3s}
+.paper:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 45%,transparent);box-shadow:0 22px 50px rgba(98,54,151,.18)}
+.paper:hover::after{transform:scale(1.3)}
+.paper:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:3px}
+.paper .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.paper .num{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+.paper h3{font-size:1.3rem;font-weight:800}
+.paper p{margin:0;color:var(--ink2);font-size:.93rem;line-height:1.55}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.chips span{font-size:.76rem;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.paper .foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
+.count{font-size:.85rem;color:var(--ink2)}
+.count b{color:var(--ink)}
+.go{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--accent);font-size:.92rem}
+.go svg{transition:transform .2s}.paper:hover .go svg{transform:translateX(4px)}
+.big .tile{width:54px;height:54px;border-radius:16px;margin-bottom:0}
+
+/* How it works */
+.steps{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;background:var(--surface);border:1px solid var(--line);
+  border-radius:28px;padding:28px;box-shadow:var(--shadow)}
+.step{display:flex;gap:14px}
+.step i{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;background:var(--accent);color:#fff}
+.step h3{font-size:1rem;margin-bottom:2px}
+.step p{margin:0;color:var(--ink2);font-size:.9rem;line-height:1.5}
+.note{margin-top:18px;color:var(--ink2);font-size:.88rem;text-align:center}
+
+@media (max-width:1040px){.papers.four{grid-template-columns:repeat(2,1fr)}.features{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:860px){.hero{grid-template-columns:1fr}.code-card{transform:none}.steps{grid-template-columns:1fr}}
+@media (max-width:640px){.papers.two,.papers.four,.features{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
+<!-- nl:head -->
+<link rel="icon" type="image/svg+xml" href="public/favicon.svg">
+<link rel="stylesheet" href="public/site.css">
+<script src="public/site.js"></script>
+<!-- /nl:head -->
 </head>
 <body>
-<div class="app">
-  <header>
-    <h1>Computer Science Practice</h1>
-    <p class="lede">Cambridge International past-paper questions for IGCSE (0478) and AS &amp; A Level (9618), grouped by topic and checked against the mark scheme point by point. Pick a paper to start.</p>
-  </header>
-  <h2 class="level">IGCSE Computer Science · 0478</h2>
-  <main class="papers">
-    <a class="paper" href="igcse.html#p1">
-      <span class="num">IGCSE · Paper 1</span>
-      <h2>Computer Systems</h2>
-      <p>Data representation, data transmission, hardware, software, the internet, automated and emerging technologies.</p>
-      <span class="count">807 question parts</span>
-      <span class="go">Practise IGCSE Paper 1 →</span>
-    </a>
-    <a class="paper" href="igcse.html#p2">
-      <span class="num">IGCSE · Paper 2</span>
-      <h2>Algorithms, Programming &amp; Logic</h2>
-      <p>Algorithm design, pseudocode programming, trace tables, databases and SQL, Boolean logic.</p>
-      <span class="count">504 question parts</span>
-      <span class="go">Practise IGCSE Paper 2 →</span>
-    </a>
-  </main>
-  <h2 class="level">AS &amp; A Level Computer Science · 9618</h2>
-  <main class="papers">
-    <a class="paper" href="paper1.html">
-      <span class="num">Paper 1 · AS</span>
-      <h2>Theory Fundamentals</h2>
-      <p>Data representation, hardware, networks, processors, security, databases.</p>
-      <span class="count">409 question parts</span>
-      <span class="go">Practise Paper 1 →</span>
-    </a>
-    <a class="paper" href="paper2.html">
-      <span class="num">Paper 2 · AS</span>
-      <h2>Problem-solving &amp; Programming</h2>
-      <p>Pseudocode, algorithms, flowcharts, data types, files, testing. Includes timed mock exams.</p>
-      <span class="count">463 question parts</span>
-      <span class="go">Practise Paper 2 →</span>
-    </a>
-    <a class="paper" href="paper3.html">
-      <span class="num">Paper 3 · A Level</span>
-      <h2>Advanced Theory</h2>
-      <p>Karnaugh maps, floating point, user-defined types, file organisation, protocols, Boolean algebra.</p>
-      <span class="count">373 question parts</span>
-      <span class="go">Practise Paper 3 →</span>
-    </a>
-    <a class="paper" href="paper4.html">
-      <span class="num">Paper 4 · A Level</span>
-      <h2>Practical (Python)</h2>
-      <p>Python practical past questions: classes, stacks, queues, linked lists, binary trees, text files.</p>
-      <span class="count">242 question parts</span>
-      <span class="go">Practise Paper 4 →</span>
-    </a>
-  </main>
-  <p class="note"><b>Your progress is saved in this browser.</b> Answers and marks stay on this device. In this version you mark your own answers against the mark scheme.</p>
+<!-- nl:header -->
+<header class="nl-header">
+  <div class="nl-bar">
+    <a class="nl-brand" href="index.html"><span class="nl-mark"><svg width="22" height="25" viewBox="0 0 1181 1320" aria-hidden="true"><path fill="#623697" d="M444.654 1319.03C307.499 1319 136.818 1316.25 0 1316.25V0C137.501 0 409.134 0.103362 546.635 0.103362C982.062 0.103362 1180.89 293.362 1180.89 658.125C1180.89 900.866 1048.58 1113.22 831.735 1228.12V454.146L444.654 298.523V1319.03Z"/><path fill="#260844" d="M444.654 298.523L444.657 1319.03L0 1316.23L444.654 298.523Z"/></svg></span><span><b>Next Level</b><small>Dombit International School</small></span></a>
+    <nav class="nl-nav" aria-label="Main">
+      <a href="index.html" aria-current="page">Home</a>
+      <div class="nl-drop"><button type="button" aria-haspopup="true" aria-expanded="false">IGCSE <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="nl-menu"><a href="igcse.html#p1"><b>IGCSE Paper 1</b><span>Computer Systems</span></a><a href="igcse.html#p2"><b>IGCSE Paper 2</b><span>Algorithms, Programming and Logic</span></a></div></div>
+      <div class="nl-drop"><button type="button" aria-haspopup="true" aria-expanded="false">A Level <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="nl-menu"><a href="paper1.html"><b>Paper 1</b><span>Theory Fundamentals</span></a><a href="paper2.html"><b>Paper 2</b><span>Problem-solving and Programming</span></a><a href="paper3.html"><b>Paper 3</b><span>Advanced Theory</span></a><a href="paper4.html"><b>Paper 4</b><span>Practical (Python)</span></a></div></div>
+      <a href="https://school.dombit.uz" target="_blank" rel="noopener">School website</a>
+    </nav>
+    <div class="nl-actions">
+      <button type="button" class="nl-icon" data-nl-theme aria-label="Switch theme"></button>
+      <a class="nl-login" data-nl-app href="http://localhost:5173/"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Log in</span></a>
+      <button type="button" class="nl-icon nl-burger" data-nl-burger aria-label="Menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    </div>
+  </div>
+</header>
+<!-- /nl:header -->
+<div class="wrap">
+  <section class="hero">
+    <div>
+      <span class="eyebrow">Dombit International School · Computer Science</span>
+      <h1>Practise smarter.<br><span>Reach the next level.</span></h1>
+      <p>Every Cambridge IGCSE and A Level Computer Science past-paper question, sorted by topic and checked against the official mark scheme point by point.</p>
+      <div class="cta">
+        <a class="btn light" href="igcse.html#p1">Start IGCSE
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn ghost" href="paper1.html">Start A Level</a>
+      </div>
+      <div class="facts">
+        <div><b>2,798</b><span>question parts</span></div>
+        <div><b>6</b><span>papers, 2 courses</span></div>
+        <div><b>2021–2026</b><span>past papers</span></div>
+      </div>
+    </div>
+    <div class="code-card" aria-hidden="true">
+      <div class="code-top"><i></i><i></i><i></i><span>0478/21 · Q5 · 5 marks</span></div>
+<pre><span class="k">INPUT</span> Number
+<span class="k">CASE OF</span> Number
+   <span class="n">1</span> : <span class="k">OUTPUT</span> Number
+   <span class="n">2</span> : <span class="k">OUTPUT</span> Number
+   <span class="n">3</span> : <span class="k">OUTPUT</span> Number
+   <span class="n">4</span> : <span class="k">OUTPUT</span> Number
+   <span class="k">OTHERWISE OUTPUT</span> <span class="s">"ERROR"</span>
+<span class="k">ENDCASE</span>
+<span class="c">// Total ← Total + Number</span></pre>
+      <div class="mark-chip"><span>✓ CASE OF … ENDCASE · ✓ OTHERWISE</span><b>5 / 5</b></div>
+    </div>
+  </section>
+
+  <section class="features" aria-label="What you get">
+    <div class="feature">
+      <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14Z"/></svg></span>
+      <h3>Every topic</h3><p>Questions grouped by syllabus chapter and subtopic, from every recent paper.</p>
+    </div>
+    <div class="feature">
+      <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
+      <h3>Real mark schemes</h3><p>Tick the examiner's mark points your answer makes and see the model answer.</p>
+    </div>
+    <div class="feature">
+      <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18M7 15l4-4 3 3 6-6"/></svg></span>
+      <h3>Track progress</h3><p>See your score per topic and find the subtopics that lose you marks.</p>
+    </div>
+    <div class="feature">
+      <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.870M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+      <h3>With your teacher</h3><p>Log in to the full app and your teacher sees your progress and weak spots.</p>
+    </div>
+  </section>
+
+  <section class="course" id="igcse">
+    <div class="course-head">
+      <div>
+        <span class="label">Cambridge IGCSE · 0478</span>
+        <h2>IGCSE Computer Science</h2>
+        <p>The current syllabus: every question paper from Feb/March 2023 to May/June 2026, with diagrams and flowcharts shown as in the exam.</p>
+      </div>
+      <span class="badge">50 papers · 1,311 question parts</span>
+    </div>
+    <div class="papers two">
+      <a class="paper big" href="igcse.html#p1">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9zM9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg></span><span class="num">Paper 1</span></div>
+        <h3>Computer Systems</h3>
+        <p>How computers represent, send and process data, and the technology built on them.</p>
+        <div class="chips"><span>Data representation</span><span>Data transmission</span><span>Hardware</span><span>Software</span><span>The internet</span><span>Emerging technologies</span></div>
+        <div class="foot"><span class="count"><b>807</b> question parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper big" href="igcse.html#p2">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></span><span class="num">Paper 2</span></div>
+        <h3>Algorithms, Programming &amp; Logic</h3>
+        <p>Design, trace and write algorithms in pseudocode, then query databases and build logic circuits.</p>
+        <div class="chips"><span>Algorithm design</span><span>Programming</span><span>Databases &amp; SQL</span><span>Boolean logic</span></div>
+        <div class="foot"><span class="count"><b>504</b> question parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="course" id="alevel">
+    <div class="course-head">
+      <div>
+        <span class="label">Cambridge International AS &amp; A Level · 9618</span>
+        <h2>AS &amp; A Level Computer Science</h2>
+        <p>All four papers, with timed mock exams for Papers 2 to 4.</p>
+      </div>
+      <span class="badge">4 papers · 1,487 question parts</span>
+    </div>
+    <div class="papers four">
+      <a class="paper" href="paper1.html">
+        <div class="top"><span class="num">Paper 1 · AS</span></div>
+        <h3>Theory Fundamentals</h3>
+        <p>Data representation, networks, hardware, processors, security, databases.</p>
+        <div class="foot"><span class="count"><b>409</b> parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper" href="paper2.html">
+        <div class="top"><span class="num">Paper 2 · AS</span></div>
+        <h3>Problem-solving &amp; Programming</h3>
+        <p>Pseudocode, algorithms, data types, files and testing.</p>
+        <div class="foot"><span class="count"><b>463</b> parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper" href="paper3.html">
+        <div class="top"><span class="num">Paper 3 · A Level</span></div>
+        <h3>Advanced Theory</h3>
+        <p>Floating point, protocols, Boolean algebra, AI, further programming.</p>
+        <div class="foot"><span class="count"><b>373</b> parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper" href="paper4.html">
+        <div class="top"><span class="num">Paper 4 · A Level</span></div>
+        <h3>Practical (Python)</h3>
+        <p>Classes, stacks, queues, linked lists, binary trees, text files.</p>
+        <div class="foot"><span class="count"><b>242</b> parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+    </div>
+  </section>
+
+  <section class="steps" aria-label="How it works">
+    <div class="step"><i>1</i><div><h3>Pick a topic</h3><p>Choose a paper, then a chapter or subtopic you want to work on.</p></div></div>
+    <div class="step"><i>2</i><div><h3>Answer like the exam</h3><p>Write your answer before you look at anything else.</p></div></div>
+    <div class="step"><i>3</i><div><h3>Mark it honestly</h3><p>Tick the mark-scheme points you made. Your progress is saved.</p></div></div>
+  </section>
+  <p class="note">On these pages your progress is saved in this browser. Log in to the app to save it to your account and share it with your teacher.</p>
 </div>
+<!-- nl:footer -->
+<footer class="nl-footer">
+  <div class="nl-footer-in">
+    <div>
+      <a class="nl-brand" href="index.html"><span class="nl-mark"><svg width="22" height="25" viewBox="0 0 1181 1320" aria-hidden="true"><path fill="#623697" d="M444.654 1319.03C307.499 1319 136.818 1316.25 0 1316.25V0C137.501 0 409.134 0.103362 546.635 0.103362C982.062 0.103362 1180.89 293.362 1180.89 658.125C1180.89 900.866 1048.58 1113.22 831.735 1228.12V454.146L444.654 298.523V1319.03Z"/><path fill="#260844" d="M444.654 298.523L444.657 1319.03L0 1316.23L444.654 298.523Z"/></svg></span><span><b>Next Level</b><small>Dombit International School</small></span></a>
+      <p>Cambridge IGCSE (0478) and AS &amp; A Level (9618) Computer Science past-paper practice, checked against the mark scheme point by point.</p>
+    </div>
+    <div>
+      <h4>Practice</h4>
+      <ul>
+        <li><a href="igcse.html#p1">IGCSE Paper 1</a></li><li><a href="igcse.html#p2">IGCSE Paper 2</a></li>
+        <li><a href="paper1.html">A Level Paper 1</a></li><li><a href="paper2.html">A Level Paper 2</a></li><li><a href="paper3.html">A Level Paper 3</a></li><li><a href="paper4.html">A Level Paper 4</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Dombit International School</h4>
+      <ul>
+        <li>81, To‘raqo‘rg‘on street, Namangan, Uzbekistan</li>
+        <li><a href="tel:+998953305509">+998 95 330 55 09</a></li>
+        <li><a href="https://school.dombit.uz" target="_blank" rel="noopener">school.dombit.uz</a></li>
+        <li><a href="https://t.me/dombit_xalqaro_maktabi" target="_blank" rel="noopener">Telegram</a> · <a href="https://www.instagram.com/dombit_international_school/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.youtube.com/@dombit_nextlevel" target="_blank" rel="noopener">YouTube</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="nl-copy">Past-paper questions and mark schemes © Cambridge University Press &amp; Assessment, used for practice.</div>
+</footer>
+<!-- /nl:footer -->
 </body>
 </html>

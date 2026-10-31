@@ -6,6 +6,9 @@ import { ScoreBadge } from '../components/Meter.jsx';
 
 const CODE_TYPES = new Set(['code', 'pseudocode', 'sql', 'trace']);
 
+// Crops of the question's opening text ("stem") or its lettered part are context; the rest show the part itself.
+const isContextFigure = (src) => /-(stem|ctx)-\d+\.jpg$/.test(src);
+
 // Diagrams, tables and flowcharts cropped from the past paper or mark scheme.
 function Figures({ list, alt }) {
   if (!list?.length) return null;
@@ -36,6 +39,8 @@ export default function Question() {
 
 function QuestionView({ data, setData }) {
   const { question: q, prev_id: prevId, next_id: nextId, attempts } = data;
+  const ctxFigs = (q.figures || []).filter(isContextFigure);
+  const partFigs = (q.figures || []).filter((f) => !isContextFigure(f));
   const navigate = useNavigate();
   const [answer, setAnswer] = useState(() => localStorage.getItem(draftKey(q.id)) || '');
   const [phase, setPhase] = useState('answer'); // answer → marking → saved
@@ -105,10 +110,14 @@ function QuestionView({ data, setData }) {
         </div>
       </header>
 
-      {q.context_note && <div className="card context"><Markdown>{q.context_note}</Markdown></div>}
+      {(q.context_note || ctxFigs.length > 0) && (
+        <div className="card context">
+          {ctxFigs.length ? <Figures list={ctxFigs} alt={q.context_note} /> : <Markdown>{q.context_note}</Markdown>}
+        </div>
+      )}
       <div className="card">
-        <Markdown>{q.prompt}</Markdown>
-        <Figures list={q.figures} alt={`Figure for ${q.exam_label} Q${q.label}`} />
+        {/* An image of the whole part already shows the wording, so show only the image (wording kept as alt text). */}
+        {partFigs.length ? <Figures list={partFigs} alt={q.prompt} /> : <Markdown>{q.prompt}</Markdown>}
       </div>
 
       <label className="answer">

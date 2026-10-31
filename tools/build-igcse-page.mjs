@@ -15,32 +15,33 @@ const html = `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>IGCSE Computer Science 0478 Practice · Next Level</title>
-<link rel="icon" type="image/svg+xml" href="public/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root{--accent:#8e00d5;--ink:#1e002b;--ink2:#6f667c;--bg:#f6f0fd;--surface:#fff;--surface2:#f7f2fc;--line:#e6dcf2;
   --soft:#f1e3fb;--ok:#15803d;--ok-soft:#dcf5e5;--warn:#b45309;--warn-soft:#fdf0dc;--bad:#be123c;--bad-soft:#fde4ea;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--accent:#c77dff;--ink:#f3ecfa;--ink2:#b4a8c4;--bg:#12051c;--surface:#26103a;--surface2:#2e1645;
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--accent:#c77dff;--ink:#f3ecfa;--ink2:#b4a8c4;--bg:#12051c;--surface:#26103a;--surface2:#2e1645;
   --line:#3d2656;--soft:#3a1a55;--ok:#4ade80;--ok-soft:#163323;--warn:#fbbf24;--warn-soft:#3a2b10;--bad:#fb7185;--bad-soft:#3d1520;color-scheme:dark}}
+:root[data-theme="dark"]{--accent:#c77dff;--ink:#f3ecfa;--ink2:#b4a8c4;--bg:#12051c;--surface:#26103a;--surface2:#2e1645;
+  --line:#3d2656;--soft:#3a1a55;--ok:#4ade80;--ok-soft:#163323;--warn:#fbbf24;--warn-soft:#3a2b10;--bad:#fb7185;--bad-soft:#3d1520;color-scheme:dark}
 *{box-sizing:border-box}
 body{margin:0;font:16px/1.6 Inter,system-ui,sans-serif;color:var(--ink);
   background:radial-gradient(900px 500px at 8% -10%,color-mix(in srgb,var(--accent) 13%,transparent),transparent 70%),var(--bg);background-attachment:fixed}
 a{color:var(--accent)}button,textarea,select,input{font:inherit;color:inherit}
 code,pre,textarea.code{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace;font-size:.88em;font-variant-ligatures:none}
-.app{max-width:1200px;margin:0 auto;padding:14px 18px 50px}
-.top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;padding:10px 14px;border-radius:22px;
-  background:var(--surface);border:1px solid var(--line);box-shadow:0 12px 34px rgba(98,54,151,.09);position:sticky;top:12px;z-index:5}
-.brand{display:flex;gap:10px;align-items:center;font-weight:800;text-decoration:none;color:var(--ink)}
-.brand small{display:block;font-weight:500;color:var(--ink2);font-size:.75rem}
-.tabs{display:flex;gap:4px;flex-wrap:wrap}
-.tabs a,.tabs button{border:0;background:none;padding:7px 14px;border-radius:999px;font-weight:600;color:var(--ink);text-decoration:none;cursor:pointer}
-.tabs .on{background:var(--accent);color:#fff}
+.app{max-width:1240px;margin:0 auto;padding:0 16px}
+.title{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px;margin-top:22px;padding:24px 26px;border-radius:26px;color:#fff;
+  background:radial-gradient(600px 300px at 10% 0%,rgba(184,61,255,.5),transparent 70%),linear-gradient(150deg,#3b0a63,#1e002b 80%);box-shadow:0 20px 50px rgba(59,10,99,.28)}
+.title small{display:block;text-transform:uppercase;letter-spacing:.09em;font-size:.74rem;font-weight:700;color:rgba(255,255,255,.75)}
+.title h1{margin:4px 0 0;font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-.02em;line-height:1.15}
+.tabs{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+.tabs button{border:0;background:none;padding:8px 16px;border-radius:999px;font-weight:600;color:#fff;cursor:pointer}
+.tabs .on{background:#fff;color:#4a0b7a}
 .layout{display:grid;grid-template-columns:290px 1fr;gap:18px;margin-top:18px;align-items:start}
 @media (max-width:860px){.layout{grid-template-columns:1fr}}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px 20px;box-shadow:0 12px 34px rgba(98,54,151,.07)}
-.rail{display:grid;gap:4px;position:sticky;top:96px;max-height:calc(100vh - 110px);overflow:auto}
+.rail{display:grid;gap:4px;position:sticky;top:100px;max-height:calc(100vh - 116px);overflow:auto}
 .ch{display:grid;gap:4px;text-align:left;border:1px solid transparent;background:none;border-radius:14px;padding:9px 10px;cursor:pointer}
 .ch:hover{background:var(--soft)}.ch.on{background:var(--soft);border-color:var(--accent)}
 .ch b{font-weight:600;font-size:.93rem}.ch span{font-size:.8rem;color:var(--ink2)}
@@ -73,11 +74,10 @@ details summary{cursor:pointer;font-weight:600}
 </head>
 <body>
 <div class="app">
-  <header class="top">
-    <a class="brand" href="index.html"><svg width="30" height="34" viewBox="0 0 1181 1320" aria-hidden="true"><path fill="#623697" d="M444.654 1319.03C307.499 1319 136.818 1316.25 0 1316.25V0C137.501 0 409.134 0.103362 546.635 0.103362C982.062 0.103362 1180.89 293.362 1180.89 658.125C1180.89 900.866 1048.58 1113.22 831.735 1228.12V454.146L444.654 298.523V1319.03Z"/><path fill="#260844" d="M444.654 298.523L444.657 1319.03L0 1316.23L444.654 298.523Z"/></svg>
-      <span>Next Level<small>IGCSE Computer Science 0478</small></span></a>
-    <nav class="tabs" id="tabs"></nav>
-  </header>
+  <section class="title">
+    <div><small>Cambridge IGCSE · 0478</small><h1>IGCSE Computer Science</h1></div>
+    <nav class="tabs" id="tabs" aria-label="Paper"></nav>
+  </section>
   <div class="layout">
     <aside class="card rail" id="rail"></aside>
     <main>
@@ -93,7 +93,7 @@ details summary{cursor:pointer;font-weight:600}
       <div class="card" id="q"></div>
     </main>
   </div>
-  <p class="muted small" style="text-align:center;margin-top:24px">Questions and mark schemes from Cambridge IGCSE Computer Science (0478) past papers, 2023–2026. Progress is saved in this browser.</p>
+  <p class="muted small" style="text-align:center;margin-top:24px">Questions from Cambridge IGCSE Computer Science (0478) past papers, Feb/March 2023 to May/June 2026. Progress is saved in this browser.</p>
 </div>
 <script id="bank" type="application/json">${json}</script>
 <script>
@@ -148,7 +148,6 @@ details summary{cursor:pointer;font-weight:600}
   }
   function renderTabs() {
     document.getElementById("tabs").innerHTML =
-      '<a href="index.html">Home</a>' +
       ["p1", "p2"].map(function (p) {
         return '<button type="button" data-p="' + p + '" class="' + (state.paper === p ? "on" : "") + '">IGCSE Paper ' + p.slice(1) + "</button>";
       }).join("");
@@ -190,9 +189,14 @@ details summary{cursor:pointer;font-weight:600}
       '<span class="pill">' + esc(bank().chapters[it.chapter]) + '</span><span class="pill">' + esc(it.subtopic) + "</span>" +
       '<span class="muted small">' + esc(it.paper_code) + " · Q" + esc(it.q) + "</span>" +
       (l ? ' <span class="pill" style="background:' + (l.awarded >= it.marks ? "var(--ok-soft);color:var(--ok)" : "var(--warn-soft);color:var(--warn)") + '">last: ' + l.awarded + "/" + it.marks + "</span>" : "") + "</div>";
-    if (it.context_note) html += '<div class="ctx md">' + md(it.context_note) + "</div>";
-    html += '<div class="md">' + md(it.prompt) + "</div>";
-    if (it.figures && it.figures.length) html += '<div class="figs">' + it.figures.map(function (f) { return '<img loading="lazy" alt="Figure" src="public/' + f + '">'; }).join("") + "</div>";
+    // Crops of the stem replace the stem text; a crop of the part replaces the part's wording (kept as alt text).
+    var figs = it.figures || [];
+    var ctxF = figs.filter(function (f) { return /-(stem|ctx)-\d+\.jpg$/.test(f); });
+    var partF = figs.filter(function (f) { return ctxF.indexOf(f) < 0; });
+    function imgs(list, alt) { return '<div class="figs">' + list.map(function (f) { return '<img loading="lazy" alt="' + esc(alt || "Figure") + '" src="public/' + f + '">'; }).join("") + "</div>"; }
+    if (ctxF.length) html += '<div class="ctx">' + imgs(ctxF, it.context_note) + "</div>";
+    else if (it.context_note) html += '<div class="ctx md">' + md(it.context_note) + "</div>";
+    html += partF.length ? imgs(partF, it.prompt) : '<div class="md">' + md(it.prompt) + "</div>";
     html += '<textarea id="ans" class="' + (code ? "code" : "") + '" placeholder="Write your answer here" ' + (state.phase !== "answer" ? "readonly" : "") + ">" + esc(store.drafts[it.id] || "") + "</textarea>";
     if (state.phase === "answer") {
       html += '<div class="nav"><button type="button" class="btn primary" id="mark">Mark my answer</button></div>';
@@ -258,6 +262,14 @@ details summary{cursor:pointer;font-weight:600}
   ["sub", "exam", "status"].forEach(function (id) {
     document.getElementById(id).addEventListener("change", function (e) { state[id] = e.target.value; state.idx = 0; state.phase = "answer"; renderAll(); });
   });
+  // The site header links to igcse.html#p1 and #p2; follow those when already on this page.
+  window.addEventListener("hashchange", function () {
+    var p = location.hash.replace("#", "");
+    if ((p === "p1" || p === "p2") && p !== state.paper) {
+      state = { paper: p, chapter: "", sub: "", exam: "", status: "", idx: 0, phase: "answer", ticked: [], awarded: 0 };
+      renderAll();
+    }
+  });
   renderAll();
 })();
 </script>
@@ -267,3 +279,5 @@ details summary{cursor:pointer;font-weight:600}
 
 fs.writeFileSync(path.join(root, 'igcse.html'), html);
 console.log(`igcse.html written: ${banks[0].items.length} + ${banks[1].items.length} question parts`);
+// Add the shared site header and footer.
+await import('./apply-site-header.mjs');

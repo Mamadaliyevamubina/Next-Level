@@ -1,0 +1,108 @@
+/* Shared site header and footer for the static pages, in the Dombit International School style.
+   Everything is prefixed nl- so it never clashes with the paper pages' own styles. */
+:root {
+  --nl-accent: #8e00d5;
+  --nl-ink: #1e002b;
+  --nl-ink2: #6f667c;
+  --nl-surface: rgba(255, 255, 255, .86);
+  --nl-solid: #ffffff;
+  --nl-line: rgba(98, 54, 151, .14);
+  --nl-soft: color-mix(in srgb, #8e00d5 10%, transparent);
+  --nl-shadow: 0 12px 34px rgba(98, 54, 151, .10), 0 2px 6px rgba(98, 54, 151, .05);
+}
+:root[data-theme="dark"] {
+  --nl-accent: #c77dff; --nl-ink: #f3ecfa; --nl-ink2: #b4a8c4; --nl-surface: rgba(38, 16, 58, .82); --nl-solid: #26103a;
+  --nl-line: rgba(214, 180, 255, .16); --nl-soft: rgba(199, 125, 255, .14); --nl-shadow: 0 12px 34px rgba(0, 0, 0, .35);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --nl-accent: #c77dff; --nl-ink: #f3ecfa; --nl-ink2: #b4a8c4; --nl-surface: rgba(38, 16, 58, .82); --nl-solid: #26103a;
+    --nl-line: rgba(214, 180, 255, .16); --nl-soft: rgba(199, 125, 255, .14); --nl-shadow: 0 12px 34px rgba(0, 0, 0, .35);
+  }
+}
+
+.nl-header {
+  position: sticky; top: 12px; z-index: 50; max-width: 1240px; margin: 12px auto 0; padding: 0 16px;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.4;
+}
+.nl-bar {
+  display: flex; align-items: center; gap: 14px; padding: 9px 12px 9px 14px; border-radius: 22px;
+  background: var(--nl-surface); border: 1px solid var(--nl-line); box-shadow: var(--nl-shadow);
+  backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4); color: var(--nl-ink);
+}
+.nl-brand { display: inline-flex; align-items: center; gap: 10px; color: var(--nl-ink); text-decoration: none; flex: none; }
+.nl-brand:hover { text-decoration: none; }
+.nl-mark { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: color-mix(in srgb, #623697 14%, var(--nl-solid)); }
+.nl-brand b { display: block; font-size: 1.05rem; font-weight: 800; letter-spacing: -.01em; }
+.nl-brand small { display: block; font-size: .74rem; color: var(--nl-ink2); font-weight: 500; }
+.nl-nav { display: flex; align-items: center; gap: 2px; margin: 0 auto; }
+.nl-nav > a, .nl-drop > button {
+  display: inline-flex; align-items: center; gap: 4px; padding: 8px 13px; border-radius: 999px; border: 0; background: none;
+  color: var(--nl-ink); font: inherit; font-weight: 500; text-decoration: none; cursor: pointer; position: relative;
+}
+.nl-nav > a:hover, .nl-drop > button:hover, .nl-drop:focus-within > button { background: var(--nl-soft); text-decoration: none; }
+.nl-nav [aria-current="page"], .nl-drop.nl-here > button { color: var(--nl-accent); font-weight: 600; }
+.nl-nav [aria-current="page"]::after, .nl-drop.nl-here > button::after {
+  content: ""; position: absolute; left: 13px; right: 13px; bottom: 3px; height: 2px; border-radius: 2px; background: var(--nl-accent);
+}
+.nl-drop { position: relative; }
+.nl-drop > button svg { transition: transform .2s; }
+.nl-menu {
+  position: absolute; top: calc(100% + 8px); left: 0; min-width: 270px; padding: 8px; display: none;
+  background: var(--nl-solid); border: 1px solid var(--nl-line); border-radius: 18px; box-shadow: var(--nl-shadow);
+}
+.nl-drop:hover .nl-menu, .nl-drop:focus-within .nl-menu, .nl-drop.nl-open .nl-menu { display: grid; }
+.nl-drop:hover > button svg, .nl-drop.nl-open > button svg { transform: rotate(180deg); }
+.nl-menu a { display: grid; padding: 9px 12px; border-radius: 12px; color: var(--nl-ink); text-decoration: none; }
+.nl-menu a:hover, .nl-menu a[aria-current="page"] { background: var(--nl-soft); text-decoration: none; }
+.nl-menu a b { font-weight: 600; }
+.nl-menu a span { font-size: .8rem; color: var(--nl-ink2); }
+.nl-actions { display: flex; align-items: center; gap: 8px; flex: none; }
+.nl-icon {
+  width: 40px; height: 40px; border-radius: 12px; border: 0; background: none; color: var(--nl-ink);
+  display: grid; place-items: center; cursor: pointer;
+}
+.nl-icon:hover { background: var(--nl-soft); }
+.nl-login {
+  display: inline-flex; align-items: center; gap: 6px; padding: 9px 18px; border-radius: 999px; font-weight: 600;
+  background: var(--nl-accent); color: #fff; text-decoration: none; box-shadow: 0 8px 20px color-mix(in srgb, var(--nl-accent) 32%, transparent);
+}
+:root[data-theme="dark"] .nl-login { color: #1e002b; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .nl-login { color: #1e002b; } }
+.nl-login:hover { filter: brightness(1.07); text-decoration: none; }
+.nl-burger { display: none; }
+.nl-header a:focus-visible, .nl-header button:focus-visible { outline: 3px solid color-mix(in srgb, var(--nl-accent) 45%, transparent); outline-offset: 2px; }
+
+@media (max-width: 980px) {
+  .nl-burger { display: grid; }
+  .nl-nav {
+    display: none; position: absolute; top: calc(100% + 8px); left: 16px; right: 16px; flex-direction: column; align-items: stretch;
+    padding: 8px; background: var(--nl-solid); border: 1px solid var(--nl-line); border-radius: 18px; box-shadow: var(--nl-shadow);
+  }
+  .nl-header.nl-nav-open .nl-nav { display: flex; }
+  .nl-nav [aria-current="page"]::after, .nl-drop.nl-here > button::after { display: none; }
+  .nl-drop > button { width: 100%; justify-content: space-between; }
+  .nl-menu { position: static; display: grid; box-shadow: none; border: 0; padding: 0 0 4px 10px; min-width: 0; }
+  .nl-drop > button svg { display: none; }
+  .nl-actions { margin-left: auto; }
+}
+@media (max-width: 520px) { .nl-brand small { display: none; } .nl-login span { display: none; } .nl-login { padding: 9px 12px; } }
+
+/* Footer */
+.nl-footer {
+  margin-top: 56px; color: #e9ddf6; font-family: "Inter", system-ui, sans-serif; font-size: 14px; line-height: 1.6;
+  background: radial-gradient(700px 300px at 10% 0%, rgba(184, 61, 255, .35), transparent 70%), linear-gradient(160deg, #2a0745, #14001f);
+}
+.nl-footer-in { max-width: 1240px; margin: 0 auto; padding: 40px 28px 26px; display: grid; gap: 28px; grid-template-columns: 1.4fr 1fr 1fr; }
+@media (max-width: 760px) { .nl-footer-in { grid-template-columns: 1fr; } }
+.nl-footer h4 { margin: 0 0 10px; color: #fff; font-size: .82rem; text-transform: uppercase; letter-spacing: .08em; }
+.nl-footer a { color: #e9ddf6; text-decoration: none; }
+.nl-footer a:hover { color: #fff; text-decoration: underline; }
+.nl-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.nl-footer .nl-brand { color: #fff; }
+.nl-footer .nl-brand small { color: #cdb6e6; }
+.nl-footer .nl-mark { background: rgba(255, 255, 255, .1); }
+.nl-footer p { margin: 12px 0 0; color: #cdb6e6; max-width: 46ch; }
+.nl-copy { border-top: 1px solid rgba(255, 255, 255, .1); max-width: 1240px; margin: 0 auto; padding: 14px 28px 22px; color: #b7a1cf; font-size: 12.5px; }
+
+@media (prefers-reduced-motion: reduce) { .nl-header *, .nl-footer * { transition: none !important; } }
