@@ -1,5 +1,9 @@
 const TOKEN_KEY = 'nl-token';
 
+// Where the backend lives. Empty means the same origin (the Vite dev proxy, or /api forwarded by the host).
+// Set VITE_API_URL at build time, e.g. https://api.example.org, when the API is on another domain.
+const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const setToken = (token) => (token ? localStorage.setItem(TOKEN_KEY, token) : localStorage.removeItem(TOKEN_KEY));
 
@@ -19,7 +23,7 @@ export async function api(path, { method = 'GET', body } = {}) {
 
   let res;
   try {
-    res = await fetch(`/api${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
+    res = await fetch(`${API_URL}/api${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
   } catch {
     throw new ApiError('Cannot reach the server. Is it running?', 0);
   }
