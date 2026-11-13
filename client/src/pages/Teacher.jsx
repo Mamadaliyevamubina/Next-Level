@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../api.js';
-import { useAuth } from '../auth.jsx';
+import { isAdmin, useAuth } from '../auth.jsx';
 import Icon from '../components/Icon.jsx';
 import Meter from '../components/Meter.jsx';
 import { initials } from '../components/Layout.jsx';
@@ -59,7 +59,7 @@ export default function Teacher() {
   const earned = approved.reduce((t, s) => t + s.earned, 0);
   const available = approved.reduce((t, s) => t + s.available, 0);
   const classes = [...new Set(students.map((s) => s.class_name))].sort();
-  const subjects = user.role === 'admin' ? 'All subjects (administrator)' : (user.teaches.map((t) => t.name).join(', ') || 'No subject assigned yet');
+  const subjects = isAdmin(user) ? 'All subjects (administrator)' : (user.teaches.map((t) => t.name).join(', ') || 'No subject assigned yet');
 
   return (
     <div className="stack-lg">
@@ -148,7 +148,7 @@ export default function Teacher() {
               <thead>
                 <tr>
                   <th>Student</th><th>Class</th><th>Answered</th><th>Score</th>
-                  {paperCols.map((p) => <th key={p.number} title={p.label}>{p.label.replace('IGCSE Paper ', 'IG').replace('Paper ', 'P')}</th>)}<th>Last 7 days</th><th>Last active</th><th />
+                  {paperCols.map((p) => <th key={p.number} title={p.label}>{p.label.replace('IGCSE Paper ', 'IG').replace('A Level Chemistry Paper ', 'ACh').replace('Chemistry Paper ', 'Ch').replace('Paper ', 'P')}</th>)}<th>Last 7 days</th><th>Last active</th><th />
                 </tr>
               </thead>
               <tbody>
@@ -157,7 +157,7 @@ export default function Teacher() {
                     <td>
                       <Link to={`/teacher/student/${s.id}`} className="who-cell">
                         <span className="avatar sm">{initials(s.name)}</span>
-                        <span><b>{s.name}</b><br /><span className="muted small">@{s.username}{user.role === 'admin' && s.teacher_name ? ` · ${s.teacher_name}` : ''}</span></span>
+                        <span><b>{s.name}</b><br /><span className="muted small">@{s.username}{isAdmin(user) && s.teacher_name ? ` · ${s.teacher_name}` : ''}</span></span>
                       </Link>
                     </td>
                     <td>{s.class_name}</td>

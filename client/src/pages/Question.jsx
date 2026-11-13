@@ -3,14 +3,15 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { api } from '../api.js';
 import Markdown from '../components/Markdown.jsx';
 import { ScoreBadge } from '../components/Meter.jsx';
+import ExaminerReport from '../components/ExaminerReport.jsx';
 
-const CODE_TYPES = new Set(['code', 'pseudocode', 'sql', 'trace']);
+export const CODE_TYPES = new Set(['code', 'pseudocode', 'sql', 'trace']);
 
 // Crops of the question's opening text ("stem") or its lettered part are context; the rest show the part itself.
-const isContextFigure = (src) => /-(stem|ctx)-\d+\.jpg$/.test(src);
+export const isContextFigure = (src) => /-(stem|ctx)-\d+\.jpg$/.test(src);
 
 // Diagrams, tables and flowcharts cropped from the past paper or mark scheme.
-function Figures({ list, alt }) {
+export function Figures({ list, alt }) {
   if (!list?.length) return null;
   return (
     <div className="figures">
@@ -38,7 +39,7 @@ export default function Question() {
 }
 
 function QuestionView({ data, setData }) {
-  const { question: q, prev_id: prevId, next_id: nextId, attempts } = data;
+  const { question: q, prev_id: prevId, next_id: nextId, attempts, examiner } = data;
   const ctxFigs = (q.figures || []).filter(isContextFigure);
   const partFigs = (q.figures || []).filter((f) => !isContextFigure(f));
   const navigate = useNavigate();
@@ -94,7 +95,7 @@ function QuestionView({ data, setData }) {
   };
 
   return (
-    <article className="question">
+    <article className={`question${examiner && phase !== 'answer' ? ' wide' : ''}`}>
       <nav className="crumbs small">
         <Link to={`/paper/${q.paper}`}>{q.paper_label}</Link> ›{' '}
         <Link to={`/paper/${q.paper}?chapter=${q.chapter}`}>{q.chapter_name}</Link> › {q.subtopic}
@@ -135,11 +136,15 @@ function QuestionView({ data, setData }) {
       {phase === 'answer' && (
         <div className="row">
           <button type="button" className="primary" onClick={() => setPhase('marking')}>Mark my answer</button>
-          <span className="muted small">You will tick the mark-scheme points your answer covers.</span>
+          <span className="muted small">
+            You will tick the mark-scheme points your answer covers.
+            {examiner && ' The examiner report for this question opens next to the mark scheme.'}
+          </span>
         </div>
       )}
 
       {phase !== 'answer' && (
+        <div className={examiner ? 'marking-grid' : undefined}>
         <section className="card scheme">
           <h2>Mark scheme</h2>
           <p className="muted small">Tick each point your answer clearly makes.{q.max_note && ` ${q.max_note}.`}</p>
@@ -188,6 +193,8 @@ function QuestionView({ data, setData }) {
             </div>
           )}
         </section>
+        <ExaminerReport report={examiner} label={q.label} />
+        </div>
       )}
 
       {attempts.length > 0 && (

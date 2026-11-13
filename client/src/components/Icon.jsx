@@ -25,6 +25,15 @@ const PATHS = {
   trash: 'M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6',
   search: 'M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16ZM21 21l-4.3-4.3',
   code: 'm16 18 6-6-6-6M8 6l-6 6 6 6',
+  cpu: 'M6 6h12v12H6zM9 9h6v6H9zM9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4',
+  flask: 'M10 2v7.3L4.5 19A2 2 0 0 0 6.2 22h11.6a2 2 0 0 0 1.7-3L14 9.3V2M8.5 2h7M7 16h10',
+  beaker: 'M14.5 2v17.5a2.5 2.5 0 0 1-5 0V2M8.5 2h7M14.5 16h-5',
+  list: 'M9 11l3 3 8-8M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9',
+  layers: 'm12 2 10 5-10 5L2 7l10-5ZM2 17l10 5 10-5M2 12l10 5 10-5',
+  terminal: 'm4 17 6-6-6-6M12 19h8',
+  chevron: 'm6 9 6 6 6-6',
+  menu: 'M4 6h16M4 12h16M4 18h16',
+  home: 'm3 10 9-7 9 7v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V10ZM9 22V12h6v10',
 };
 
 export default function Icon({ name, size = 18, className = '' }) {

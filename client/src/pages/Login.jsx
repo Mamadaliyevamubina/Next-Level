@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import { DMark } from '../components/Logo.jsx';
 import Icon from '../components/Icon.jsx';
 
-// Split layout like the school's portal login: big brand mark on one side, form card on the other,
-// with an A Level Computer Science twist on the brand panel.
-export default function Login() {
-  const [mode, setMode] = useState('login');
+// Split layout like the school's portal login: big brand mark on one side, form card on the other.
+// /login and /signup share this page; ?next=… is kept when switching so the visitor ends up where they wanted.
+export default function Login({ mode = 'login' }) {
+  const navigate = useNavigate();
+  const { search } = useLocation();
+  const go = (path) => navigate(path + search);
   return (
     <div className="auth-page">
       <section className="auth-brand" aria-hidden="true">
@@ -15,18 +18,89 @@ export default function Login() {
           <DMark size={190} className="auth-mark" />
           <div className="auth-chips">
             <span className="chip code">IF score &gt;= 70 THEN</span>
+            <span className="chip">2H₂ + O₂ → 2H₂O</span>
             <span className="chip code">01001110 01001100</span>
-            <span className="chip code">SELECT * FROM Student</span>
-            <span className="chip">Paper 1 · 2 · 3 · 4</span>
+            <span className="chip">0478 · 0620 · 9618 · 9701</span>
           </div>
           <p className="eyebrow light">Dombit International School</p>
-          <h2>Next Level for A Level</h2>
-          <p>Cambridge AS &amp; A Level Computer Science (9618) practice, marked against real mark schemes, with your teacher by your side.</p>
+          <h2>Next Level for IGCSE and A Level</h2>
+          <p>Cambridge past-paper practice for A Level Computer Science (9618), A Level Chemistry (9701), IGCSE Computer Science (0478) and IGCSE Chemistry (0620), marked against the real mark schemes, with your teacher by your side.</p>
         </div>
       </section>
       <section className="auth-form-side">
-        {mode === 'login' ? <LoginForm onSwitch={() => setMode('register')} /> : <RegisterForm onSwitch={() => setMode('login')} />}
+        <Link to="/" className="auth-home"><Icon name="home" size={16} /> Home</Link>
+        <AuthForms mode={mode} go={go} />
       </section>
+    </div>
+  );
+}
+
+// Shows the first-run setup form while the site has no admin yet; otherwise the login or sign-up form.
+function AuthForms({ mode, go }) {
+  const [setup, setSetup] = useState(null); // null = checking, true = no admin yet, false = normal
+  const [problem, setProblem] = useState('');
+
+  const check = () => {
+    setProblem('');
+    api('/auth/setup')
+      .then((d) => setSetup(d.needsSetup))
+      .catch((e) => { setSetup(false); setProblem(e.message); });
+  };
+  useEffect(check, []);
+
+  if (setup === null) return <p className="muted">Loading…</p>;
+  return (
+    <>
+      {problem && (
+        <div className="auth-box" style={{ marginBottom: 16 }}>
+          <p className="error">{problem}</p>
+          <button type="button" className="link" onClick={check}>Try again</button>
+        </div>
+      )}
+      {setup ? <SetupForm />
+        : mode === 'login' ? <LoginForm onSwitch={() => go('/signup')} />
+          : <RegisterForm onSwitch={() => go('/login')} />}
+    </>
+  );
+}
+
+// First run: nobody can log in yet, so the person installing the site creates the first super admin here.
+function SetupForm() {
+  const { signIn } = useAuth();
+  const [f, setF] = useState({ name: '', username: '', email: '', password: '', confirm: '' });
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
+
+  const submit = async (e) => {
+    e.preventDefault();
+    if (f.password !== f.confirm) return setError('The two passwords do not match.');
+    setBusy(true);
+    setError('');
+    try {
+      await signIn('setup', { name: f.name, username: f.username, email: f.email, password: f.password });
+    } catch (err) {
+      setError(err.message);
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="auth-box">
+      <h1 className="auth-title">Set up Next Level</h1>
+      <p className="muted auth-sub">There are no accounts yet. Create the super admin account: it can add admins, teachers and students.</p>
+      <form className="auth-card" onSubmit={submit}>
+        <label>Full name<input value={f.name} onChange={set('name')} autoComplete="name" autoFocus required /></label>
+        <label>
+          Login name
+          <input value={f.username} onChange={set('username')} placeholder="e.g. mubina" autoComplete="username" pattern="[A-Za-z0-9._\-]{3,30}" title="3–30 letters, numbers, dots, dashes or underscores" required />
+        </label>
+        <label><span>Email <span className="label-note">(optional)</span></span><input type="email" value={f.email} onChange={set('email')} autoComplete="email" /></label>
+        <label>Password<PasswordInput value={f.password} onChange={set('password')} placeholder="At least 8 characters" autoComplete="new-password" /></label>
+        <label>Confirm password<PasswordInput value={f.confirm} onChange={set('confirm')} placeholder="Type it again" autoComplete="new-password" /></label>
+        {error && <p className="error">{error}</p>}
+        <button className="btn primary block" disabled={busy}>{busy ? 'Creating…' : 'Create super admin and log in'}</button>
+      </form>
     </div>
   );
 }
@@ -66,7 +140,7 @@ function LoginForm({ onSwitch }) {
     <div className="auth-box">
       <DMark size={44} className="auth-mark-small" />
       <h1 className="auth-title">Welcome back!</h1>
-      <p className="muted auth-sub">Log in to continue your A Level practice.</p>
+      <p className="muted auth-sub">Log in to continue your practice.</p>
       <form className="auth-card" onSubmit={submit}>
         <label>
           Login name

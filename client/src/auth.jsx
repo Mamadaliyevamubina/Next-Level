@@ -8,6 +8,8 @@ const AuthContext = createContext(null);
 export function AuthProvider({ children }) {
   const [user, setUserState] = useState(null);
   const [loading, setLoading] = useState(Boolean(getToken()));
+  // True after the user pressed "Log out" (not when a session expires), so they land on the home page.
+  const [signedOut, setSignedOut] = useState(false);
   const userRef = useRef(null);
   userRef.current = user;
 
@@ -16,7 +18,8 @@ export function AuthProvider({ children }) {
     if (next) applyAppearance(next.settings);
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback((manual = false) => {
+    setSignedOut(manual === true);
     clearPapers();
     setToken(null);
     setUserState(null);
@@ -46,12 +49,13 @@ export function AuthProvider({ children }) {
   const signIn = async (mode, fields) => {
     const d = await api(`/auth/${mode}`, { method: 'POST', body: fields });
     clearPapers();
+    setSignedOut(false);
     setToken(d.token);
     setUser(d.user);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signIn, logout, refresh, setUser }}>
+    <AuthContext.Provider value={{ user, loading, signedOut, signIn, logout, refresh, setUser }}>
       {children}
     </AuthContext.Provider>
   );
@@ -59,4 +63,7 @@ export function AuthProvider({ children }) {
 
 export const useAuth = () => useContext(AuthContext);
 
-export const isTeacher = (user) => user?.role === 'teacher' || user?.role === 'admin';
+// Roles: student, teacher, admin, super_admin. Admins and super admins can also do everything a teacher can.
+export const isAdmin = (user) => user?.role === 'admin' || user?.role === 'super_admin';
+export const isTeacher = (user) => user?.role === 'teacher' || isAdmin(user);
+export const isStudent = (user) => user?.role === 'student';

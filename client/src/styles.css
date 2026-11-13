@@ -407,3 +407,42 @@ pre.past { white-space: pre-wrap; background: var(--surface2); border: 1px solid
 .figures { display: grid; gap: 10px; margin-top: 14px; }
 .figures img { width: 100%; max-width: 760px; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 6px; }
 code, pre, .mono, textarea.mono { font-variant-ligatures: none; }
+
+/* Let the paper list shrink to the window instead of overflowing it. */
+.split > * { min-width: 0; }
+.qlist > li, .qrow, .qrow > * { min-width: 0; }
+.preview, .qrow h3, .qrow h2 { overflow-wrap: anywhere; }
+
+/* Examiner report next to the mark scheme (two columns on wide screens). */
+.question.wide { max-width: 1180px; }
+.marking-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: var(--gap); align-items: start; }
+@media (max-width: 960px) { .marking-grid { grid-template-columns: 1fr; } }
+.examiner { display: grid; gap: 10px; border-left: 4px solid var(--accent); position: sticky; top: 100px; max-height: calc(100vh - 120px); overflow: auto; }
+@media (max-width: 960px) { .examiner { position: static; max-height: none; } }
+.examiner h2 { margin: 0; }
+.examiner p { margin: 0 0 6px; line-height: 1.55; }
+.examiner ul { margin: 4px 0 6px; padding-left: 20px; }
+.examiner-comment { background: var(--accent-soft); border-radius: 14px; padding: 12px 14px; }
+.examiner-label { font-size: .78rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--accent); }
+.examiner-more { border-top: 1px solid var(--line); padding-top: 8px; font-size: .93rem; }
+.examiner-more summary { margin-bottom: 6px; }
+
+/* App menu bar: labels never break inside ("Paper 1"); "Papers" opens a panel under the header listing every paper by subject. */
+.topnav a { white-space: nowrap; }
+.papers-btn { display: inline-flex; align-items: center; gap: 4px; white-space: nowrap; border: 0 !important; background: none !important;
+  padding: 7px 13px !important; border-radius: 999px !important; color: var(--ink); font-weight: 500; font-size: .93rem; }
+.papers-btn:hover, .papers-btn.open { background: var(--accent-soft) !important; }
+.papers-btn.active { color: var(--accent); font-weight: 600; }
+.papers-btn .icon { transition: transform .2s; }
+.papers-btn.open .icon { transform: rotate(180deg); }
+.papers-panel {
+  position: absolute; top: calc(100% + 8px); left: 0; right: 0; z-index: 40; padding: 10px; display: grid; gap: 6px 10px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); max-height: calc(100vh - 120px); overflow-y: auto;
+  background: var(--surface-solid); border: 1px solid var(--line); border-radius: 18px; box-shadow: var(--shadow);
+}
+.papers-group { display: grid; align-content: start; }
+.papers-group-title { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; color: var(--accent); padding: 6px 12px 2px; }
+.papers-group a { display: grid; padding: 7px 12px; border-radius: 12px; color: var(--ink); }
+.papers-group a:hover { background: var(--accent-soft); text-decoration: none; }
+.papers-group a b { font-weight: 600; font-size: .93rem; }
+.papers-group a span { font-size: .8rem; color: var(--ink2); }

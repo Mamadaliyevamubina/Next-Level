@@ -5,6 +5,7 @@ import { AuthProvider } from './auth.jsx';
 import { applyAppearance, savedAppearance } from './theme.js';
 import App from './App.jsx';
 import './styles.css';
+import './site.css';
 
 applyAppearance(savedAppearance());
 

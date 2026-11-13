@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from './api.js';
 
-// The papers this account can use (A Level 9618 or IGCSE 0478), fetched once and shared.
+// The papers this account can use (A Level 9618, IGCSE 0478 or IGCSE Chemistry 0620), fetched once and shared.
 let cache = null;
 let pending = null;
 

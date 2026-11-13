@@ -4,6 +4,8 @@ const TOKEN_KEY = 'nl-token';
 // Set VITE_API_URL at build time, e.g. https://api.example.org, when the API is on another domain.
 const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 
+const SERVER_DOWN = 'Cannot reach the server. Start the backend: run "npm run dev" in the next-level-backend folder.';
+
 export const getToken = () => localStorage.getItem(TOKEN_KEY);
 export const setToken = (token) => (token ? localStorage.setItem(TOKEN_KEY, token) : localStorage.removeItem(TOKEN_KEY));
 
@@ -25,14 +27,16 @@ export async function api(path, { method = 'GET', body } = {}) {
   try {
     res = await fetch(`${API_URL}/api${path}`, { method, headers, body: body === undefined ? undefined : JSON.stringify(body) });
   } catch {
-    throw new ApiError('Cannot reach the server. Is it running?', 0);
+    throw new ApiError(SERVER_DOWN, 0);
   }
-  const data = await res.json().catch(() => ({}));
+  const data = await res.json().catch(() => null);
+  // No JSON from a failed request means the backend never answered (the dev proxy reports that as 500/502/504).
+  if (data === null && !res.ok) throw new ApiError(res.status >= 500 ? SERVER_DOWN : `Request failed (${res.status})`, res.status);
   if (!res.ok) {
     // A 401 means the session is gone; a "pending" 403 means a teacher has not approved (or re-approved) the account.
     if (res.status === 401 && token) window.dispatchEvent(new Event('nl-logout'));
     if (res.status === 403 && data.code === 'pending') window.dispatchEvent(new Event('nl-refresh'));
     throw new ApiError(data.error || `Request failed (${res.status})`, res.status);
   }
-  return data;
+  return data ?? {};
 }

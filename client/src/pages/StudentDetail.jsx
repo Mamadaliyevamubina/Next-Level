@@ -22,7 +22,7 @@ export default function StudentDetail() {
   if (error) return <p className="error">{error}</p>;
   if (!data) return <p className="muted">Loading…</p>;
 
-  const { student: s, totals: t, papers, chapters, weakest, recent, streak, activity } = data;
+  const { student: s, totals: t, papers, chapters, weakest, recent, streak, activity, assignments = [] } = data;
   const maxDay = Math.max(1, ...activity.map((d) => d.attempts));
 
   return (
@@ -100,6 +100,25 @@ export default function StudentDetail() {
             </div>
           ))}
         </div>
+      </section>
+
+      <section className="card">
+        <h2>Assignments</h2>
+        {assignments.length === 0 ? <p className="muted">No assignments given to this student yet.</p> : (
+          <ul className="plain">
+            {assignments.map((a) => (
+              <li key={a.id}>
+                <Link to={`/teacher/assignments/${a.id}`} className="rail-item">
+                  <Meter earned={a.earned} available={a.answered ? a.marks : 0} label={a.title} />
+                  <span className="muted small">
+                    {a.answered} / {a.questions} answered · {a.earned} / {a.marks} marks · {a.submitted_at ? `handed in ${new Date(a.submitted_at).toLocaleDateString()}` : 'not handed in'}
+                    {a.due_at ? ` · due ${new Date(a.due_at).toLocaleDateString()}` : ''}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
 
       <section className="card">
