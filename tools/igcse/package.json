@@ -2,7 +2,7 @@
   "name": "igcse-bank-tools",
   "private": true,
   "type": "module",
-  "description": "Turns IGCSE 0478 past papers and mark schemes (PDF) into data/igcse-paper1-2.json and public/figures/igcse.",
+  "description": "Turns IGCSE 0478 and 0620 past papers and mark schemes (PDF) into data/*.json and public/figures/.",
   "dependencies": {
     "pdfjs-dist": "^4.10.38",
     "puppeteer-core": "^24.0.0"

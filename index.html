@@ -88,6 +88,7 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
 .papers{display:grid;gap:18px}
 .papers.two{grid-template-columns:repeat(2,1fr)}
 .papers.four{grid-template-columns:repeat(4,1fr)}
+.papers.three{grid-template-columns:repeat(3,1fr)}
 .paper{position:relative;display:flex;flex-direction:column;gap:8px;padding:24px;border-radius:26px;background:var(--surface);border:1px solid var(--line);
   color:inherit;text-decoration:none;box-shadow:var(--shadow);transition:transform .2s,border-color .2s,box-shadow .2s;overflow:hidden}
 .paper::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;pointer-events:none;
@@ -117,9 +118,9 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
 .step p{margin:0;color:var(--ink2);font-size:.9rem;line-height:1.5}
 .note{margin-top:18px;color:var(--ink2);font-size:.88rem;text-align:center}
 
-@media (max-width:1040px){.papers.four{grid-template-columns:repeat(2,1fr)}.features{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:1040px){.papers.four,.papers.three{grid-template-columns:repeat(2,1fr)}.features{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:860px){.hero{grid-template-columns:1fr}.code-card{transform:none}.steps{grid-template-columns:1fr}}
-@media (max-width:640px){.papers.two,.papers.four,.features{grid-template-columns:1fr}}
+@media (max-width:640px){.papers.two,.papers.three,.papers.four,.features{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <!-- nl:head -->
@@ -135,13 +136,13 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
     <a class="nl-brand" href="index.html"><span class="nl-mark"><svg width="22" height="25" viewBox="0 0 1181 1320" aria-hidden="true"><path fill="#623697" d="M444.654 1319.03C307.499 1319 136.818 1316.25 0 1316.25V0C137.501 0 409.134 0.103362 546.635 0.103362C982.062 0.103362 1180.89 293.362 1180.89 658.125C1180.89 900.866 1048.58 1113.22 831.735 1228.12V454.146L444.654 298.523V1319.03Z"/><path fill="#260844" d="M444.654 298.523L444.657 1319.03L0 1316.23L444.654 298.523Z"/></svg></span><span><b>Next Level</b><small>Dombit International School</small></span></a>
     <nav class="nl-nav" aria-label="Main">
       <a href="index.html" aria-current="page">Home</a>
-      <div class="nl-drop"><button type="button" aria-haspopup="true" aria-expanded="false">IGCSE <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="nl-menu"><a href="igcse.html#p1"><b>IGCSE Paper 1</b><span>Computer Systems</span></a><a href="igcse.html#p2"><b>IGCSE Paper 2</b><span>Algorithms, Programming and Logic</span></a></div></div>
-      <div class="nl-drop"><button type="button" aria-haspopup="true" aria-expanded="false">A Level <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="nl-menu"><a href="paper1.html"><b>Paper 1</b><span>Theory Fundamentals</span></a><a href="paper2.html"><b>Paper 2</b><span>Problem-solving and Programming</span></a><a href="paper3.html"><b>Paper 3</b><span>Advanced Theory</span></a><a href="paper4.html"><b>Paper 4</b><span>Practical (Python)</span></a></div></div>
+      <div class="nl-drop"><button type="button" aria-haspopup="true" aria-expanded="false">IGCSE <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="nl-menu"><a href="igcse.html#p1"><b>IGCSE Paper 1</b><span>Computer Systems</span></a><a href="igcse.html#p2"><b>IGCSE Paper 2</b><span>Algorithms, Programming and Logic</span></a><a href="chemistry.html#p1"><b>Chemistry Paper 1</b><span>Multiple Choice (Core)</span></a><a href="chemistry.html#p2"><b>Chemistry Paper 2</b><span>Multiple Choice (Extended)</span></a><a href="chemistry.html#p3"><b>Chemistry Paper 3</b><span>Theory (Core)</span></a><a href="chemistry.html#p4"><b>Chemistry Paper 4</b><span>Theory (Extended)</span></a><a href="chemistry.html#p5"><b>Chemistry Paper 5</b><span>Practical Test</span></a><a href="chemistry.html#p6"><b>Chemistry Paper 6</b><span>Alternative to Practical</span></a></div></div>
+      <div class="nl-drop"><button type="button" aria-haspopup="true" aria-expanded="false">A Level <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="nl-menu"><a href="paper1.html"><b>Paper 1</b><span>Theory Fundamentals</span></a><a href="paper2.html"><b>Paper 2</b><span>Problem-solving and Programming</span></a><a href="paper3.html"><b>Paper 3</b><span>Advanced Theory</span></a><a href="paper4.html"><b>Paper 4</b><span>Practical (Python)</span></a><a href="chemistry-alevel.html#p1"><b>Chemistry Paper 1</b><span>Multiple Choice (AS)</span></a><a href="chemistry-alevel.html#p2"><b>Chemistry Paper 2</b><span>AS Level Structured Questions</span></a><a href="chemistry-alevel.html#p3"><b>Chemistry Paper 3</b><span>Advanced Practical Skills</span></a><a href="chemistry-alevel.html#p4"><b>Chemistry Paper 4</b><span>A Level Structured Questions</span></a><a href="chemistry-alevel.html#p5"><b>Chemistry Paper 5</b><span>Planning, Analysis and Evaluation</span></a></div></div>
       <a href="https://school.dombit.uz" target="_blank" rel="noopener">School website</a>
     </nav>
     <div class="nl-actions">
       <button type="button" class="nl-icon" data-nl-theme aria-label="Switch theme"></button>
-      <a class="nl-login" data-nl-app href="http://localhost:5173/"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Log in</span></a>
+      <a class="nl-login" data-nl-app href="http://localhost:5173/login"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Log in</span></a>
       <button type="button" class="nl-icon nl-burger" data-nl-burger aria-label="Menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
     </div>
   </div>
@@ -150,17 +151,18 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
 <div class="wrap">
   <section class="hero">
     <div>
-      <span class="eyebrow">Dombit International School · Computer Science</span>
+      <span class="eyebrow">Dombit International School · IGCSE &amp; A Level</span>
       <h1>Practise smarter.<br><span>Reach the next level.</span></h1>
-      <p>Every Cambridge IGCSE and A Level Computer Science past-paper question, sorted by topic and checked against the official mark scheme point by point.</p>
+      <p>Cambridge IGCSE and A Level Computer Science and Chemistry past-paper questions, sorted by topic and checked against the official mark scheme point by point.</p>
       <div class="cta">
         <a class="btn light" href="igcse.html#p1">Start IGCSE
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a class="btn ghost" href="chemistry.html#p1">Start Chemistry</a>
         <a class="btn ghost" href="paper1.html">Start A Level</a>
       </div>
       <div class="facts">
-        <div><b>2,798</b><span>question parts</span></div>
-        <div><b>6</b><span>papers, 2 courses</span></div>
+        <div><b>12,884</b><span>question parts</span></div>
+        <div><b>17</b><span>papers, 4 courses</span></div>
         <div><b>2021–2026</b><span>past papers</span></div>
       </div>
     </div>
@@ -225,6 +227,61 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
     </div>
   </section>
 
+  <section class="course" id="chemistry">
+    <div class="course-head">
+      <div>
+        <span class="label">Cambridge IGCSE · 0620</span>
+        <h2>IGCSE Chemistry</h2>
+        <p>Core and Extended papers from Feb/March 2023 to May/June 2026, with every diagram, table and structure shown as in the exam.</p>
+      </div>
+      <span class="badge">147 papers · 5,563 question parts</span>
+    </div>
+    <div class="papers three">
+      <a class="paper big" href="chemistry.html#p1">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span><span class="num">Paper 1 · Core</span></div>
+        <h3>Multiple Choice (Core)</h3>
+        <p>Forty Core questions a paper, each answered A, B, C or D.</p>
+        <div class="chips"><span>States of matter</span><span>Bonding</span><span>Acids &amp; salts</span><span>Metals</span></div>
+        <div class="foot"><span class="count"><b>1,000</b> questions</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper big" href="chemistry.html#p2">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span><span class="num">Paper 2 · Extended</span></div>
+        <h3>Multiple Choice (Extended)</h3>
+        <p>Forty questions a paper across the whole syllabus, each answered A, B, C or D.</p>
+        <div class="chips"><span>Stoichiometry</span><span>Periodic Table</span><span>Organic</span></div>
+        <div class="foot"><span class="count"><b>1,000</b> questions</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper big" href="chemistry.html#p3">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.31L4.5 19A2 2 0 0 0 6.24 22h11.52a2 2 0 0 0 1.74-3L14 9.31V2"/><path d="M8.5 2h7M7 16h10"/></svg></span><span class="num">Paper 3 · Core</span></div>
+        <h3>Theory (Core)</h3>
+        <p>Structured Core questions on the whole syllabus.</p>
+        <div class="chips"><span>Periodic Table</span><span>Metals</span><span>Organic</span></div>
+        <div class="foot"><span class="count"><b>1,376</b> question parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper big" href="chemistry.html#p4">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.31L4.5 19A2 2 0 0 0 6.24 22h11.52a2 2 0 0 0 1.74-3L14 9.31V2"/><path d="M8.5 2h7M7 16h10"/></svg></span><span class="num">Paper 4 · Extended</span></div>
+        <h3>Theory (Extended)</h3>
+        <p>Equations, mole calculations, electrolysis, energetics and organic chemistry.</p>
+        <div class="chips"><span>Electrochemistry</span><span>Energetics</span><span>Organic</span></div>
+        <div class="foot"><span class="count"><b>1,235</b> question parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper big" href="chemistry.html#p5">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2v17.5a2.5 2.5 0 0 1-5 0V2M8.5 2h7M14.5 16h-5"/></svg></span><span class="num">Paper 5</span></div>
+        <h3>Practical Test</h3>
+        <p>Experiments, observations, tests for ions and gases.</p>
+        <div class="chips"><span>Experimental techniques</span><span>Rates</span><span>Energetics</span></div>
+        <div class="foot"><span class="count"><b>410</b> question parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper big" href="chemistry.html#p6">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2v17.5a2.5 2.5 0 0 1-5 0V2M8.5 2h7M14.5 16h-5"/></svg></span><span class="num">Paper 6</span></div>
+        <h3>Alternative to Practical</h3>
+        <p>Apparatus, readings, tests for ions and gases, titrations and planning.</p>
+        <div class="chips"><span>Apparatus</span><span>Tests for ions</span><span>Titrations</span></div>
+        <div class="foot"><span class="count"><b>542</b> question parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+    </div>
+  </section>
+
   <section class="course" id="alevel">
     <div class="course-head">
       <div>
@@ -262,6 +319,54 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
     </div>
   </section>
 
+  <section class="course" id="alevel-chemistry">
+    <div class="course-head">
+      <div>
+        <span class="label">Cambridge International AS &amp; A Level · 9701</span>
+        <h2>AS &amp; A Level Chemistry</h2>
+        <p>All five papers from Feb/March 2023 to May/June 2026: multiple choice, structured questions, practical skills and planning.</p>
+      </div>
+      <span class="badge">132 papers · 4,523 question parts</span>
+    </div>
+    <div class="papers three">
+      <a class="paper big" href="chemistry-alevel.html#p1">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg></span><span class="num">Paper 1 · AS</span></div>
+        <h3>Multiple Choice</h3>
+        <p>Forty AS questions a paper on physical, inorganic and organic chemistry.</p>
+        <div class="chips"><span>Atomic structure</span><span>Bonding</span><span>Equilibria</span><span>Organic</span></div>
+        <div class="foot"><span class="count"><b>999</b> questions</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper big" href="chemistry-alevel.html#p2">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 2v7.31L4.5 19A2 2 0 0 0 6.24 22h11.52a2 2 0 0 0 1.74-3L14 9.31V2"/><path d="M8.5 2h7M7 16h10"/></svg></span><span class="num">Paper 2 · AS</span></div>
+        <h3>AS Structured Questions</h3>
+        <p>Atomic structure, energetics, Period 3, Group 2 and 17, and AS organic chemistry.</p>
+        <div class="chips"><span>Atomic structure</span><span>Periodicity</span><span>Organic</span></div>
+        <div class="foot"><span class="count"><b>933</b> question parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper big" href="chemistry-alevel.html#p3">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 2v17.5a2.5 2.5 0 0 1-5 0V2M8.5 2h7M14.5 16h-5"/></svg></span><span class="num">Paper 3 · AS</span></div>
+        <h3>Advanced Practical Skills</h3>
+        <p>Titrations, enthalpy experiments and qualitative analysis.</p>
+        <div class="chips"><span>Titrations</span><span>Enthalpy</span><span>Analysis</span></div>
+        <div class="foot"><span class="count"><b>615</b> question parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper big" href="chemistry-alevel.html#p4">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2 10 5-10 5L2 7l10-5ZM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span><span class="num">Paper 4 · A Level</span></div>
+        <h3>A Level Structured Questions</h3>
+        <p>Lattice energy, electrochemistry, kinetics, transition elements, arenes and NMR.</p>
+        <div class="chips"><span>Transition elements</span><span>Kinetics</span><span>NMR</span></div>
+        <div class="foot"><span class="count"><b>1,425</b> question parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+      <a class="paper big" href="chemistry-alevel.html#p5">
+        <div class="top"><span class="tile"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18M7 15l4-4 3 3 6-6"/></svg></span><span class="num">Paper 5 · A Level</span></div>
+        <h3>Planning, Analysis and Evaluation</h3>
+        <p>Plan experiments, process data and evaluate results.</p>
+        <div class="chips"><span>Planning</span><span>Data analysis</span><span>Errors</span></div>
+        <div class="foot"><span class="count"><b>551</b> question parts</span><span class="go">Practise <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+      </a>
+    </div>
+  </section>
+
   <section class="steps" aria-label="How it works">
     <div class="step"><i>1</i><div><h3>Pick a topic</h3><p>Choose a paper, then a chapter or subtopic you want to work on.</p></div></div>
     <div class="step"><i>2</i><div><h3>Answer like the exam</h3><p>Write your answer before you look at anything else.</p></div></div>
@@ -274,13 +379,13 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
   <div class="nl-footer-in">
     <div>
       <a class="nl-brand" href="index.html"><span class="nl-mark"><svg width="22" height="25" viewBox="0 0 1181 1320" aria-hidden="true"><path fill="#623697" d="M444.654 1319.03C307.499 1319 136.818 1316.25 0 1316.25V0C137.501 0 409.134 0.103362 546.635 0.103362C982.062 0.103362 1180.89 293.362 1180.89 658.125C1180.89 900.866 1048.58 1113.22 831.735 1228.12V454.146L444.654 298.523V1319.03Z"/><path fill="#260844" d="M444.654 298.523L444.657 1319.03L0 1316.23L444.654 298.523Z"/></svg></span><span><b>Next Level</b><small>Dombit International School</small></span></a>
-      <p>Cambridge IGCSE (0478) and AS &amp; A Level (9618) Computer Science past-paper practice, checked against the mark scheme point by point.</p>
+      <p>Cambridge IGCSE Computer Science (0478) and Chemistry (0620), and AS &amp; A Level Computer Science (9618) and Chemistry (9701) past-paper practice, checked against the mark scheme point by point.</p>
     </div>
     <div>
       <h4>Practice</h4>
       <ul>
-        <li><a href="igcse.html#p1">IGCSE Paper 1</a></li><li><a href="igcse.html#p2">IGCSE Paper 2</a></li>
-        <li><a href="paper1.html">A Level Paper 1</a></li><li><a href="paper2.html">A Level Paper 2</a></li><li><a href="paper3.html">A Level Paper 3</a></li><li><a href="paper4.html">A Level Paper 4</a></li>
+        <li><a href="igcse.html#p1">IGCSE Paper 1</a></li><li><a href="igcse.html#p2">IGCSE Paper 2</a></li><li><a href="chemistry.html#p1">Chemistry Paper 1</a></li><li><a href="chemistry.html#p2">Chemistry Paper 2</a></li><li><a href="chemistry.html#p3">Chemistry Paper 3</a></li><li><a href="chemistry.html#p4">Chemistry Paper 4</a></li><li><a href="chemistry.html#p5">Chemistry Paper 5</a></li><li><a href="chemistry.html#p6">Chemistry Paper 6</a></li>
+        <li><a href="paper1.html">A Level Paper 1</a></li><li><a href="paper2.html">A Level Paper 2</a></li><li><a href="paper3.html">A Level Paper 3</a></li><li><a href="paper4.html">A Level Paper 4</a></li><li><a href="chemistry-alevel.html#p1">A Level Chemistry Paper 1</a></li><li><a href="chemistry-alevel.html#p2">A Level Chemistry Paper 2</a></li><li><a href="chemistry-alevel.html#p3">A Level Chemistry Paper 3</a></li><li><a href="chemistry-alevel.html#p4">A Level Chemistry Paper 4</a></li><li><a href="chemistry-alevel.html#p5">A Level Chemistry Paper 5</a></li>
       </ul>
     </div>
     <div>

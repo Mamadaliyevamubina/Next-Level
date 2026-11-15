@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
 import authRoutes from './routes/auth.js';
+import catalogRoutes from './routes/catalog.js';
 import accountRoutes from './routes/account.js';
 import teacherRoutes from './routes/teacher.js';
 import practiceRoutes from './routes/practice.js';
@@ -20,6 +21,7 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+app.use('/api/catalog', catalogRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/account', accountRoutes);
 app.use('/api/teacher', teacherRoutes);

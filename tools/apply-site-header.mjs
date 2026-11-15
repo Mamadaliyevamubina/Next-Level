@@ -1,4 +1,4 @@
-// Puts the shared Dombit-style header and footer into every static page (index, igcse, paper1-4).
+// Puts the shared Dombit-style header and footer into every static page (index, igcse, chemistry, paper1-4).
 // Safe to run again: it replaces whatever sits between the <!-- nl:... --> markers.
 // Run from the project root: node tools/apply-site-header.mjs
 import fs from 'node:fs';
@@ -15,12 +15,23 @@ const USER = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke
 const IGCSE = [
   ['igcse.html#p1', 'IGCSE Paper 1', 'Computer Systems'],
   ['igcse.html#p2', 'IGCSE Paper 2', 'Algorithms, Programming and Logic'],
+  ['chemistry.html#p1', 'Chemistry Paper 1', 'Multiple Choice (Core)'],
+  ['chemistry.html#p2', 'Chemistry Paper 2', 'Multiple Choice (Extended)'],
+  ['chemistry.html#p3', 'Chemistry Paper 3', 'Theory (Core)'],
+  ['chemistry.html#p4', 'Chemistry Paper 4', 'Theory (Extended)'],
+  ['chemistry.html#p5', 'Chemistry Paper 5', 'Practical Test'],
+  ['chemistry.html#p6', 'Chemistry Paper 6', 'Alternative to Practical'],
 ];
 const ALEVEL = [
   ['paper1.html', 'Paper 1', 'Theory Fundamentals'],
   ['paper2.html', 'Paper 2', 'Problem-solving and Programming'],
   ['paper3.html', 'Paper 3', 'Advanced Theory'],
   ['paper4.html', 'Paper 4', 'Practical (Python)'],
+  ['chemistry-alevel.html#p1', 'Chemistry Paper 1', 'Multiple Choice (AS)'],
+  ['chemistry-alevel.html#p2', 'Chemistry Paper 2', 'AS Level Structured Questions'],
+  ['chemistry-alevel.html#p3', 'Chemistry Paper 3', 'Advanced Practical Skills'],
+  ['chemistry-alevel.html#p4', 'Chemistry Paper 4', 'A Level Structured Questions'],
+  ['chemistry-alevel.html#p5', 'Chemistry Paper 5', 'Planning, Analysis and Evaluation'],
 ];
 
 function header(page) {
@@ -41,7 +52,7 @@ function header(page) {
     </nav>
     <div class="nl-actions">
       <button type="button" class="nl-icon" data-nl-theme aria-label="Switch theme"></button>
-      <a class="nl-login" data-nl-app href="http://localhost:5173/">${USER}<span>Log in</span></a>
+      <a class="nl-login" data-nl-app href="http://localhost:5173/login">${USER}<span>Log in</span></a>
       <button type="button" class="nl-icon nl-burger" data-nl-burger aria-label="Menu" aria-expanded="false">${MENU}</button>
     </div>
   </div>
@@ -52,7 +63,7 @@ const FOOTER = `<footer class="nl-footer">
   <div class="nl-footer-in">
     <div>
       <a class="nl-brand" href="index.html"><span class="nl-mark">${MARK}</span><span><b>Next Level</b><small>Dombit International School</small></span></a>
-      <p>Cambridge IGCSE (0478) and AS &amp; A Level (9618) Computer Science past-paper practice, checked against the mark scheme point by point.</p>
+      <p>Cambridge IGCSE Computer Science (0478) and Chemistry (0620), and AS &amp; A Level Computer Science (9618) and Chemistry (9701) past-paper practice, checked against the mark scheme point by point.</p>
     </div>
     <div>
       <h4>Practice</h4>
@@ -85,7 +96,7 @@ function between(html, name, content, insertAt) {
   return insertAt(html, block);
 }
 
-const pages = ['index.html', 'igcse.html', 'paper1.html', 'paper2.html', 'paper3.html', 'paper4.html'];
+const pages = ['index.html', 'igcse.html', 'chemistry.html', 'chemistry-alevel.html', 'paper1.html', 'paper2.html', 'paper3.html', 'paper4.html'];
 for (const page of pages) {
   const file = path.join(root, page);
   if (!fs.existsSync(file)) continue;

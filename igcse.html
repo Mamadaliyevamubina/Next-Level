@@ -24,10 +24,11 @@ code,pre,textarea.code{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace
   background:radial-gradient(600px 300px at 10% 0%,rgba(184,61,255,.5),transparent 70%),linear-gradient(150deg,#3b0a63,#1e002b 80%);box-shadow:0 20px 50px rgba(59,10,99,.28)}
 .title small{display:block;text-transform:uppercase;letter-spacing:.09em;font-size:.74rem;font-weight:700;color:rgba(255,255,255,.75)}
 .title h1{margin:4px 0 0;font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-.02em;line-height:1.15}
-.tabs{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:22px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
 .tabs button{border:0;background:none;padding:8px 16px;border-radius:999px;font-weight:600;color:#fff;cursor:pointer}
 .tabs .on{background:#fff;color:#4a0b7a}
 .layout{display:grid;grid-template-columns:290px 1fr;gap:18px;margin-top:18px;align-items:start}
+.layout>*{min-width:0}.ch b{overflow-wrap:anywhere}
 @media (max-width:860px){.layout{grid-template-columns:1fr}}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px 20px;box-shadow:0 12px 34px rgba(98,54,151,.07)}
 .rail{display:grid;gap:4px;position:sticky;top:100px;max-height:calc(100vh - 116px);overflow:auto}
@@ -36,7 +37,7 @@ code,pre,textarea.code{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace
 .ch b{font-weight:600;font-size:.93rem}.ch span{font-size:.8rem;color:var(--ink2)}
 .bar{height:7px;border-radius:9px;background:var(--soft);overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
-.tools select{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 10px}
+.tools select{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 10px;max-width:100%;min-width:0}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 16px;font-weight:600;cursor:pointer}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 30%,transparent)}
 .btn:disabled{opacity:.5;cursor:default}
@@ -73,13 +74,13 @@ details summary{cursor:pointer;font-weight:600}
     <a class="nl-brand" href="index.html"><span class="nl-mark"><svg width="22" height="25" viewBox="0 0 1181 1320" aria-hidden="true"><path fill="#623697" d="M444.654 1319.03C307.499 1319 136.818 1316.25 0 1316.25V0C137.501 0 409.134 0.103362 546.635 0.103362C982.062 0.103362 1180.89 293.362 1180.89 658.125C1180.89 900.866 1048.58 1113.22 831.735 1228.12V454.146L444.654 298.523V1319.03Z"/><path fill="#260844" d="M444.654 298.523L444.657 1319.03L0 1316.23L444.654 298.523Z"/></svg></span><span><b>Next Level</b><small>Dombit International School</small></span></a>
     <nav class="nl-nav" aria-label="Main">
       <a href="index.html">Home</a>
-      <div class="nl-drop nl-here"><button type="button" aria-haspopup="true" aria-expanded="false">IGCSE <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="nl-menu"><a href="igcse.html#p1" aria-current="page"><b>IGCSE Paper 1</b><span>Computer Systems</span></a><a href="igcse.html#p2" aria-current="page"><b>IGCSE Paper 2</b><span>Algorithms, Programming and Logic</span></a></div></div>
-      <div class="nl-drop"><button type="button" aria-haspopup="true" aria-expanded="false">A Level <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="nl-menu"><a href="paper1.html"><b>Paper 1</b><span>Theory Fundamentals</span></a><a href="paper2.html"><b>Paper 2</b><span>Problem-solving and Programming</span></a><a href="paper3.html"><b>Paper 3</b><span>Advanced Theory</span></a><a href="paper4.html"><b>Paper 4</b><span>Practical (Python)</span></a></div></div>
+      <div class="nl-drop nl-here"><button type="button" aria-haspopup="true" aria-expanded="false">IGCSE <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="nl-menu"><a href="igcse.html#p1" aria-current="page"><b>IGCSE Paper 1</b><span>Computer Systems</span></a><a href="igcse.html#p2" aria-current="page"><b>IGCSE Paper 2</b><span>Algorithms, Programming and Logic</span></a><a href="chemistry.html#p1"><b>Chemistry Paper 1</b><span>Multiple Choice (Core)</span></a><a href="chemistry.html#p2"><b>Chemistry Paper 2</b><span>Multiple Choice (Extended)</span></a><a href="chemistry.html#p3"><b>Chemistry Paper 3</b><span>Theory (Core)</span></a><a href="chemistry.html#p4"><b>Chemistry Paper 4</b><span>Theory (Extended)</span></a><a href="chemistry.html#p5"><b>Chemistry Paper 5</b><span>Practical Test</span></a><a href="chemistry.html#p6"><b>Chemistry Paper 6</b><span>Alternative to Practical</span></a></div></div>
+      <div class="nl-drop"><button type="button" aria-haspopup="true" aria-expanded="false">A Level <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="nl-menu"><a href="paper1.html"><b>Paper 1</b><span>Theory Fundamentals</span></a><a href="paper2.html"><b>Paper 2</b><span>Problem-solving and Programming</span></a><a href="paper3.html"><b>Paper 3</b><span>Advanced Theory</span></a><a href="paper4.html"><b>Paper 4</b><span>Practical (Python)</span></a><a href="chemistry-alevel.html#p1"><b>Chemistry Paper 1</b><span>Multiple Choice (AS)</span></a><a href="chemistry-alevel.html#p2"><b>Chemistry Paper 2</b><span>AS Level Structured Questions</span></a><a href="chemistry-alevel.html#p3"><b>Chemistry Paper 3</b><span>Advanced Practical Skills</span></a><a href="chemistry-alevel.html#p4"><b>Chemistry Paper 4</b><span>A Level Structured Questions</span></a><a href="chemistry-alevel.html#p5"><b>Chemistry Paper 5</b><span>Planning, Analysis and Evaluation</span></a></div></div>
       <a href="https://school.dombit.uz" target="_blank" rel="noopener">School website</a>
     </nav>
     <div class="nl-actions">
       <button type="button" class="nl-icon" data-nl-theme aria-label="Switch theme"></button>
-      <a class="nl-login" data-nl-app href="http://localhost:5173/"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Log in</span></a>
+      <a class="nl-login" data-nl-app href="http://localhost:5173/login"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"/></svg><span>Log in</span></a>
       <button type="button" class="nl-icon nl-burger" data-nl-burger aria-label="Menu" aria-expanded="false"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
     </div>
   </div>
@@ -113,12 +114,13 @@ details summary{cursor:pointer;font-weight:600}
   "use strict";
   var DATA = JSON.parse(document.getElementById("bank").textContent);
   var KEY = "igcse0478-v1";
+  var KEYS = ["p1","p2"], TITLES = {"p1":"Paper 1 · Computer Systems","p2":"Paper 2 · Algorithms, Programming and Logic"};
   var store = JSON.parse(localStorage.getItem(KEY) || "{}");
   store.attempts = store.attempts || {};
   store.drafts = store.drafts || {};
-  var state = { paper: "p1", chapter: "", sub: "", exam: "", status: "", idx: 0, phase: "answer", ticked: [], awarded: 0 };
+  var state = { paper: KEYS[0], chapter: "", sub: "", exam: "", status: "", idx: 0, phase: "answer", ticked: [], awarded: 0 };
   var h = location.hash.replace("#", "");
-  if (h === "p2") state.paper = "p2";
+  if (KEYS.indexOf(h) >= 0) state.paper = h;
 
   function save() { localStorage.setItem(KEY, JSON.stringify(store)); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
@@ -160,13 +162,13 @@ details summary{cursor:pointer;font-weight:600}
   }
   function renderTabs() {
     document.getElementById("tabs").innerHTML =
-      ["p1", "p2"].map(function (p) {
+      KEYS.map(function (p) {
         return '<button type="button" data-p="' + p + '" class="' + (state.paper === p ? "on" : "") + '">IGCSE Paper ' + p.slice(1) + "</button>";
       }).join("");
   }
   function renderRail() {
     var b = bank(), all = progress(b.items);
-    var html = "<h3 style='margin:0 0 4px'>" + (state.paper === "p1" ? "Paper 1 · Computer Systems" : "Paper 2 · Algorithms, Programming and Logic") + "</h3>";
+    var html = "<h3 style='margin:0 0 4px'>" + TITLES[state.paper] + "</h3>";
     function row(key, label, items) {
       var p = progress(items), pct = p.m ? Math.round(p.e / p.m * 100) : 0;
       return '<button type="button" class="ch ' + (state.chapter === key ? "on" : "") + '" data-ch="' + key + '"><b>' + esc(label) + "</b>" +
@@ -274,10 +276,10 @@ details summary{cursor:pointer;font-weight:600}
   ["sub", "exam", "status"].forEach(function (id) {
     document.getElementById(id).addEventListener("change", function (e) { state[id] = e.target.value; state.idx = 0; state.phase = "answer"; renderAll(); });
   });
-  // The site header links to igcse.html#p1 and #p2; follow those when already on this page.
+  // The site header links to a paper with #p1, #p2 …; follow those when already on this page.
   window.addEventListener("hashchange", function () {
     var p = location.hash.replace("#", "");
-    if ((p === "p1" || p === "p2") && p !== state.paper) {
+    if (KEYS.indexOf(p) >= 0 && p !== state.paper) {
       state = { paper: p, chapter: "", sub: "", exam: "", status: "", idx: 0, phase: "answer", ticked: [], awarded: 0 };
       renderAll();
     }
@@ -290,13 +292,13 @@ details summary{cursor:pointer;font-weight:600}
   <div class="nl-footer-in">
     <div>
       <a class="nl-brand" href="index.html"><span class="nl-mark"><svg width="22" height="25" viewBox="0 0 1181 1320" aria-hidden="true"><path fill="#623697" d="M444.654 1319.03C307.499 1319 136.818 1316.25 0 1316.25V0C137.501 0 409.134 0.103362 546.635 0.103362C982.062 0.103362 1180.89 293.362 1180.89 658.125C1180.89 900.866 1048.58 1113.22 831.735 1228.12V454.146L444.654 298.523V1319.03Z"/><path fill="#260844" d="M444.654 298.523L444.657 1319.03L0 1316.23L444.654 298.523Z"/></svg></span><span><b>Next Level</b><small>Dombit International School</small></span></a>
-      <p>Cambridge IGCSE (0478) and AS &amp; A Level (9618) Computer Science past-paper practice, checked against the mark scheme point by point.</p>
+      <p>Cambridge IGCSE Computer Science (0478) and Chemistry (0620), and AS &amp; A Level Computer Science (9618) and Chemistry (9701) past-paper practice, checked against the mark scheme point by point.</p>
     </div>
     <div>
       <h4>Practice</h4>
       <ul>
-        <li><a href="igcse.html#p1">IGCSE Paper 1</a></li><li><a href="igcse.html#p2">IGCSE Paper 2</a></li>
-        <li><a href="paper1.html">A Level Paper 1</a></li><li><a href="paper2.html">A Level Paper 2</a></li><li><a href="paper3.html">A Level Paper 3</a></li><li><a href="paper4.html">A Level Paper 4</a></li>
+        <li><a href="igcse.html#p1">IGCSE Paper 1</a></li><li><a href="igcse.html#p2">IGCSE Paper 2</a></li><li><a href="chemistry.html#p1">Chemistry Paper 1</a></li><li><a href="chemistry.html#p2">Chemistry Paper 2</a></li><li><a href="chemistry.html#p3">Chemistry Paper 3</a></li><li><a href="chemistry.html#p4">Chemistry Paper 4</a></li><li><a href="chemistry.html#p5">Chemistry Paper 5</a></li><li><a href="chemistry.html#p6">Chemistry Paper 6</a></li>
+        <li><a href="paper1.html">A Level Paper 1</a></li><li><a href="paper2.html">A Level Paper 2</a></li><li><a href="paper3.html">A Level Paper 3</a></li><li><a href="paper4.html">A Level Paper 4</a></li><li><a href="chemistry-alevel.html#p1">A Level Chemistry Paper 1</a></li><li><a href="chemistry-alevel.html#p2">A Level Chemistry Paper 2</a></li><li><a href="chemistry-alevel.html#p3">A Level Chemistry Paper 3</a></li><li><a href="chemistry-alevel.html#p4">A Level Chemistry Paper 4</a></li><li><a href="chemistry-alevel.html#p5">A Level Chemistry Paper 5</a></li>
       </ul>
     </div>
     <div>

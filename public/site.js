@@ -3,7 +3,7 @@
 (function () {
   "use strict";
   // Address of the React app (student login). Change this when the app is hosted somewhere else.
-  var APP_URL = "http://localhost:5173/";
+  var APP_URL = "http://localhost:5173/login";
   var KEY = "nl-static-theme";
 
   var saved = null;

@@ -1,20 +1,76 @@
-// Builds igcse.html, the static IGCSE 0478 practice page, from data/igcse-paper1.json and data/igcse-paper2.json.
+// Builds the static IGCSE practice pages:
+//   igcse.html      Computer Science 0478, from data/igcse-paper1.json and data/igcse-paper2.json
+//   chemistry.html          IGCSE Chemistry 0620, from data/chemistry-paper1.json … -paper6.json
+//   chemistry-alevel.html   AS & A Level Chemistry 9701, from data/chemistry-alevel-paper1.json … -paper5.json
 // Run from the project root: node tools/build-igcse-page.mjs
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const banks = [1, 2].map((n) => JSON.parse(fs.readFileSync(path.join(root, `data/igcse-paper${n}.json`), 'utf8')));
-// "</" inside JSON would end the <script> tag early.
-const json = JSON.stringify({ p1: banks[0], p2: banks[1] }).replace(/<\//g, '<\\/');
 
-const html = `<!doctype html>
+const COURSES = [
+  {
+    file: 'igcse.html',
+    storeKey: 'igcse0478-v1',
+    pageTitle: 'IGCSE Computer Science 0478 Practice · Next Level',
+    eyebrow: 'Cambridge IGCSE · 0478',
+    heading: 'IGCSE Computer Science',
+    tabPrefix: 'IGCSE Paper ',
+    footnote: 'Questions from Cambridge IGCSE Computer Science (0478) past papers, Feb/March 2023 to May/June 2026.',
+    papers: [
+      { key: 'p1', source: 'data/igcse-paper1.json', title: 'Paper 1 · Computer Systems' },
+      { key: 'p2', source: 'data/igcse-paper2.json', title: 'Paper 2 · Algorithms, Programming and Logic' },
+    ],
+  },
+  {
+    file: 'chemistry.html',
+    storeKey: 'igcse0620-v1',
+    pageTitle: 'IGCSE Chemistry 0620 Practice · Next Level',
+    eyebrow: 'Cambridge IGCSE · 0620',
+    heading: 'IGCSE Chemistry',
+    tabPrefix: 'Paper ',
+    footnote: 'Questions from Cambridge IGCSE Chemistry (0620) past papers, Feb/March 2023 to May/June 2026: Core Papers 1, 3 and 5 and Extended Papers 2, 4 and 6.',
+    papers: [
+      { key: 'p1', source: 'data/chemistry-paper1.json', title: 'Paper 1 · Multiple Choice (Core)' },
+      { key: 'p2', source: 'data/chemistry-paper2.json', title: 'Paper 2 · Multiple Choice (Extended)' },
+      { key: 'p3', source: 'data/chemistry-paper3.json', title: 'Paper 3 · Theory (Core)' },
+      { key: 'p4', source: 'data/chemistry-paper4.json', title: 'Paper 4 · Theory (Extended)' },
+      { key: 'p5', source: 'data/chemistry-paper5.json', title: 'Paper 5 · Practical Test' },
+      { key: 'p6', source: 'data/chemistry-paper6.json', title: 'Paper 6 · Alternative to Practical' },
+    ],
+  },
+  {
+    file: 'chemistry-alevel.html',
+    storeKey: 'alevel9701-v1',
+    pageTitle: 'AS & A Level Chemistry 9701 Practice · Next Level',
+    eyebrow: 'Cambridge International AS & A Level · 9701',
+    heading: 'AS & A Level Chemistry',
+    tabPrefix: 'Paper ',
+    footnote: 'Questions from Cambridge International AS & A Level Chemistry (9701) past papers, Feb/March 2023 to May/June 2026.',
+    papers: [
+      { key: 'p1', source: 'data/chemistry-alevel-paper1.json', title: 'Paper 1 · Multiple Choice (AS)' },
+      { key: 'p2', source: 'data/chemistry-alevel-paper2.json', title: 'Paper 2 · AS Level Structured Questions' },
+      { key: 'p3', source: 'data/chemistry-alevel-paper3.json', title: 'Paper 3 · Advanced Practical Skills' },
+      { key: 'p4', source: 'data/chemistry-alevel-paper4.json', title: 'Paper 4 · A Level Structured Questions' },
+      { key: 'p5', source: 'data/chemistry-alevel-paper5.json', title: 'Paper 5 · Planning, Analysis and Evaluation' },
+    ],
+  },
+];
+
+function page(course) {
+const data = Object.fromEntries(course.papers.map((p) => [p.key, JSON.parse(fs.readFileSync(path.join(root, p.source), 'utf8'))]));
+// "</" inside JSON would end the <script> tag early.
+const json = JSON.stringify(data).replace(/<\//g, '<\\/');
+const keys = JSON.stringify(course.papers.map((p) => p.key));
+const titles = JSON.stringify(Object.fromEntries(course.papers.map((p) => [p.key, p.title])));
+
+return `<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>IGCSE Computer Science 0478 Practice · Next Level</title>
+<title>${course.pageTitle}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -35,10 +91,11 @@ code,pre,textarea.code{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace
   background:radial-gradient(600px 300px at 10% 0%,rgba(184,61,255,.5),transparent 70%),linear-gradient(150deg,#3b0a63,#1e002b 80%);box-shadow:0 20px 50px rgba(59,10,99,.28)}
 .title small{display:block;text-transform:uppercase;letter-spacing:.09em;font-size:.74rem;font-weight:700;color:rgba(255,255,255,.75)}
 .title h1{margin:4px 0 0;font-size:clamp(1.5rem,3vw,2rem);letter-spacing:-.02em;line-height:1.15}
-.tabs{display:flex;gap:4px;padding:4px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;padding:4px;border-radius:22px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
 .tabs button{border:0;background:none;padding:8px 16px;border-radius:999px;font-weight:600;color:#fff;cursor:pointer}
 .tabs .on{background:#fff;color:#4a0b7a}
 .layout{display:grid;grid-template-columns:290px 1fr;gap:18px;margin-top:18px;align-items:start}
+.layout>*{min-width:0}.ch b{overflow-wrap:anywhere}
 @media (max-width:860px){.layout{grid-template-columns:1fr}}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:18px 20px;box-shadow:0 12px 34px rgba(98,54,151,.07)}
 .rail{display:grid;gap:4px;position:sticky;top:100px;max-height:calc(100vh - 116px);overflow:auto}
@@ -47,7 +104,7 @@ code,pre,textarea.code{font-family:"JetBrains Mono",ui-monospace,Menlo,monospace
 .ch b{font-weight:600;font-size:.93rem}.ch span{font-size:.8rem;color:var(--ink2)}
 .bar{height:7px;border-radius:9px;background:var(--soft);overflow:hidden}.bar i{display:block;height:100%;background:var(--accent)}
 .tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
-.tools select{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 10px}
+.tools select{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 10px;max-width:100%;min-width:0}
 .btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 16px;font-weight:600;cursor:pointer}
 .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;box-shadow:0 8px 20px color-mix(in srgb,var(--accent) 30%,transparent)}
 .btn:disabled{opacity:.5;cursor:default}
@@ -75,7 +132,7 @@ details summary{cursor:pointer;font-weight:600}
 <body>
 <div class="app">
   <section class="title">
-    <div><small>Cambridge IGCSE · 0478</small><h1>IGCSE Computer Science</h1></div>
+    <div><small>${course.eyebrow}</small><h1>${course.heading}</h1></div>
     <nav class="tabs" id="tabs" aria-label="Paper"></nav>
   </section>
   <div class="layout">
@@ -93,20 +150,21 @@ details summary{cursor:pointer;font-weight:600}
       <div class="card" id="q"></div>
     </main>
   </div>
-  <p class="muted small" style="text-align:center;margin-top:24px">Questions from Cambridge IGCSE Computer Science (0478) past papers, Feb/March 2023 to May/June 2026. Progress is saved in this browser.</p>
+  <p class="muted small" style="text-align:center;margin-top:24px">${course.footnote} Progress is saved in this browser.</p>
 </div>
 <script id="bank" type="application/json">${json}</script>
 <script>
 (function () {
   "use strict";
   var DATA = JSON.parse(document.getElementById("bank").textContent);
-  var KEY = "igcse0478-v1";
+  var KEY = "${course.storeKey}";
+  var KEYS = ${keys}, TITLES = ${titles};
   var store = JSON.parse(localStorage.getItem(KEY) || "{}");
   store.attempts = store.attempts || {};
   store.drafts = store.drafts || {};
-  var state = { paper: "p1", chapter: "", sub: "", exam: "", status: "", idx: 0, phase: "answer", ticked: [], awarded: 0 };
+  var state = { paper: KEYS[0], chapter: "", sub: "", exam: "", status: "", idx: 0, phase: "answer", ticked: [], awarded: 0 };
   var h = location.hash.replace("#", "");
-  if (h === "p2") state.paper = "p2";
+  if (KEYS.indexOf(h) >= 0) state.paper = h;
 
   function save() { localStorage.setItem(KEY, JSON.stringify(store)); }
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
@@ -148,13 +206,13 @@ details summary{cursor:pointer;font-weight:600}
   }
   function renderTabs() {
     document.getElementById("tabs").innerHTML =
-      ["p1", "p2"].map(function (p) {
-        return '<button type="button" data-p="' + p + '" class="' + (state.paper === p ? "on" : "") + '">IGCSE Paper ' + p.slice(1) + "</button>";
+      KEYS.map(function (p) {
+        return '<button type="button" data-p="' + p + '" class="' + (state.paper === p ? "on" : "") + '">${course.tabPrefix}' + p.slice(1) + "</button>";
       }).join("");
   }
   function renderRail() {
     var b = bank(), all = progress(b.items);
-    var html = "<h3 style='margin:0 0 4px'>" + (state.paper === "p1" ? "Paper 1 · Computer Systems" : "Paper 2 · Algorithms, Programming and Logic") + "</h3>";
+    var html = "<h3 style='margin:0 0 4px'>" + TITLES[state.paper] + "</h3>";
     function row(key, label, items) {
       var p = progress(items), pct = p.m ? Math.round(p.e / p.m * 100) : 0;
       return '<button type="button" class="ch ' + (state.chapter === key ? "on" : "") + '" data-ch="' + key + '"><b>' + esc(label) + "</b>" +
@@ -262,10 +320,10 @@ details summary{cursor:pointer;font-weight:600}
   ["sub", "exam", "status"].forEach(function (id) {
     document.getElementById(id).addEventListener("change", function (e) { state[id] = e.target.value; state.idx = 0; state.phase = "answer"; renderAll(); });
   });
-  // The site header links to igcse.html#p1 and #p2; follow those when already on this page.
+  // The site header links to a paper with #p1, #p2 …; follow those when already on this page.
   window.addEventListener("hashchange", function () {
     var p = location.hash.replace("#", "");
-    if ((p === "p1" || p === "p2") && p !== state.paper) {
+    if (KEYS.indexOf(p) >= 0 && p !== state.paper) {
       state = { paper: p, chapter: "", sub: "", exam: "", status: "", idx: 0, phase: "answer", ticked: [], awarded: 0 };
       renderAll();
     }
@@ -277,7 +335,12 @@ details summary{cursor:pointer;font-weight:600}
 </html>
 `;
 
-fs.writeFileSync(path.join(root, 'igcse.html'), html);
-console.log(`igcse.html written: ${banks[0].items.length} + ${banks[1].items.length} question parts`);
+}
+
+for (const course of COURSES) {
+  fs.writeFileSync(path.join(root, course.file), page(course));
+  const counts = course.papers.map((p) => JSON.parse(fs.readFileSync(path.join(root, p.source), 'utf8')).items.length);
+  console.log(`${course.file} written: ${counts.join(' + ')} question parts`);
+}
 // Add the shared site header and footer.
 await import('./apply-site-header.mjs');

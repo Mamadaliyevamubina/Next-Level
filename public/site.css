@@ -106,3 +106,7 @@
 .nl-copy { border-top: 1px solid rgba(255, 255, 255, .1); max-width: 1240px; margin: 0 auto; padding: 14px 28px 22px; color: #b7a1cf; font-size: 12.5px; }
 
 @media (prefers-reduced-motion: reduce) { .nl-header *, .nl-footer * { transition: none !important; } }
+
+/* Long menus (A Level has Computer Science and Chemistry papers) scroll inside the window. */
+.nl-menu { max-height: calc(100vh - 110px); overflow-y: auto; }
+@media (max-width: 980px) { .nl-menu { max-height: none; } }
