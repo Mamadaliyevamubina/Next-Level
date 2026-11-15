@@ -2,6 +2,7 @@
 //   igcse.html      Computer Science 0478, from data/igcse-paper1.json and data/igcse-paper2.json
 //   chemistry.html          IGCSE Chemistry 0620, from data/chemistry-paper1.json … -paper6.json
 //   chemistry-alevel.html   AS & A Level Chemistry 9701, from data/chemistry-alevel-paper1.json … -paper5.json
+//   biology-alevel.html     AS & A Level Biology 9700, from data/biology-alevel-paper1.json … -paper5.json
 // Run from the project root: node tools/build-igcse-page.mjs
 import fs from 'node:fs';
 import path from 'node:path';
@@ -54,6 +55,22 @@ const COURSES = [
       { key: 'p3', source: 'data/chemistry-alevel-paper3.json', title: 'Paper 3 · Advanced Practical Skills' },
       { key: 'p4', source: 'data/chemistry-alevel-paper4.json', title: 'Paper 4 · A Level Structured Questions' },
       { key: 'p5', source: 'data/chemistry-alevel-paper5.json', title: 'Paper 5 · Planning, Analysis and Evaluation' },
+    ],
+  },
+  {
+    file: 'biology-alevel.html',
+    storeKey: 'alevel9700-v1',
+    pageTitle: 'AS & A Level Biology 9700 Practice · Next Level',
+    eyebrow: 'Cambridge International AS & A Level · 9700',
+    heading: 'AS & A Level Biology',
+    tabPrefix: 'Paper ',
+    footnote: 'Questions from Cambridge International AS & A Level Biology (9700) past papers, Feb/March 2023 to May/June 2026.',
+    papers: [
+      { key: 'p1', source: 'data/biology-alevel-paper1.json', title: 'Paper 1 · Multiple Choice (AS)' },
+      { key: 'p2', source: 'data/biology-alevel-paper2.json', title: 'Paper 2 · AS Level Structured Questions' },
+      { key: 'p3', source: 'data/biology-alevel-paper3.json', title: 'Paper 3 · Advanced Practical Skills' },
+      { key: 'p4', source: 'data/biology-alevel-paper4.json', title: 'Paper 4 · A Level Structured Questions' },
+      { key: 'p5', source: 'data/biology-alevel-paper5.json', title: 'Paper 5 · Planning, Analysis and Evaluation' },
     ],
   },
 ];

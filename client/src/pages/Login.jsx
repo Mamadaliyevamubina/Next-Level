@@ -20,11 +20,11 @@ export default function Login({ mode = 'login' }) {
             <span className="chip code">IF score &gt;= 70 THEN</span>
             <span className="chip">2H₂ + O₂ → 2H₂O</span>
             <span className="chip code">01001110 01001100</span>
-            <span className="chip">0478 · 0620 · 9618 · 9701</span>
+            <span className="chip">0478 · 0620 · 9618 · 9701 · 9700</span>
           </div>
           <p className="eyebrow light">Dombit International School</p>
           <h2>Next Level for IGCSE and A Level</h2>
-          <p>Cambridge past-paper practice for A Level Computer Science (9618), A Level Chemistry (9701), IGCSE Computer Science (0478) and IGCSE Chemistry (0620), marked against the real mark schemes, with your teacher by your side.</p>
+          <p>Cambridge past-paper practice for A Level Computer Science (9618), A Level Chemistry (9701), A Level Biology (9700), IGCSE Computer Science (0478) and IGCSE Chemistry (0620), marked against the real mark schemes, with your teacher by your side.</p>
         </div>
       </section>
       <section className="auth-form-side">

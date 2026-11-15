@@ -13,7 +13,7 @@ if (!jsonDir || !outFile) {
   process.exit(1);
 }
 // Exam paper codes in the database: IGCSE CS "ig-s24-12", IGCSE Chemistry "ch-…", A Level Chemistry "ac-…", A Level CS "s24-21".
-const PREFIX = { '0478': 'ig-', '0620': 'ch-', 9701: 'ac-', 9618: '' };
+const PREFIX = { '0478': 'ig-', '0620': 'ch-', 9701: 'ac-', 9700: 'ab-', 9618: '' };
 const sources = sourcesFile && fs.existsSync(sourcesFile) ? JSON.parse(fs.readFileSync(sourcesFile, 'utf8')) : {};
 
 const clean = (s) => s

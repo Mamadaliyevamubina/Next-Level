@@ -1,4 +1,4 @@
-// Puts the shared Dombit-style header and footer into every static page (index, igcse, chemistry, paper1-4).
+// Puts the shared Dombit-style header and footer into every static page (index, igcse, chemistry, chemistry-alevel, biology-alevel, paper1-4).
 // Safe to run again: it replaces whatever sits between the <!-- nl:... --> markers.
 // Run from the project root: node tools/apply-site-header.mjs
 import fs from 'node:fs';
@@ -32,6 +32,11 @@ const ALEVEL = [
   ['chemistry-alevel.html#p3', 'Chemistry Paper 3', 'Advanced Practical Skills'],
   ['chemistry-alevel.html#p4', 'Chemistry Paper 4', 'A Level Structured Questions'],
   ['chemistry-alevel.html#p5', 'Chemistry Paper 5', 'Planning, Analysis and Evaluation'],
+  ['biology-alevel.html#p1', 'Biology Paper 1', 'Multiple Choice (AS)'],
+  ['biology-alevel.html#p2', 'Biology Paper 2', 'AS Level Structured Questions'],
+  ['biology-alevel.html#p3', 'Biology Paper 3', 'Advanced Practical Skills'],
+  ['biology-alevel.html#p4', 'Biology Paper 4', 'A Level Structured Questions'],
+  ['biology-alevel.html#p5', 'Biology Paper 5', 'Planning, Analysis and Evaluation'],
 ];
 
 function header(page) {
@@ -63,7 +68,7 @@ const FOOTER = `<footer class="nl-footer">
   <div class="nl-footer-in">
     <div>
       <a class="nl-brand" href="index.html"><span class="nl-mark">${MARK}</span><span><b>Next Level</b><small>Dombit International School</small></span></a>
-      <p>Cambridge IGCSE Computer Science (0478) and Chemistry (0620), and AS &amp; A Level Computer Science (9618) and Chemistry (9701) past-paper practice, checked against the mark scheme point by point.</p>
+      <p>Cambridge IGCSE Computer Science (0478) and Chemistry (0620), and AS &amp; A Level Computer Science (9618), Chemistry (9701) and Biology (9700) past-paper practice, checked against the mark scheme point by point.</p>
     </div>
     <div>
       <h4>Practice</h4>
@@ -96,7 +101,7 @@ function between(html, name, content, insertAt) {
   return insertAt(html, block);
 }
 
-const pages = ['index.html', 'igcse.html', 'chemistry.html', 'chemistry-alevel.html', 'paper1.html', 'paper2.html', 'paper3.html', 'paper4.html'];
+const pages = ['index.html', 'igcse.html', 'chemistry.html', 'chemistry-alevel.html', 'biology-alevel.html', 'paper1.html', 'paper2.html', 'paper3.html', 'paper4.html'];
 for (const page of pages) {
   const file = path.join(root, page);
   if (!fs.existsSync(file)) continue;

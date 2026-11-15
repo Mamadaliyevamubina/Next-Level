@@ -148,7 +148,7 @@ export default function Teacher() {
               <thead>
                 <tr>
                   <th>Student</th><th>Class</th><th>Answered</th><th>Score</th>
-                  {paperCols.map((p) => <th key={p.number} title={p.label}>{p.label.replace('IGCSE Paper ', 'IG').replace('A Level Chemistry Paper ', 'ACh').replace('Chemistry Paper ', 'Ch').replace('Paper ', 'P')}</th>)}<th>Last 7 days</th><th>Last active</th><th />
+                  {paperCols.map((p) => <th key={p.number} title={p.label}>{p.label.replace('IGCSE Paper ', 'IG').replace('A Level Chemistry Paper ', 'ACh').replace('A Level Biology Paper ', 'ABi').replace('Chemistry Paper ', 'Ch').replace('Paper ', 'P')}</th>)}<th>Last 7 days</th><th>Last active</th><th />
                 </tr>
               </thead>
               <tbody>

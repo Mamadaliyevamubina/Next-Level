@@ -1,20 +1,22 @@
 // Builds Cambridge (CAIE) Chemistry question banks from the question papers and mark schemes:
 //   0620 IGCSE Chemistry: Papers 1–6 (Core and Extended)        → data/chemistry-paper<N>.json
 //   9701 AS & A Level Chemistry: Papers 1–5                      → data/chemistry-alevel-paper<N>.json
-// The papers, topics and topic rules of each syllabus are in chem-syllabus-<code>.mjs.
+//   9700 AS & A Level Biology: Papers 1–5                        → data/biology-alevel-paper<N>.json
+// The papers, topics and topic rules of each syllabus are in chem-syllabus-<code>.mjs (bio-syllabus-9700.mjs for Biology).
 // Input is the output of extract-chem.mjs and render-pages.mjs.
-// Usage: node build-chem-bank.mjs <json dir> <page png dir> <repo root> [0620|9701]
-// Figures go to public/figures/chemistry (0620) or public/figures/chemistry-alevel (9701); uses macOS sips.
+// Usage: node build-chem-bank.mjs <json dir> <page png dir> <repo root> [0620|9701|9700]
+// Figures go to public/figures/chemistry (0620), chemistry-alevel (9701) or biology-alevel (9700); uses macOS sips.
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 
 const [jsonDir, pageDir, repo, syllabus = '0620'] = process.argv.slice(2);
-if (!repo || !['0620', '9701'].includes(syllabus)) {
-  console.error('Usage: node build-chem-bank.mjs <json dir> <page png dir> <repo root> [0620|9701]');
+const SYLLABUS_FILES = { '0620': './chem-syllabus-0620.mjs', 9701: './chem-syllabus-9701.mjs', 9700: './bio-syllabus-9700.mjs' };
+if (!repo || !SYLLABUS_FILES[syllabus]) {
+  console.error('Usage: node build-chem-bank.mjs <json dir> <page png dir> <repo root> [0620|9701|9700]');
   process.exit(1);
 }
-const SYL = await import(`./chem-syllabus-${syllabus}.mjs`);
+const SYL = await import(SYLLABUS_FILES[syllabus]);
 const { TOPICS, HINTS, FIG_DIR } = SYL;
 const figDir = path.join(repo, 'public', FIG_DIR);
 fs.mkdirSync(figDir, { recursive: true });
@@ -222,6 +224,58 @@ function msToCriteria(entry, base) {
   };
 }
 
+// Biology (9700) mark schemes have no Guidance column: each marking point ends in ";", alternatives ("or") and
+// wrapped text sit indented under it, and "A …" (accept), "R …" (reject), "I …" (ignore), "AW", "ora" lines are guidance.
+const BIO_GUIDE = /^(A|R|I|Ignore|Accept|Reject|Allow|AW|ora|DO NOT CREDIT|CREDIT)\b\s*/;
+const BIO_NOTE = /^(\d( ?\/ ?\d)* correct = |must be\b|.*\brequired$|accept\b|allow max\b|(and )?any (one|two|three|four|five|six|seven|eight|\d+) from:?$)/i;
+function bioCriteria(entry, base) {
+  const criteria = [];
+  const notes = [];
+  const headline = [];
+  const guidance = [];
+  let figure = false;
+  const isNumbered = (t) => /^\d{1,2}\s+(?!correct|marks?\b|\/)\S/.test(t);
+  const hasNum = entry.lines.some((l) => l.cells.length === 1 && Math.abs(l.cells[0].x - base) < 5 && isNumbered(l.cells[0].text));
+  const add = (text, x) => {
+    // "point ; A alternative" on one line: the part after "; A " is guidance.
+    const [pt, ...rest] = text.split(/\s*;\s*(?=(?:A|R|I|Ignore|AW|ora)\b)/);
+    if (pt) criteria.push({ point: pt, x, open: !/;\s*$/.test(text) || rest.length > 0 });
+    if (rest.length) guidance.push(...rest);
+  };
+  for (const l of entry.lines) {
+    const cells = l.cells.filter((c) => c.text !== ';');
+    if (!cells.length) continue;
+    const c = cells[0];
+    // A drawn answer or table (several cells, or text far to the right of the answer column): shown as an image.
+    if (cells.length > 1 || c.x > base + 70) { figure = true; continue; }
+    const t = c.text.replace(/^[•▪]\s*/, '');
+    if (!t) continue;
+    const last = criteria[criteria.length - 1];
+    const indented = c.x > base + 8;
+    if (BIO_GUIDE.test(t) && (criteria.length || indented)) { guidance.push(t); continue; }
+    if (NOTE.test(t) || BIO_NOTE.test(t)) { notes.push(t); continue; }
+    // A lead-in line before numbered points ("with red light ora green light") is a note, not the answer.
+    if (hasNum && !isNumbered(t) && !criteria.length && !indented) { notes.push(t); continue; }
+    if (last && indented) {
+      // "or" / "and" / "either" between alternatives, or a wrapped line: part of the point above.
+      last.point += /^(or|and|either)$/i.test(t) ? ` ${t.toUpperCase()}` : ` ${t}`;
+      last.open = !/;\s*$/.test(t);
+      continue;
+    }
+    if (last && !isNumbered(t) && last.open && /[,/(–-]$|\b(and|or|of|the|to|in|with|by|for)$/i.test(last.point.trim())) {
+      last.point += ` ${t}`;
+      last.open = !/;\s*$/.test(t);
+      continue;
+    }
+    add(t, c.x);
+  }
+  const tidy = (s) => s.replace(/^\d{1,2}\s+/, '').replace(/(\s*;)+\s*$/, '').replace(/\s*;\s*;(\s*;)*/g, ';').replace(/\s+/g, ' ').trim();
+  return {
+    criteria: criteria.map((c) => ({ point: tidy(c.point), key_terms: [] })).filter((c) => c.point),
+    headline, notes, figure, guidance,
+  };
+}
+
 function guidanceNotes(list) {
   const text = list.join(' ').replace(/\s+/g, ' ').trim();
   if (!text) return [];
@@ -406,7 +460,7 @@ function buildStructured(qpFile, ms, bank, meta) {
       continue;
     }
     meta.stats.matched += 1;
-    const parsed = msToCriteria(entry, ms.base);
+    const parsed = SYL.CODE === '9700' ? bioCriteria(entry, ms.base) : msToCriteria(entry, ms.base);
     const answerFigures = [];
     if (parsed.figure || !parsed.criteria.length) {
       const byPage = {};
@@ -446,7 +500,7 @@ function buildStructured(qpFile, ms, bank, meta) {
       answer_type: answerType(`${context}\n${prompt}`),
       criteria,
       max_note: parsed.notes.join(' '),
-      rejects: guidanceNotes(entry.guidance),
+      rejects: guidanceNotes([...entry.guidance, ...(parsed.guidance || [])]),
       final_answer: parsed.headline.length ? parsed.headline.join('\n') : criteria.slice(0, Math.max(marks, 1)).map((c) => c.point).join('; '),
       confidence: figures.length || answerFigures.length ? 'medium' : 'high',
       figures,

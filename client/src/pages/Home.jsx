@@ -69,7 +69,7 @@ export default function Home() {
         <div>
           <span className="h-eyebrow">Dombit International School · IGCSE &amp; A Level</span>
           <h1>Practise smarter.<br /><span>Reach the next level.</span></h1>
-          <p>Cambridge IGCSE and A Level Computer Science and Chemistry past-paper questions, sorted by topic and checked against the official mark scheme point by point.</p>
+          <p>Cambridge IGCSE and A Level Computer Science, Chemistry and Biology past-paper questions, sorted by topic and checked against the official mark scheme point by point.</p>
           <div className="h-cta">
             {user ? (
               <Link className="h-btn light" to="/">Go to my dashboard <Icon name="arrow" /></Link>

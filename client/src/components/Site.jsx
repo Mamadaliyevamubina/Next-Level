@@ -92,7 +92,7 @@ export function SiteFooter() {
       <div className="site-footer-in">
         <div>
           <Link to="/" className="site-footer-brand"><Logo sub="Dombit International School" /></Link>
-          <p>Cambridge IGCSE Computer Science (0478) and Chemistry (0620), and AS &amp; A Level Computer Science (9618) and Chemistry (9701) past-paper practice, checked against the mark scheme point by point.</p>
+          <p>Cambridge IGCSE Computer Science (0478) and Chemistry (0620), and AS &amp; A Level Computer Science (9618), Chemistry (9701) and Biology (9700) past-paper practice, checked against the mark scheme point by point.</p>
         </div>
         <div>
           <h4>Practice</h4>

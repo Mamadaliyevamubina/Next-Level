@@ -52,10 +52,17 @@ export const COURSE_INFO = {
     blurb: 'All five papers from Feb/March 2023 to May/June 2026: multiple choice, structured questions, practical skills and planning.',
     icons: { 41: 'list', 42: 'flask', 43: 'beaker', 44: 'layers', 45: 'chart' },
   },
+  9700: {
+    level: 'A Level',
+    eyebrow: 'Cambridge International AS & A Level · 9700',
+    heading: 'AS & A Level Biology',
+    blurb: 'All five papers from Feb/March 2023 to May/June 2026: multiple choice, structured questions, practical skills and planning.',
+    icons: { 51: 'list', 52: 'layers', 53: 'beaker', 54: 'layers', 55: 'chart' },
+  },
 };
 
 // Order of the course sections: IGCSE first, then A Level.
-export const COURSE_ORDER = ['0478', '0620', '9618', '9701'];
+export const COURSE_ORDER = ['0478', '0620', '9618', '9701', '9700'];
 
 export const sortCourses = (courses) => [...courses].sort((a, b) => {
   const i = (c) => (COURSE_ORDER.includes(c.code) ? COURSE_ORDER.indexOf(c.code) : 99);

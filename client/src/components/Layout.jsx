@@ -11,6 +11,7 @@ export const initials = (name) => name.split(/\s+/).filter(Boolean).slice(0, 2).
 
 // Course names for the header and footer, from the student's subject.
 function courseInfo(course) {
+  if (/9700|Biology/.test(course)) return { short: 'A Level · Biology', full: 'Cambridge International AS & A Level Biology 9700' };
   if (/9701/.test(course)) return { short: 'A Level · Chemistry', full: 'Cambridge International AS & A Level Chemistry 9701' };
   if (/0620|Chemistry/.test(course)) return { short: 'IGCSE · Chemistry', full: 'Cambridge IGCSE Chemistry 0620' };
   if (/0478|IGCSE/.test(course)) return { short: 'IGCSE · Computer Science', full: 'Cambridge IGCSE Computer Science 0478' };
