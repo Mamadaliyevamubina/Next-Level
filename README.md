@@ -1,6 +1,6 @@
-# Past-Paper Practice · IGCSE 0478 and 0620, A Level 9618 and 9701
+# Past-Paper Practice · IGCSE 0478 and 0620, A Level 9618, 9701 and 9700
 
-Practice site for Dombit International School covering Cambridge IGCSE Computer Science (0478) and Chemistry (0620), and Cambridge International AS & A Level Computer Science (9618) and Chemistry (9701).
+Practice site for Dombit International School covering Cambridge IGCSE Computer Science (0478) and Chemistry (0620), and Cambridge International AS & A Level Computer Science (9618), Chemistry (9701) and Biology (9700).
 
 Every IGCSE and A Level Chemistry question comes from an official Cambridge (CAIE) question paper and its published mark scheme. `npm run db:setup` checks this: it refuses to load a question bank containing a paper that is not a Cambridge paper of that syllabus.
 
@@ -37,6 +37,18 @@ All six are sorted into the 12 syllabus topics (1 States of matter … 12 Experi
 | A Level Chemistry Paper 5 – Planning, Analysis and Evaluation | Planning experiments, processing data, evaluating results | 551 |
 
 Sorted into the 37 syllabus topics (1–22 AS Level, 23–37 A Level; the AS papers use 1–22 only). Questions: `data/chemistry-alevel-paper1.json` … `-paper5.json`; images: `public/figures/chemistry-alevel/`; static page: `chemistry-alevel.html`. Topics are assigned by keyword rules, so a few questions sit in a neighbouring topic.
+
+**AS & A Level Biology 9700** (every question paper from Feb/March 2023 to May/June 2026: 135 papers, 3,424 question parts):
+
+| Paper | What it is | Question parts |
+|---|---|---|
+| A Level Biology Paper 1 – Multiple Choice (AS) | 40 questions per paper, answered A–D | 998 |
+| A Level Biology Paper 2 – AS Level Structured Questions | Cells, biological molecules, enzymes, membranes, DNA, transport, gas exchange, disease, immunity | 677 |
+| A Level Biology Paper 3 – Advanced Practical Skills (AS) | Investigations, microscope drawings, measurements, food tests | 530 |
+| A Level Biology Paper 4 – A Level Structured Questions | Respiration, photosynthesis, homeostasis, coordination, inheritance, evolution, genetic technology | 885 |
+| A Level Biology Paper 5 – Planning, Analysis and Evaluation | Planning investigations, statistics, evaluating results | 334 |
+
+Sorted into the 19 syllabus topics (1–11 AS Level, 12–19 A Level). Questions: `data/biology-alevel-paper1.json` … `-paper5.json`; images: `public/figures/biology-alevel/`; static page: `biology-alevel.html`. Built with `node tools/igcse/build-chem-bank.mjs <json> <pages> . 9700` (topics in `tools/igcse/bio-syllabus-9700.mjs`). In the database the papers are numbers 51–55 (subject 9700).
 
 **Examiner reports:** every question in the app shows what the Cambridge examiners wrote about it in the Principal Examiner Report, next to the mark scheme once you mark your answer, plus the key messages and general comments for its paper and a link to the full report. Built with `tools/examiner/` (see its README) into `data/examiner-reports.json`, which the backend loads from its `seed/` folder.
 
