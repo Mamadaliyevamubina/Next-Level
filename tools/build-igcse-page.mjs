@@ -19,6 +19,8 @@ const COURSES = [
     heading: 'IGCSE Computer Science',
     tabPrefix: 'IGCSE Paper ',
     footnote: 'Questions from Cambridge IGCSE Computer Science (0478) past papers, Feb/March 2023 to May/June 2026.',
+    // "Check with AI" button: marks the answer against the mark scheme with Claude (public/ai-client.js).
+    ai: true,
     papers: [
       { key: 'p1', source: 'data/igcse-paper1.json', title: 'Paper 1 · Computer Systems' },
       { key: 'p2', source: 'data/igcse-paper2.json', title: 'Paper 2 · Algorithms, Programming and Logic' },
@@ -144,6 +146,15 @@ textarea.code{font-family:"JetBrains Mono",monospace;font-size:.9rem;min-height:
 .dot{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:var(--surface);font-size:.75rem;cursor:pointer}
 .dot.cur{outline:2px solid var(--accent)}.dot.full{background:var(--ok-soft);border-color:var(--ok)}.dot.part{background:var(--warn-soft);border-color:var(--warn)}
 details summary{cursor:pointer;font-weight:600}
+.nav.start{justify-content:flex-start}
+.btn.ai{border-color:var(--accent);color:var(--accent)}
+.note.bad{background:var(--bad-soft);color:var(--bad);margin-top:10px}
+.aibox{border:1px solid var(--accent);background:var(--soft);border-radius:16px;padding:12px 16px;margin-top:6px}
+.aibox p{margin:.35em 0}.aibox .big{font-size:1.15rem}
+.why{font-size:.84rem;color:var(--ink2);margin-top:2px}
+.aikey{border:1px solid var(--line);background:var(--surface2);border-radius:16px;padding:12px 16px;margin-top:10px;display:grid;gap:8px}
+.aikey p{margin:0}.aikey input{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 10px;width:100%}
+.linkbtn{border:0;background:none;padding:0;color:var(--ink2);text-decoration:underline;cursor:pointer;font-size:.8rem}
 </style>
 </head>
 <body>
@@ -170,12 +181,14 @@ details summary{cursor:pointer;font-weight:600}
   <p class="muted small" style="text-align:center;margin-top:24px">${course.footnote} Progress is saved in this browser.</p>
 </div>
 <script id="bank" type="application/json">${json}</script>
+${course.ai ? '<script type="module" src="public/ai-client.js"></script>' : ''}
 <script>
 (function () {
   "use strict";
   var DATA = JSON.parse(document.getElementById("bank").textContent);
   var KEY = "${course.storeKey}";
   var KEYS = ${keys}, TITLES = ${titles};
+  var AI = ${course.ai ? 'true' : 'false'};
   var store = JSON.parse(localStorage.getItem(KEY) || "{}");
   store.attempts = store.attempts || {};
   store.drafts = store.drafts || {};
@@ -273,13 +286,28 @@ details summary{cursor:pointer;font-weight:600}
     else if (it.context_note) html += '<div class="ctx md">' + md(it.context_note) + "</div>";
     html += partF.length ? imgs(partF, it.prompt) : '<div class="md">' + md(it.prompt) + "</div>";
     html += '<textarea id="ans" class="' + (code ? "code" : "") + '" placeholder="Write your answer here" ' + (state.phase !== "answer" ? "readonly" : "") + ">" + esc(store.drafts[it.id] || "") + "</textarea>";
+    // AI marking state belongs to one question; it is ignored once you move to another.
+    var aq = state.aiq && state.aiq.id === it.id ? state.aiq : null, ai = aq && aq.v;
     if (state.phase === "answer") {
-      html += '<div class="nav"><button type="button" class="btn primary" id="mark">Mark my answer</button></div>';
+      html += '<div class="nav start"><button type="button" class="btn primary" id="mark">Mark my answer</button>' +
+        (AI ? '<button type="button" class="btn ai" id="aimark"' + (aq && aq.busy ? " disabled" : "") + ">" + (aq && aq.busy ? "Checking your answer…" : "✦ Check with AI") + "</button>" : "") + "</div>";
+      if (aq && aq.error) html += '<div class="note bad">' + esc(aq.error) + "</div>";
+      if (aq && aq.askKey) html += '<div class="aikey"><b>Check with AI using your own API key</b>' +
+        '<p class="small muted">The AI marker on this site is not switched on yet. You can use your own Anthropic API key from console.anthropic.com instead. ' +
+        "It is saved only in this browser and sent only to Anthropic. Each check costs a few US cents.</p>" +
+        '<input id="keyin" type="password" autocomplete="off" placeholder="sk-ant-…" aria-label="Anthropic API key">' +
+        '<div><button type="button" class="btn primary" id="keysave">Save key and check</button></div></div>';
+      if (AI && window.NLAI && window.NLAI.usesOwnKey() && !window.NLAI.needsKey()) html += '<p style="margin:6px 0 0"><button type="button" class="linkbtn" id="keyforget">Remove my API key from this browser</button></p>';
     } else {
       html += '<div class="scheme"><h3 style="margin:6px 0 0">Mark scheme</h3>' + (it.max_note ? '<div class="muted small">' + esc(it.max_note) + "</div>" : "");
+      if (ai) html += '<div class="aibox"><p class="big"><span class="pill">✦ AI mark</span> <b>' + ai.mark + " / " + it.marks + "</b></p>" +
+        (ai.feedback ? "<p>" + esc(ai.feedback) + "</p>" : "") +
+        '<p class="muted small">The AI has ticked the points it would award. Check them against your answer and change anything you disagree with before saving. AI marking can be wrong.</p></div>';
       html += it.criteria.map(function (c, i) {
         var on = state.ticked.indexOf(i) >= 0;
-        return '<label class="crit ' + (on ? "on" : "") + '"><input type="checkbox" data-t="' + i + '" ' + (on ? "checked" : "") + (state.phase === "saved" ? " disabled" : "") + "><span>" + inline(c.point) + "</span></label>";
+        var why = ai && ai.points.filter(function (p) { return p.index === i; })[0];
+        return '<label class="crit ' + (on ? "on" : "") + '"><input type="checkbox" data-t="' + i + '" ' + (on ? "checked" : "") + (state.phase === "saved" ? " disabled" : "") + "><span>" + inline(c.point) +
+          (why && why.reason ? '<div class="why">' + (why.awarded ? "✓ " : "✗ ") + esc(why.reason) + "</div>" : "") + "</span></label>";
       }).join("");
       if (it.rejects && it.rejects.length) html += '<div class="note"><b>Examiner notes:</b> ' + it.rejects.map(esc).join(" · ") + "</div>";
       var fig = it.answer_figures && it.answer_figures.length;
@@ -299,14 +327,30 @@ details summary{cursor:pointer;font-weight:600}
     var ans = document.getElementById("ans");
     ans.addEventListener("input", function () { store.drafts[it.id] = ans.value; save(); });
     function on(id, fn) { var el = document.getElementById(id); if (el) el.addEventListener("click", fn); }
-    on("mark", function () { state.phase = "marking"; state.ticked = []; state.awarded = 0; renderQuestion(); });
+    on("mark", function () { state.aiq = null; state.phase = "marking"; state.ticked = []; state.awarded = 0; renderQuestion(); });
+    on("aimark", function () {
+      if (!window.NLAI) {
+        state.aiq = { id: it.id, error: location.protocol === "file:" ? "AI marking works on the website, not when this file is opened from your computer." : "The AI marker is still loading. Try again in a moment." };
+        return renderQuestion();
+      }
+      if (window.NLAI.needsKey()) { state.aiq = { id: it.id, askKey: true }; renderQuestion(); var k = document.getElementById("keyin"); if (k) k.focus(); return; }
+      runAI(it, ans.value);
+    });
+    on("keysave", function () {
+      var k = document.getElementById("keyin").value.trim();
+      if (!k) return;
+      window.NLAI.setKey(k); runAI(it, ans.value);
+    });
+    on("keyforget", function () { window.NLAI.forgetKey(); state.aiq = null; renderQuestion(); });
     on("minus", function () { if (state.phase === "marking") { state.awarded = Math.max(0, state.awarded - 1); renderQuestion(); } });
     on("plus", function () { if (state.phase === "marking") { state.awarded = Math.min(it.marks, state.awarded + 1); renderQuestion(); } });
     on("save", function () {
-      (store.attempts[it.id] = store.attempts[it.id] || []).push({ awarded: state.awarded, ts: Date.now(), answer: ans.value });
+      var rec = { awarded: state.awarded, ts: Date.now(), answer: ans.value };
+      if (ai) rec.ai = ai.mark;
+      (store.attempts[it.id] = store.attempts[it.id] || []).push(rec);
       delete store.drafts[it.id]; save(); state.phase = "saved"; renderRail(); renderQuestion();
     });
-    on("again", function () { state.phase = "answer"; renderQuestion(); });
+    on("again", function () { state.aiq = null; state.phase = "answer"; renderQuestion(); });
     on("prev", function () { go(state.idx - 1); });
     on("next", function () { go(state.idx + 1); });
     on("skip", function () {
@@ -321,6 +365,21 @@ details summary{cursor:pointer;font-weight:600}
       });
     });
     box.querySelectorAll("[data-i]").forEach(function (d) { d.addEventListener("click", function () { go(Number(d.dataset.i)); }); });
+  }
+  function runAI(it, answer) {
+    if (!answer.trim()) { state.aiq = { id: it.id, error: "Write your answer first, then check it with AI." }; return renderQuestion(); }
+    var req = state.aiq = { id: it.id, busy: true };
+    renderQuestion();
+    window.NLAI.mark(it, answer).then(function (v) {
+      if (state.aiq !== req) return; // moved on to another question or started again
+      state.aiq = { id: it.id, v: v };
+      state.phase = "marking"; state.ticked = v.ticked.slice(); state.awarded = v.mark;
+      renderQuestion();
+    }, function (e) {
+      if (state.aiq !== req) return;
+      state.aiq = { id: it.id, error: (e && e.message) || "The AI marker is unavailable. Try again later." };
+      renderQuestion();
+    });
   }
   function go(i) { state.idx = i; state.phase = "answer"; renderQuestion(); window.scrollTo({ top: 0, behavior: "smooth" }); }
   function renderAll() { renderTabs(); renderRail(); renderFilters(); renderQuestion(); }
@@ -345,6 +404,8 @@ details summary{cursor:pointer;font-weight:600}
       renderAll();
     }
   });
+  // The AI module loads after this script; redraw so the "remove my key" link can appear.
+  window.addEventListener("nlai-ready", function () { if (state.phase === "answer") renderQuestion(); });
   renderAll();
 })();
 </script>

@@ -1,0 +1,15 @@
+{
+  "name": "next-level-ai-marker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.9.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.163.0"
+  }
+}

@@ -13,6 +13,8 @@ Every IGCSE and A Level Chemistry question comes from an official Cambridge (CAI
 
 The questions and mark schemes are in `data/igcse-paper1.json` and `data/igcse-paper2.json`. Diagrams, tables, flowcharts and logic circuits are images in `public/figures/igcse/`. Static page: `igcse.html` (rebuild with `node tools/build-igcse-page.mjs`). How the bank was built, and how to add new papers: [tools/igcse/README.md](tools/igcse/README.md).
 
+**Check with AI** (IGCSE Computer Science only): next to *Mark my answer*, students can have Claude mark their answer against the official mark scheme. It ticks the points it would award, gives a reason for each and a short comment, and the student can change the ticks before saving. The prompt and output format are in `public/ai-mark.js`. On the public site the API key is held by a small Cloudflare Worker ([worker/README.md](worker/README.md)). Until that is deployed and its address is set in `public/ai-client.js`, the button asks visitors for their own Anthropic API key.
+
 **IGCSE Chemistry 0620** (Core and Extended, every question paper from Feb/March 2023 to May/June 2026: 147 papers, 5,563 question parts):
 
 | Paper | What it is | Question parts |
