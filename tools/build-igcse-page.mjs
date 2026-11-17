@@ -152,9 +152,6 @@ details summary{cursor:pointer;font-weight:600}
 .aibox{border:1px solid var(--accent);background:var(--soft);border-radius:16px;padding:12px 16px;margin-top:6px}
 .aibox p{margin:.35em 0}.aibox .big{font-size:1.15rem}
 .why{font-size:.84rem;color:var(--ink2);margin-top:2px}
-.aikey{border:1px solid var(--line);background:var(--surface2);border-radius:16px;padding:12px 16px;margin-top:10px;display:grid;gap:8px}
-.aikey p{margin:0}.aikey input{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:8px 10px;width:100%}
-.linkbtn{border:0;background:none;padding:0;color:var(--ink2);text-decoration:underline;cursor:pointer;font-size:.8rem}
 </style>
 </head>
 <body>
@@ -290,14 +287,8 @@ ${course.ai ? '<script type="module" src="public/ai-client.js"></script>' : ''}
     var aq = state.aiq && state.aiq.id === it.id ? state.aiq : null, ai = aq && aq.v;
     if (state.phase === "answer") {
       html += '<div class="nav start"><button type="button" class="btn primary" id="mark">Mark my answer</button>' +
-        (AI ? '<button type="button" class="btn ai" id="aimark"' + (aq && aq.busy ? " disabled" : "") + ">" + (aq && aq.busy ? "Checking your answer…" : "✦ Check with AI") + "</button>" : "") + "</div>";
+        (AI && window.NLAI && window.NLAI.ready() ? '<button type="button" class="btn ai" id="aimark"' + (aq && aq.busy ? " disabled" : "") + ">" + (aq && aq.busy ? "Checking your answer…" : "✦ Check with AI") + "</button>" : "") + "</div>";
       if (aq && aq.error) html += '<div class="note bad">' + esc(aq.error) + "</div>";
-      if (aq && aq.askKey) html += '<div class="aikey"><b>Check with AI using your own API key</b>' +
-        '<p class="small muted">The AI marker on this site is not switched on yet. You can use your own Anthropic API key from console.anthropic.com instead. ' +
-        "It is saved only in this browser and sent only to Anthropic. Each check costs a few US cents.</p>" +
-        '<input id="keyin" type="password" autocomplete="off" placeholder="sk-ant-…" aria-label="Anthropic API key">' +
-        '<div><button type="button" class="btn primary" id="keysave">Save key and check</button></div></div>';
-      if (AI && window.NLAI && window.NLAI.usesOwnKey() && !window.NLAI.needsKey()) html += '<p style="margin:6px 0 0"><button type="button" class="linkbtn" id="keyforget">Remove my API key from this browser</button></p>';
     } else {
       html += '<div class="scheme"><h3 style="margin:6px 0 0">Mark scheme</h3>' + (it.max_note ? '<div class="muted small">' + esc(it.max_note) + "</div>" : "");
       if (ai) html += '<div class="aibox"><p class="big"><span class="pill">✦ AI mark</span> <b>' + ai.mark + " / " + it.marks + "</b></p>" +
@@ -329,19 +320,8 @@ ${course.ai ? '<script type="module" src="public/ai-client.js"></script>' : ''}
     function on(id, fn) { var el = document.getElementById(id); if (el) el.addEventListener("click", fn); }
     on("mark", function () { state.aiq = null; state.phase = "marking"; state.ticked = []; state.awarded = 0; renderQuestion(); });
     on("aimark", function () {
-      if (!window.NLAI) {
-        state.aiq = { id: it.id, error: location.protocol === "file:" ? "AI marking works on the website, not when this file is opened from your computer." : "The AI marker is still loading. Try again in a moment." };
-        return renderQuestion();
-      }
-      if (window.NLAI.needsKey()) { state.aiq = { id: it.id, askKey: true }; renderQuestion(); var k = document.getElementById("keyin"); if (k) k.focus(); return; }
       runAI(it, ans.value);
     });
-    on("keysave", function () {
-      var k = document.getElementById("keyin").value.trim();
-      if (!k) return;
-      window.NLAI.setKey(k); runAI(it, ans.value);
-    });
-    on("keyforget", function () { window.NLAI.forgetKey(); state.aiq = null; renderQuestion(); });
     on("minus", function () { if (state.phase === "marking") { state.awarded = Math.max(0, state.awarded - 1); renderQuestion(); } });
     on("plus", function () { if (state.phase === "marking") { state.awarded = Math.min(it.marks, state.awarded + 1); renderQuestion(); } });
     on("save", function () {
@@ -404,7 +384,7 @@ ${course.ai ? '<script type="module" src="public/ai-client.js"></script>' : ''}
       renderAll();
     }
   });
-  // The AI module loads after this script; redraw so the "remove my key" link can appear.
+  // The AI module loads after this script; redraw so the "Check with AI" button can appear.
   window.addEventListener("nlai-ready", function () { if (state.phase === "answer") renderQuestion(); });
   renderAll();
 })();

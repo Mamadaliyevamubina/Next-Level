@@ -28,4 +28,4 @@ Every check is one Claude request, usually a few thousand input tokens with imag
 
 ## Without the Worker
 
-While `WORKER_URL` is empty, **Check with AI** asks the visitor for their own API key. The key stays in that browser and goes only to `api.anthropic.com`.
+While `WORKER_URL` is empty, the **Check with AI** button is hidden.
