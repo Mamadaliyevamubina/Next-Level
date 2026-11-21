@@ -35,7 +35,14 @@
 }
 .nl-brand { display: inline-flex; align-items: center; gap: 10px; color: var(--nl-ink); text-decoration: none; flex: none; }
 .nl-brand:hover { text-decoration: none; }
-.nl-mark { width: 40px; height: 40px; border-radius: 8px; display: grid; place-items: center; background: color-mix(in srgb, #623697 14%, var(--nl-solid)); }
+.nl-mark { width: 32px; height: 40px; display: grid; place-items: center; background: none; }
+/* The logo sits straight on the page. On dark grounds its two purples are lightened so the "D" stays visible. */
+:root[data-theme="dark"] .nl-mark path:first-child, .nl-footer .nl-mark path:first-child { fill: #b98be8; }
+:root[data-theme="dark"] .nl-mark path:last-child, .nl-footer .nl-mark path:last-child { fill: #7e3fc4; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .nl-mark path:first-child { fill: #b98be8; }
+  :root:not([data-theme="light"]) .nl-mark path:last-child { fill: #7e3fc4; }
+}
 .nl-brand b { display: block; font-size: 1.05rem; font-weight: 800; letter-spacing: -.01em; }
 .nl-brand small { display: block; font-size: .74rem; color: var(--nl-ink2); font-weight: 500; }
 .nl-nav { display: flex; align-items: center; gap: 2px; margin: 0 auto; }
@@ -104,7 +111,7 @@
 .nl-footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .nl-footer .nl-brand { color: #fff; }
 .nl-footer .nl-brand small { color: #aeb5c1; }
-.nl-footer .nl-mark { background: rgba(255, 255, 255, .1); }
+.nl-footer .nl-mark { background: none; }
 .nl-footer p { margin: 12px 0 0; color: #aeb5c1; max-width: 46ch; }
 .nl-copy { border-top: 1px solid rgba(255, 255, 255, .1); max-width: 1240px; margin: 0 auto; padding: 14px 28px 22px; color: #aeb5c1; font-size: 12.5px; }
 
@@ -192,3 +199,40 @@ html:root[data-theme="dark"] .tab[aria-selected="true"], html:root[data-theme="d
   .chip { min-width: 40px !important; height: 40px !important; }
   .btn, .tab, .tabs button { min-height: 44px; }
 }
+
+/* Navigation tools: breadcrumb plus Menu / Chapters / Focus toggles, sticky at the top of the page. */
+.nl-tools {
+  position: sticky; top: 0; z-index: 25; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 16px;
+  max-width: 1240px; margin: 0 auto; padding: 8px 16px; box-sizing: border-box;
+  background: color-mix(in srgb, var(--nl-solid) 94%, transparent); border-bottom: 1px solid var(--nl-line);
+  font-family: "Golos Text", system-ui, sans-serif; font-size: 14.5px; color: var(--nl-ink);
+}
+.nl-crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; list-style: none; margin: 0; padding: 0; min-width: 0; }
+.nl-crumbs li { display: inline-flex; align-items: center; gap: 4px; color: var(--nl-ink2); white-space: nowrap; }
+.nl-crumbs li + li::before { content: "›"; color: var(--nl-ink2); margin-right: 2px; }
+.nl-crumbs a { color: var(--nl-ink2); text-decoration: none; padding: 4px 2px; }
+.nl-crumbs a:hover { color: var(--nl-accent); text-decoration: underline; }
+.nl-crumbs [aria-current="page"] { color: var(--nl-ink); font-weight: 600; white-space: normal; }
+.nl-tool-btns { display: flex; gap: 6px; }
+.nl-tool {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 6px 12px; border-radius: 8px; cursor: pointer;
+  border: 1px solid var(--nl-line); background: var(--nl-solid); color: var(--nl-ink); font: inherit; font-weight: 600;
+}
+.nl-tool:hover { border-color: var(--nl-ink2); }
+.nl-tool[aria-pressed="false"] { color: var(--nl-ink2); }
+.nl-tool[data-tool="focus"][aria-pressed="true"] { background: var(--nl-ink); border-color: var(--nl-ink); color: var(--nl-solid); }
+.nl-tool:focus-visible { outline: 2px solid var(--nl-accent); outline-offset: 2px; }
+
+/* Hidden menu, hidden chapter list, and Focus (both hidden, question centred). */
+body.nl-has-side.nl-side-hidden { margin-left: 0 !important; }
+.nl-side-hidden .nl-side { display: none !important; }
+.nl-rail-hidden #rail { display: none !important; }
+.nl-rail-hidden #grid, .nl-rail-hidden .layout { grid-template-columns: minmax(0, 1fr) !important; }
+.nl-focus .app { max-width: 920px !important; }
+@media (max-width: 1099px) {
+  .nl-tool[data-tool="side"] { display: none; }
+  /* The header already sticks to the top here, so the tools scroll with the page. */
+  .nl-tools { position: static; margin-top: 8px; border: 1px solid var(--nl-line); border-radius: 12px; max-width: calc(100% - 32px); }
+}
+@media (max-width: 520px) { .nl-tool span { display: none; } .nl-crumbs li:not(:first-child):not(:last-child) { display: none; } }
+@media print { .nl-tools, .nl-side { display: none !important; } body.nl-has-side { margin-left: 0 !important; } }

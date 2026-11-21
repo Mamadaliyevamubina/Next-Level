@@ -63,7 +63,101 @@
     });
 
     buildSidebar(header);
+    buildTools();
   });
+
+  // Navigation tools, like a revision site's reader controls: a breadcrumb showing where you are, and buttons
+  // to hide the menu, hide the chapter list, or hide both (Focus) so only the question is left.
+  // Choices are remembered in this browser. Keys: [ = menu, F = focus, Esc = leave focus.
+  var PREFS = "nl-view";
+  function readPrefs() {
+    try { return JSON.parse(localStorage.getItem(PREFS)) || {}; } catch (e) { return {}; }
+  }
+  function writePrefs(p) { try { localStorage.setItem(PREFS, JSON.stringify(p)); } catch (e) { /* storage blocked */ } }
+
+  var ICON_SIDE = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg>';
+  var ICON_LIST = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4.5 6h.01M4.5 12h.01M4.5 18h.01"/></svg>';
+  var ICON_FOCUS = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5a1 1 0 0 1 1-1h4M15 4h4a1 1 0 0 1 1 1v4M20 15v4a1 1 0 0 1-1 1h-4M9 20H5a1 1 0 0 1-1-1v-4"/></svg>';
+
+  function buildTools() {
+    var side = document.querySelector(".nl-side");
+    if (!side) return;
+    var body = document.body;
+    var rail = document.getElementById("rail");
+    var prefs = readPrefs();
+
+    // Breadcrumb from the sidebar: Home › IGCSE › Chemistry 0620 › Paper 4.
+    var bar = document.createElement("nav");
+    bar.className = "nl-tools";
+    bar.setAttribute("aria-label", "Where you are and view options");
+    bar.innerHTML =
+      '<ol class="nl-crumbs"></ol>' +
+      '<div class="nl-tool-btns">' +
+      '<button type="button" class="nl-tool" data-tool="side" aria-pressed="false" title="Show or hide the menu ( [ )">' + ICON_SIDE + '<span>Menu</span></button>' +
+      (rail ? '<button type="button" class="nl-tool" data-tool="rail" aria-pressed="false" title="Show or hide the chapter list">' + ICON_LIST + '<span>Chapters</span></button>' : "") +
+      (rail ? '<button type="button" class="nl-tool" data-tool="focus" aria-pressed="false" title="Only the question: hide the menu and chapters ( F )">' + ICON_FOCUS + '<span>Focus</span></button>' : "") +
+      "</div>";
+    var header = document.querySelector(".nl-header");
+    (header && header.nextSibling ? header.parentNode.insertBefore(bar, header.nextSibling) : body.insertBefore(bar, side.nextSibling));
+
+    function crumbs() {
+      var list = bar.querySelector(".nl-crumbs");
+      var parts = ['<li><a href="index.html">Home</a></li>'];
+      var here = side.querySelector('.nl-side-paper[aria-current="page"]');
+      if (here) {
+        var group = here.closest("details");
+        var title = group;
+        while (title && !(title.classList && title.classList.contains("nl-side-title"))) title = title.previousElementSibling;
+        if (title) parts.push("<li>" + esc(title.textContent) + "</li>");
+        if (group) {
+          var first = group.querySelector(".nl-side-paper");
+          parts.push('<li><a href="' + esc(first.getAttribute("href")) + '">' + esc(group.querySelector("summary").textContent.trim()) + "</a></li>");
+        }
+        parts.push('<li aria-current="page">' + esc(here.querySelector("b").textContent) + " · " + esc(here.querySelector("small").textContent) + "</li>");
+      }
+      list.innerHTML = parts.join("");
+    }
+
+    function apply() {
+      body.classList.toggle("nl-side-hidden", !!prefs.sideHidden || !!prefs.focus);
+      body.classList.toggle("nl-rail-hidden", !!rail && (!!prefs.railHidden || !!prefs.focus));
+      body.classList.toggle("nl-focus", !!rail && !!prefs.focus);
+      var set = function (tool, on) { var b = bar.querySelector('[data-tool="' + tool + '"]'); if (b) b.setAttribute("aria-pressed", String(on)); };
+      set("side", !(prefs.sideHidden || prefs.focus));
+      set("rail", !(prefs.railHidden || prefs.focus));
+      set("focus", !!prefs.focus);
+      writePrefs(prefs);
+    }
+
+    function toggle(tool) {
+      if (tool === "side") {
+        if (prefs.focus) { prefs.focus = false; prefs.sideHidden = false; } else prefs.sideHidden = !prefs.sideHidden;
+      } else if (tool === "rail") {
+        if (prefs.focus) { prefs.focus = false; prefs.railHidden = false; } else prefs.railHidden = !prefs.railHidden;
+      } else if (tool === "focus") {
+        prefs.focus = !prefs.focus;
+      }
+      apply();
+    }
+
+    bar.addEventListener("click", function (e) {
+      var b = e.target.closest("[data-tool]");
+      if (b) toggle(b.getAttribute("data-tool"));
+    });
+
+    document.addEventListener("keydown", function (e) {
+      var t = e.target;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (t && (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName))) return;
+      if (e.key === "[") { toggle("side"); e.preventDefault(); }
+      else if ((e.key === "f" || e.key === "F") && rail) { toggle("focus"); e.preventDefault(); }
+      else if (e.key === "Escape" && prefs.focus) { prefs.focus = false; apply(); }
+    });
+
+    crumbs();
+    window.addEventListener("hashchange", function () { setTimeout(crumbs, 0); });
+    apply();
+  }
 
   // Left sidebar on wide screens, built from the header's links so the two never disagree.
   // Each header dropdown (IGCSE, A Level) becomes a section, split by subject using the page the link points to.
