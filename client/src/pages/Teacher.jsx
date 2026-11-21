@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../api.js';
 import { isAdmin, useAuth } from '../auth.jsx';
 import Icon from '../components/Icon.jsx';
@@ -25,9 +25,13 @@ export default function Teacher() {
   const [paperCols, setPaperCols] = useState([]);
   const [overview, setOverview] = useState(null);
   const [error, setError] = useState('');
+  const [params] = useSearchParams();
   const [search, setSearch] = useState('');
-  const [klass, setKlass] = useState('');
-  const [status, setStatus] = useState('approved');
+  // ?class=12A and ?status=pending come from the class cards on the teacher's main page.
+  const [klass, setKlass] = useState(params.get('class') || '');
+  const [status, setStatus] = useState(['approved', 'pending', 'rejected'].includes(params.get('status')) ? params.get('status') : 'approved');
+  // The paper columns show one subject at a time, so the table stays readable.
+  const [subject, setSubject] = useState('');
 
   const load = () => Promise.all([api('/teacher/students'), api('/teacher/overview')])
     .then(([s, o]) => { setStudents(s.students); setPaperCols(s.papers); setOverview(o); })
@@ -59,12 +63,21 @@ export default function Teacher() {
   const earned = approved.reduce((t, s) => t + s.earned, 0);
   const available = approved.reduce((t, s) => t + s.available, 0);
   const classes = [...new Set(students.map((s) => s.class_name))].sort();
+  const subjectNames = [...new Set(paperCols.map((p) => p.subject_name || 'Papers'))];
+  const shownSubject = subjectNames.includes(subject) ? subject : subjectNames[0] || '';
+  const cols = paperCols.filter((p) => (p.subject_name || 'Papers') === shownSubject);
+  // "A Level Chemistry Paper 4" → "Paper 4": the subject is already chosen above the table.
+  const colLabel = (p) => p.label.replace(/^.*?(Paper \d+)$/, '$1');
+  // The paper this student scores lowest on (among papers with answers), within the chosen subject.
+  const weakest = (s) => cols
+    .map((p) => ({ p, row: s.papers.find((x) => x.paper === p.number) }))
+    .filter(({ row }) => row && row.available > 0)
+    .sort((a, b) => a.row.earned / a.row.available - b.row.earned / b.row.available)[0];
   const subjects = isAdmin(user) ? 'All subjects (administrator)' : (user.teaches.map((t) => t.name).join(', ') || 'No subject assigned yet');
 
   return (
     <div className="stack-lg">
       <section className="card hero-card">
-        <p className="eyebrow">Teacher dashboard</p>
         <h1>My students</h1>
         <p className="muted">{subjects}</p>
       </section>
@@ -135,9 +148,14 @@ export default function Teacher() {
             <option value="">All classes</option>
             {classes.map((c) => <option key={c} value={c}>{c || 'No class'}</option>)}
           </select>
-          <div className="seg">
+          {subjectNames.length > 1 && (
+            <select value={shownSubject} onChange={(e) => setSubject(e.target.value)} aria-label="Subject for the paper columns">
+              {subjectNames.map((n) => <option key={n} value={n}>{n}</option>)}
+            </select>
+          )}
+          <div className="seg" role="group" aria-label="Account status">
             {[['approved', 'Active'], ['pending', 'Pending'], ['rejected', 'Blocked']].map(([v, l]) => (
-              <button type="button" key={v} className={status === v ? 'on' : ''} onClick={() => setStatus(v)}>{l}</button>
+              <button type="button" key={v} aria-pressed={status === v} className={status === v ? 'on' : ''} onClick={() => setStatus(v)}>{l}</button>
             ))}
           </div>
         </div>
@@ -148,7 +166,8 @@ export default function Teacher() {
               <thead>
                 <tr>
                   <th>Student</th><th>Class</th><th>Answered</th><th>Score</th>
-                  {paperCols.map((p) => <th key={p.number} title={p.label}>{p.label.replace('IGCSE Paper ', 'IG').replace('A Level Chemistry Paper ', 'ACh').replace('A Level Biology Paper ', 'ABi').replace('Chemistry Paper ', 'Ch').replace('Paper ', 'P')}</th>)}<th>Last 7 days</th><th>Last active</th><th />
+                  {cols.map((p) => <th key={p.number} title={p.label} className="num">{colLabel(p)}</th>)}
+                  <th>Weakest paper</th><th className="num">Last 7 days</th><th>Last active</th><th><span className="visually-hidden">Actions</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -163,12 +182,13 @@ export default function Teacher() {
                     <td>{s.class_name}</td>
                     <td>{s.answered}</td>
                     <td className="score-cell"><Meter earned={s.earned} available={s.available} /></td>
-                    {paperCols.map(({ number: p }) => {
+                    {cols.map(({ number: p }) => {
                       const row = s.papers.find((x) => x.paper === p);
                       const v = row ? pct(row.earned, row.available) : null;
-                      return <td key={p}><PctChip value={v} /></td>;
+                      return <td key={p} className="num"><PctChip value={v} /></td>;
                     })}
-                    <td>{s.week_attempts} tries</td>
+                    <td>{(() => { const w = weakest(s); return w ? <span>{colLabel(w.p)} <span className="muted small">· {pct(w.row.earned, w.row.available)}%</span></span> : <span className="muted">—</span>; })()}</td>
+                    <td className="num">{s.week_attempts}</td>
                     <td className="muted small">{timeAgo(s.last_attempt || s.last_seen_at)}</td>
                     <td><div className="row nowrap">
                       <Link to={`/teacher/student/${s.id}`} className="btn sm">View</Link>

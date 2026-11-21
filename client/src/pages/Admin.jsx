@@ -4,6 +4,7 @@ import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../components/Icon.jsx';
 import { initials } from '../components/Layout.jsx';
+import SubjectPicker, { GradeSelect, choicesOf, choicesProblem } from '../components/SubjectPicker.jsx';
 import { Stat, timeAgo } from './Teacher.jsx';
 
 const ROLE_LABELS = { student: 'Student', teacher: 'Teacher', admin: 'Admin', super_admin: 'Super admin' };
@@ -156,7 +157,7 @@ export default function Admin() {
 
 function UserRow({ u, me, roles, superAdmin, editing, options, onEdit, onSave, onStatus, onRole, onPassword, onDelete }) {
   const details = u.role === 'student'
-    ? [u.class_name && `Class ${u.class_name}`, u.subject_name, u.teacher_name && `Teacher: ${u.teacher_name}`].filter(Boolean).join(' · ')
+    ? [u.grade && `Grade ${u.grade}`, u.class_name && `Class ${u.class_name}`, u.subject_name, u.teacher_name && `Teacher: ${u.teacher_name}`].filter(Boolean).join(' · ')
     : u.role === 'teacher'
       ? [u.teaches.map((t) => t.name).join(', ') || 'No subjects', `${u.student_count} student${u.student_count === 1 ? '' : 's'}`].join(' · ')
       : u.created_by_name ? `Appointed by ${u.created_by_name}` : '';
@@ -206,15 +207,21 @@ function UserRow({ u, me, roles, superAdmin, editing, options, onEdit, onSave, o
 
 function EditUser({ u, options, onSave, onCancel }) {
   const [f, setF] = useState({
-    name: u.name, email: u.email || '', class_name: u.class_name, subject_id: u.subject_id || '', teacher_id: u.teacher_id || '',
+    name: u.name, email: u.email || '', class_name: u.class_name, grade: String(u.grade || ''),
     subjects: u.teaches.map((t) => t.id),
   });
+  const [choices, setChoices] = useState(() => choicesOf(u));
+  const [problem, setProblem] = useState('');
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
-  const teachers = options.teachers.filter((t) => t.subject_ids.includes(Number(f.subject_id)));
   const submit = (e) => {
     e.preventDefault();
     const body = { name: f.name, email: f.email };
-    if (u.role === 'student') Object.assign(body, { class_name: f.class_name, subject_id: Number(f.subject_id), teacher_id: Number(f.teacher_id) });
+    if (u.role === 'student') {
+      const p = choicesProblem(f.grade, choices);
+      setProblem(p);
+      if (p) return;
+      Object.assign(body, { class_name: f.class_name, grade: Number(f.grade), subjects: choices });
+    }
     if (u.role === 'teacher') body.subjects = f.subjects;
     onSave(body);
   };
@@ -225,23 +232,12 @@ function EditUser({ u, options, onSave, onCancel }) {
         <label>Email<input type="email" value={f.email} onChange={set('email')} /></label>
         {u.role === 'student' && <label>Class<input value={f.class_name} onChange={set('class_name')} required /></label>}
         {u.role === 'student' && (
-          <label>Subject
-            <select value={f.subject_id} onChange={(e) => setF({ ...f, subject_id: e.target.value, teacher_id: '' })} required>
-              <option value="">Choose…</option>
-              {options.subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-            </select>
-          </label>
-        )}
-        {u.role === 'student' && (
-          <label>Teacher
-            <select value={f.teacher_id} onChange={set('teacher_id')} required>
-              <option value="">Choose…</option>
-              {teachers.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-            </select>
-          </label>
+          <GradeSelect value={f.grade} onChange={(grade) => setF({ ...f, grade })} subjects={options.subjects} choices={choices} onChoices={setChoices} />
         )}
       </div>
+      {u.role === 'student' && <SubjectPicker grade={f.grade} subjects={options.subjects} teachers={options.teachers} value={choices} onChange={setChoices} />}
       {u.role === 'teacher' && <SubjectChecks subjects={options.subjects} value={f.subjects} onChange={(subjects) => setF({ ...f, subjects })} />}
+      {problem && <p className="error">{problem}</p>}
       <div className="row">
         <button type="submit" className="btn primary sm">Save</button>
         <button type="button" className="btn ghost sm" onClick={onCancel}>Cancel</button>
@@ -270,15 +266,21 @@ function SubjectChecks({ subjects, value, onChange }) {
 function NewUser({ roles, options, onCreate, onCancel }) {
   const [f, setF] = useState({
     role: roles.includes('teacher') ? 'teacher' : roles[0], name: '', username: '', email: '', password: '',
-    subjects: [], class_name: '', subject_id: '', teacher_id: '',
+    subjects: [], class_name: '', grade: '',
   });
+  const [choices, setChoices] = useState([]);
+  const [problem, setProblem] = useState('');
   const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
-  const teachers = options.teachers.filter((t) => t.subject_ids.includes(Number(f.subject_id)));
   const submit = (e) => {
     e.preventDefault();
     const body = { role: f.role, name: f.name, username: f.username, email: f.email, password: f.password };
     if (f.role === 'teacher') body.subjects = f.subjects;
-    if (f.role === 'student') Object.assign(body, { class_name: f.class_name, subject_id: Number(f.subject_id), teacher_id: Number(f.teacher_id) });
+    if (f.role === 'student') {
+      const p = choicesProblem(f.grade, choices);
+      setProblem(p);
+      if (p) return;
+      Object.assign(body, { class_name: f.class_name, grade: Number(f.grade), subjects: choices });
+    }
     onCreate(body);
   };
   return (
@@ -296,23 +298,12 @@ function NewUser({ roles, options, onCreate, onCancel }) {
         <label>Password<input type="text" value={f.password} onChange={set('password')} minLength={8} required autoComplete="new-password" /></label>
         {f.role === 'student' && <label>Class<input value={f.class_name} onChange={set('class_name')} required /></label>}
         {f.role === 'student' && (
-          <label>Subject
-            <select value={f.subject_id} onChange={(e) => setF({ ...f, subject_id: e.target.value, teacher_id: '' })} required>
-              <option value="">Choose…</option>
-              {options.subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-            </select>
-          </label>
-        )}
-        {f.role === 'student' && (
-          <label>Teacher
-            <select value={f.teacher_id} onChange={set('teacher_id')} required>
-              <option value="">Choose…</option>
-              {teachers.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-            </select>
-          </label>
+          <GradeSelect value={f.grade} onChange={(grade) => setF({ ...f, grade })} subjects={options.subjects} choices={choices} onChoices={setChoices} />
         )}
       </div>
+      {f.role === 'student' && <SubjectPicker grade={f.grade} subjects={options.subjects} teachers={options.teachers} value={choices} onChange={setChoices} />}
       {f.role === 'teacher' && <SubjectChecks subjects={options.subjects} value={f.subjects} onChange={(subjects) => setF({ ...f, subjects })} />}
+      {problem && <p className="error">{problem}</p>}
       {(f.role === 'admin' || f.role === 'super_admin') && (
         <p className="muted small">{f.role === 'admin' ? 'Admins can see everything and manage teachers and students.' : 'Super admins can do everything, including managing admins.'}</p>
       )}

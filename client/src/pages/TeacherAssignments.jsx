@@ -24,15 +24,19 @@ export default function TeacherAssignments() {
       <section className="card hero-card">
         <div className="row spread">
           <div>
-            <p className="eyebrow">Teacher</p>
             <h1>Assignments</h1>
-            <p className="muted">{isAdmin(user) ? 'Every teacher\'s assignments.' : 'Quizzes you set for your students.'}</p>
+            <p className="muted">{isAdmin(user) ? 'Every teacher\'s assignments and mock exams.' : 'Practice quizzes and timed mock exams for your students.'}</p>
           </div>
-          {!creating && <button type="button" className="btn primary" onClick={() => setCreating(true)}><Icon name="list" /> New assignment</button>}
+          {!creating && (
+            <div className="row">
+              <button type="button" className="btn primary" onClick={() => setCreating('mock')}><Icon name="clock" /> New mock exam</button>
+              <button type="button" className="btn" onClick={() => setCreating('practice')}><Icon name="list" /> New assignment</button>
+            </div>
+          )}
         </div>
       </section>
 
-      {creating && <NewAssignment onCancel={() => setCreating(false)} />}
+      {creating && <NewAssignment kind={creating} onCancel={() => setCreating(false)} />}
 
       <section className="card">
         {list.length === 0 ? <p className="muted">No assignments yet. Press “New assignment” to set one.</p> : (
@@ -40,13 +44,16 @@ export default function TeacherAssignments() {
             <table className="table">
               <thead>
                 <tr>
-                  <th>Title</th>{isAdmin(user) && <th>Teacher</th>}<th>Questions</th><th>Due</th><th>Started</th><th>Handed in</th><th>Set</th>
+                  <th>Title</th><th>Type</th>{isAdmin(user) && <th>Teacher</th>}<th>Questions</th><th>Due</th><th>Started</th><th>Handed in</th><th>Set</th>
                 </tr>
               </thead>
               <tbody>
                 {list.map((a) => (
                   <tr key={a.id}>
                     <td><Link to={`/teacher/assignments/${a.id}`}><b>{a.title}</b></Link></td>
+                    <td>{a.kind === 'mock'
+                      ? <span className="row nowrap"><span className="badge">Mock · {a.time_limit_min} min</span>{a.results_released_at ? <span className="badge ok">Results out</span> : a.submitted > 0 ? <span className="badge warn">To mark</span> : null}</span>
+                      : <span className="muted">Practice</span>}</td>
                     {isAdmin(user) && <td>{a.teacher_name}</td>}
                     <td>{a.questions} · {a.marks} marks</td>
                     <td>{a.due_at ? formatDate(a.due_at) : <span className="muted">—</span>}</td>
@@ -64,10 +71,14 @@ export default function TeacherAssignments() {
   );
 }
 
-function NewAssignment({ onCancel }) {
+function NewAssignment({ kind: startKind = 'practice', onCancel }) {
   const navigate = useNavigate();
   const papers = usePapers();
   const [form, setForm] = useState({ title: '', instructions: '', due_at: '' });
+  const [kind, setKind] = useState(startKind);
+  // Minutes for a mock exam: suggested from the marks picked (Cambridge papers allow about 1.2 minutes a mark)
+  // until the teacher types their own.
+  const [minutes, setMinutes] = useState('');
   const [picked, setPicked] = useState([]); // questions, in the order chosen
   const [studentIds, setStudentIds] = useState([]);
   const [students, setStudents] = useState(null);
@@ -93,6 +104,8 @@ function NewAssignment({ onCancel }) {
           title: form.title,
           instructions: form.instructions,
           due_at: form.due_at ? new Date(form.due_at).toISOString() : null,
+          kind,
+          time_limit_min: kind === 'mock' ? Number(minutes || suggested) : undefined,
           question_ids: picked.map((q) => q.id),
           student_ids: studentIds,
         },
@@ -104,11 +117,29 @@ function NewAssignment({ onCancel }) {
     }
   };
 
+  const totalMarks = picked.reduce((t, q) => t + (q.marks || 0), 0);
+  const suggested = Math.min(300, Math.max(5, Math.round(totalMarks * 1.2)));
+
   return (
     <form className="card stack" onSubmit={submit}>
-      <h2>New assignment</h2>
+      <h2>{kind === 'mock' ? 'New mock exam' : 'New assignment'}</h2>
+      <div className="seg" role="group" aria-label="Type">
+        <button type="button" aria-pressed={kind === 'mock'} className={kind === 'mock' ? 'on' : ''} onClick={() => setKind('mock')}>Mock exam</button>
+        <button type="button" aria-pressed={kind === 'practice'} className={kind === 'practice' ? 'on' : ''} onClick={() => setKind('practice')}>Practice</button>
+      </div>
+      <p className="muted small">
+        {kind === 'mock'
+          ? 'Sat like the real exam: timed, no mark scheme and no marking while it runs. Answers lock when time is up. The AI suggests a mark for each answer, you confirm or change it, then release the results.'
+          : 'Students answer at their own pace and mark each answer themselves or with the AI marker.'}
+      </p>
       <div className="grid two">
-        <label>Title<input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="e.g. Week 5 – Networks quiz" required /></label>
+        <label>Title<input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder={kind === 'mock' ? 'e.g. Paper 1 mock – March' : 'e.g. Week 5 – Networks quiz'} required /></label>
+        {kind === 'mock' && (
+          <label>Time limit (minutes)
+            <input type="number" min={5} max={300} value={minutes} placeholder={String(suggested)} onChange={(e) => setMinutes(e.target.value)} />
+            <span className="label-note">{totalMarks ? `${totalMarks} marks picked · suggested ${suggested} min` : 'Pick questions to get a suggestion'}</span>
+          </label>
+        )}
         <label>Due <span className="label-note">(optional)</span><input type="datetime-local" value={form.due_at} onChange={(e) => setForm({ ...form, due_at: e.target.value })} /></label>
       </div>
       <label>Instructions <span className="label-note">(optional)</span>
@@ -120,7 +151,7 @@ function NewAssignment({ onCancel }) {
 
       {error && <p className="error">{error}</p>}
       <div className="row">
-        <button type="submit" className="btn primary" disabled={saving}>{saving ? 'Saving…' : `Set assignment (${picked.length} question${picked.length === 1 ? '' : 's'}, ${studentIds.length} student${studentIds.length === 1 ? '' : 's'})`}</button>
+        <button type="submit" className="btn primary" disabled={saving}>{saving ? 'Saving…' : `${kind === 'mock' ? 'Set mock exam' : 'Set assignment'} (${picked.length} question${picked.length === 1 ? '' : 's'}, ${totalMarks} marks, ${studentIds.length} student${studentIds.length === 1 ? '' : 's'})`}</button>
         <button type="button" className="btn ghost" onClick={onCancel}>Cancel</button>
       </div>
     </form>

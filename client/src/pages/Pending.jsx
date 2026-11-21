@@ -16,7 +16,6 @@ export default function Pending() {
     <div className="pending">
       <div className="card hero-card center-text">
         <span className="icon-tile big"><Icon name="hourglass" size={30} /></span>
-        <p className="eyebrow">Almost there</p>
         <h1>Waiting for your teacher</h1>
         <p className="muted">
           Your account has been created. <b>{user.teacher_name || 'Your teacher'}</b> needs to approve it before you can start
@@ -24,8 +23,9 @@ export default function Pending() {
         </p>
         <dl className="facts">
           <div><dt>Login name</dt><dd>@{user.username}</dd></div>
-          <div><dt>Subject</dt><dd>{user.subject_name || '—'}</dd></div>
-          <div><dt>Teacher</dt><dd>{user.teacher_name || '—'}</dd></div>
+          <div><dt>Grade</dt><dd>{user.grade || '—'}</dd></div>
+          <div><dt>{user.subjects?.length > 1 ? 'Subjects' : 'Subject'}</dt><dd>{user.subject_name || '—'}</dd></div>
+          <div><dt>{user.teacher_name?.includes(',') ? 'Teachers' : 'Teacher'}</dt><dd>{user.teacher_name || '—'}</dd></div>
           <div><dt>Class</dt><dd>{user.class_name || '—'}</dd></div>
         </dl>
         <div className="row center-row">

@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api } from '../api.js';
 import Markdown from '../components/Markdown.jsx';
+import { MarksTag, MarksHint } from '../components/Marks.jsx';
 import { ScoreBadge } from '../components/Meter.jsx';
+import Icon from '../components/Icon.jsx';
+import Verdict from '../components/Verdict.jsx';
+import MockExam from './MockExam.jsx';
 import { CODE_TYPES, Figures, isContextFigure } from './Question.jsx';
 import { dueStatus, formatDate } from './MyAssignments.jsx';
 
@@ -16,12 +20,16 @@ export default function AssignmentWork() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    api(`/assignments/${id}`).then(setData).catch((e) => setError(e.message));
-  }, [id]);
+  const load = () => api(`/assignments/${id}`).then(setData).catch((e) => setError(e.message));
+  useEffect(() => { load(); }, [id]);
 
   if (error && !data) return <p className="error">{error}</p>;
   if (!data) return <p className="muted">Loading…</p>;
+  // Mock exams have their own timed screen; `key` remounts it when its stage changes.
+  if (data.assignment.kind === 'mock') {
+    const stage = `${data.assignment.started_at}|${data.assignment.submitted_at}|${data.assignment.results_released_at}`;
+    return <MockExam key={stage} initial={data} reload={load} />;
+  }
 
   const { assignment: a, questions } = data;
   const locked = Boolean(a.submitted_at);
@@ -81,7 +89,7 @@ export default function AssignmentWork() {
                 <button type="button" className={`rail-item ${i === current ? 'active' : ''}`} onClick={() => setCurrent(i)}>
                   <span className="row spread nowrap">
                     <b>{i + 1}. {x.exam_label} · Q{x.label}</b>
-                    <ScoreBadge awarded={x.my_attempt?.awarded} marks={x.marks} />
+                    <ScoreBadge awarded={x.my_attempt?.awarded} marks={x.marks} markedBy={x.my_attempt?.marked_by} />
                   </span>
                   <span className="muted small">{x.paper_label} · {x.subtopic}</span>
                 </button>
@@ -97,6 +105,7 @@ export default function AssignmentWork() {
             q={q}
             number={current + 1}
             locked={locked}
+            aiMarking={data.ai_marking}
             onSaved={saved}
             onNext={current < questions.length - 1 ? () => setCurrent(current + 1) : null}
           />
@@ -106,14 +115,18 @@ export default function AssignmentWork() {
   );
 }
 
-function AssignmentQuestion({ assignmentId, q, number, locked, onSaved, onNext }) {
+function AssignmentQuestion({ assignmentId, q, number, locked, aiMarking, onSaved, onNext }) {
   const ctxFigs = (q.figures || []).filter(isContextFigure);
   const partFigs = (q.figures || []).filter((f) => !isContextFigure(f));
   const code = CODE_TYPES.has(q.answer_type);
   const previous = q.my_attempt;
   const [answer, setAnswer] = useState(() => localStorage.getItem(draftKey(assignmentId, q.id)) ?? previous?.answer ?? '');
-  // answer → marking → saved. Questions already answered (or a handed-in assignment) open on the saved mark.
-  const [phase, setPhase] = useState(previous || locked ? 'saved' : 'answer');
+  // answer → marking → saved (marking it myself), or answer → checked (the AI marker said correct or not).
+  // Questions already answered (or a handed-in assignment) open on the saved result.
+  const aiChecked = previous && (previous.marked_by === 'ai' || previous.marked_by === 'auto');
+  const [phase, setPhase] = useState(aiChecked ? 'checked' : previous || locked ? 'saved' : 'answer');
+  const [correct, setCorrect] = useState(aiChecked ? previous.awarded >= previous.marks : null);
+  const [checking, setChecking] = useState(false);
   const [ticked, setTicked] = useState(previous?.ticked || []);
   const [awarded, setAwarded] = useState(previous?.awarded || 0);
   const [touchedScore, setTouchedScore] = useState(false);
@@ -149,8 +162,27 @@ function AssignmentQuestion({ assignmentId, q, number, locked, onSaved, onNext }
     }
   };
 
+  const check = async () => {
+    setChecking(true);
+    setError('');
+    try {
+      const d = await api(`/assignments/${assignmentId}/questions/${q.id}/check`, { method: 'POST', body: { answer } });
+      localStorage.removeItem(draftKey(assignmentId, q.id));
+      onSaved(d.attempt);
+      setCorrect(d.correct);
+      setTicked(d.attempt.ticked || []);
+      setAwarded(d.attempt.awarded ?? 0);
+      setPhase('checked');
+    } catch (e) {
+      setError(e.message);
+    } finally {
+      setChecking(false);
+    }
+  };
+
   const retry = () => {
     setPhase('answer');
+    setCorrect(null);
     setTicked([]);
     setAwarded(0);
     setTouchedScore(false);
@@ -171,9 +203,11 @@ function AssignmentQuestion({ assignmentId, q, number, locked, onSaved, onNext }
       )}
       <div className="card">
         {partFigs.length ? <Figures list={partFigs} alt={q.prompt} /> : <Markdown>{q.prompt}</Markdown>}
+        <MarksTag marks={q.marks} />
       </div>
 
       <label className="answer">
+        {phase === 'answer' && <MarksHint marks={q.marks} type={q.answer_type} />}
         <span className="muted small">Your answer {phase === 'answer' && '(saved as a draft while you type)'}</span>
         <textarea
           className={code ? 'mono' : ''}
@@ -186,21 +220,40 @@ function AssignmentQuestion({ assignmentId, q, number, locked, onSaved, onNext }
       </label>
 
       {phase === 'answer' && (
-        <div className="row">
-          <button type="button" className="primary" onClick={() => setPhase('marking')}>Mark my answer</button>
-          <span className="muted small">You will tick the mark-scheme points your answer covers.</span>
-        </div>
+        <>
+          <div className="row">
+            {aiMarking && (
+              <button type="button" className="primary" onClick={check} disabled={checking || !answer.trim()}>
+                {checking ? 'Checking…' : 'Check my answer'}
+              </button>
+            )}
+            <button type="button" className={aiMarking ? undefined : 'primary'} onClick={() => setPhase('marking')} disabled={checking}>
+              {aiMarking ? 'Mark it myself' : 'Mark my answer'}
+            </button>
+            <span className="muted small">
+              {aiMarking
+                ? 'Check my answer: the AI marker gives you a mark and shows which mark-scheme points you made.'
+                : 'You will tick the mark-scheme points your answer covers.'}
+            </span>
+          </div>
+          {error && <p className="error">{error}</p>}
+        </>
       )}
 
       {phase !== 'answer' && (
         <section className="card scheme">
+          {phase === 'checked' && <Verdict awarded={awarded} marks={q.marks} criteria={q.criteria} ticked={ticked} />}
           <h2>Mark scheme</h2>
-          <p className="muted small">Tick each point your answer clearly makes.{q.max_note && ` ${q.max_note}.`}</p>
-          <ul className="plain criteria">
+          <p className="muted small">
+            {phase === 'checked' ? 'Ticked points are the ones your answer made.' : 'Tick each point your answer clearly makes.'}
+            {q.max_note && ` ${q.max_note}.`}
+          </p>
+          <ul className={`plain criteria${phase === 'checked' ? ' read-only' : ''}`}>
             {q.criteria.map((c, i) => (
               <li key={i}>
-                <label className={ticked.includes(i) ? 'checked' : ''}>
-                  <input type="checkbox" checked={ticked.includes(i)} onChange={() => toggle(i)} disabled={phase === 'saved'} />
+                <label className={phase === 'checked' ? (ticked.includes(i) ? 'met' : 'missed') : ticked.includes(i) ? 'checked' : ''}>
+                  {phase === 'checked' && <Icon name={ticked.includes(i) ? 'check' : 'x'} size={16} className={ticked.includes(i) ? 'met-icon' : 'missed-icon'} />}
+                  {phase !== 'checked' && <input type="checkbox" checked={ticked.includes(i)} onChange={() => toggle(i)} disabled={phase === 'saved'} />}
                   <span>
                     {c.point}
                     {c.key_terms?.length > 0 && <span className="terms">{c.key_terms.map((t) => <code key={t}>{t}</code>)}</span>}
@@ -225,6 +278,13 @@ function AssignmentQuestion({ assignmentId, q, number, locked, onSaved, onNext }
             </details>
           )}
 
+          {phase === 'checked' && (
+            <div className="row">
+              {!locked && <button type="button" onClick={retry}>Try again</button>}
+              {onNext && <button type="button" className="primary" onClick={onNext}>Next question</button>}
+            </div>
+          )}
+          {phase !== 'checked' && (
           <div className="score row">
             <span>Your mark</span>
             <button type="button" onClick={() => { setTouchedScore(true); setAwarded(Math.max(0, awarded - 1)); }} disabled={phase === 'saved' || awarded <= 0}>−</button>
@@ -232,6 +292,7 @@ function AssignmentQuestion({ assignmentId, q, number, locked, onSaved, onNext }
             <button type="button" onClick={() => { setTouchedScore(true); setAwarded(Math.min(q.marks, awarded + 1)); }} disabled={phase === 'saved' || awarded >= q.marks}>+</button>
             {phase === 'marking' && <button type="button" className="primary" onClick={save} disabled={saving}>{saving ? 'Saving…' : 'Save mark'}</button>}
           </div>
+          )}
           {error && <p className="error">{error}</p>}
           {phase === 'saved' && (
             <div className="row">

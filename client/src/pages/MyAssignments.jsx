@@ -8,6 +8,8 @@ export const formatDate = (d) => new Date(d).toLocaleString([], { dateStyle: 'me
 
 // Where a student stands on an assignment: handed in, overdue, or due soon.
 export function dueStatus(a) {
+  if (a.kind === 'mock' && a.results_released_at && a.submitted_at) return { tone: 'ok', text: 'Results out' };
+  if (a.kind === 'mock' && !a.submitted_at && a.started_at) return { tone: 'warn', text: 'In progress' };
   if (a.submitted_at) {
     const late = a.due_at && new Date(a.submitted_at) > new Date(a.due_at);
     return { tone: late ? 'warn' : 'ok', text: late ? 'Handed in late' : 'Handed in' };
@@ -66,10 +68,23 @@ function AssignmentList({ title, items }) {
                   <b>{a.title}</b>
                   <span className={`badge ${due.tone}`}>{due.text}</span>
                 </span>
-                <Meter earned={a.earned} available={a.answered ? a.marks : 0} />
-                <span className="muted small">
-                  <Icon name="list" size={14} /> {a.answered} / {a.questions} questions answered · {a.earned} / {a.marks} marks · from {a.teacher_name}
-                </span>
+                {a.kind === 'mock' ? (
+                  <span className="muted small">
+                    <Icon name="clock" size={14} /> Mock exam · {a.time_limit_min} minutes · {a.questions} questions · {a.marks} marks · from {a.teacher_name}
+                    <br />
+                    {a.results_released_at && a.submitted_at
+                      ? <b className="mock-result">Your result: {a.mock_earned} / {a.marks} ({Math.round((a.mock_earned / a.marks) * 100)}%)</b>
+                      : a.submitted_at ? 'Handed in · waiting for your teacher to mark it'
+                        : a.started_at ? `In progress · ${a.mock_answered} of ${a.questions} answered` : 'Not started · the clock starts when you press Start'}
+                  </span>
+                ) : (
+                  <>
+                    <Meter earned={a.earned} available={a.answered ? a.marks : 0} />
+                    <span className="muted small">
+                      <Icon name="list" size={14} /> {a.answered} / {a.questions} questions answered · {a.earned} / {a.marks} marks · from {a.teacher_name}
+                    </span>
+                  </>
+                )}
               </Link>
             </li>
           );

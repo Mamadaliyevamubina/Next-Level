@@ -29,7 +29,9 @@ export function AuthProvider({ children }) {
     if (!getToken()) return;
     try {
       const d = await api('/auth/me');
-      if (d.user.subject_id !== userRef.current?.subject_id || d.user.status !== userRef.current?.status) clearPapers();
+      // Different subjects or a new approval status mean a different list of papers.
+      const subjectsKey = (u) => (u?.subjects || []).map((s) => s.subject_id).join(',');
+      if (subjectsKey(d.user) !== subjectsKey(userRef.current) || d.user.status !== userRef.current?.status) clearPapers();
       setUser(d.user);
     } catch {
       // A failed refresh either logged the user out (401) or is a network blip; keep current state.

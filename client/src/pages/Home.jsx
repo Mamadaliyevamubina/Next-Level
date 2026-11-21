@@ -3,13 +3,6 @@ import { useAuth } from '../auth.jsx';
 import { COURSE_INFO, fmt, sortCourses, useCatalog } from '../catalog.js';
 import Icon from '../components/Icon.jsx';
 
-const FEATURES = [
-  ['book', 'Every topic', 'Questions grouped by syllabus chapter and subtopic, from every recent paper.'],
-  ['check', 'Real mark schemes', "Tick the examiner's mark points your answer makes and see the model answer."],
-  ['chart', 'Track progress', 'See your score per topic and find the subtopics that lose you marks.'],
-  ['users', 'With your teacher', 'Your teacher approves your account and sees your progress and weak spots.'],
-];
-
 const STEPS = [
   ['Pick a topic', 'Choose a paper, then a chapter or subtopic you want to work on.'],
   ['Answer like the exam', 'Write your answer before you look at anything else.'],
@@ -40,7 +33,7 @@ function Course({ course }) {
   const n = course.papers.length;
   const cols = n <= 2 ? 'two' : n === 4 ? 'four' : 'three';
   return (
-    <section className="h-course" id={`course-${course.code}`}>
+    <section className={`h-course line-${/^(0620|9701)/.test(course.code) ? 'chem' : /^9700/.test(course.code) ? 'bio' : 'cs'}`} id={`course-${course.code}`}>
       <div className="h-course-head">
         <div>
           <span className="h-label">{info.eyebrow}</span>
@@ -67,7 +60,6 @@ export default function Home() {
     <div className="home">
       <section className="h-hero">
         <div>
-          <span className="h-eyebrow">Dombit International School · IGCSE &amp; A Level</span>
           <h1>Practise smarter.<br /><span>Reach the next level.</span></h1>
           <p>Cambridge IGCSE and A Level Computer Science, Chemistry and Biology past-paper questions, sorted by topic and checked against the official mark scheme point by point.</p>
           <div className="h-cta">
@@ -85,6 +77,7 @@ export default function Home() {
             <div><b>{courses ? paperCount : '…'}</b><span>papers, {courses ? list.length : '…'} courses</span></div>
             <div><b>2021–2026</b><span>past papers</span></div>
           </div>
+          <p className="h-school">Dombit International School · Cambridge IGCSE &amp; A Level</p>
         </div>
         <div className="h-sample" aria-hidden="true">
           <div className="h-sample-top"><i /><i /><i /><span>0620/22 · Q1 · 1 mark</span></div>
@@ -96,15 +89,6 @@ export default function Home() {
           </div>
           <div className="h-mark"><span>✓ Largest M<sub>r</sub> diffuses slowest</span><b>1 / 1</b></div>
         </div>
-      </section>
-
-      <section className="h-features" aria-label="What you get">
-        {FEATURES.map(([icon, title, text]) => (
-          <div className="h-feature" key={title}>
-            <span className="h-tile"><Icon name={icon} size={22} /></span>
-            <h3>{title}</h3><p>{text}</p>
-          </div>
-        ))}
       </section>
 
       {error && <p className="error h-error">Could not load the courses: {error}</p>}

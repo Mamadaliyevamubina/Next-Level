@@ -16,7 +16,10 @@ import MyAssignments from './pages/MyAssignments.jsx';
 import AssignmentWork from './pages/AssignmentWork.jsx';
 import TeacherAssignments from './pages/TeacherAssignments.jsx';
 import TeacherAssignment from './pages/TeacherAssignment.jsx';
+import MockMarking from './pages/MockMarking.jsx';
 import Admin from './pages/Admin.jsx';
+import TeacherHome from './pages/TeacherHome.jsx';
+import PracticeBank from './pages/PracticeBank.jsx';
 
 // Any page that needs an account sends visitors to log in, then back to that page.
 function LoginFirst() {
@@ -67,16 +70,19 @@ export default function App() {
       <Route path="login" element={<AfterLogin />} />
       <Route path="signup" element={<AfterLogin />} />
       <Route element={<Layout />}>
-        <Route index element={<Dashboard />} />
+        {/* Teachers' main page shows their classes; the question bank has its own section (/practice). */}
+        <Route index element={isTeacher(user) ? <TeacherHome /> : <Dashboard />} />
         <Route path="courses" element={<Home />} />
         <Route path="paper/:paper" element={<Paper />} />
         <Route path="question/:id" element={<Question />} />
         <Route path="bookmarks" element={<Bookmarks />} />
         <Route path="account" element={<Account />} />
+        {isTeacher(user) && <Route path="practice" element={<PracticeBank />} />}
         {isTeacher(user) && <Route path="teacher" element={<Teacher />} />}
         {isTeacher(user) && <Route path="teacher/student/:id" element={<StudentDetail />} />}
         {isTeacher(user) && <Route path="teacher/assignments" element={<TeacherAssignments />} />}
         {isTeacher(user) && <Route path="teacher/assignments/:id" element={<TeacherAssignment />} />}
+        {isTeacher(user) && <Route path="teacher/assignments/:id/mark/:studentId" element={<MockMarking />} />}
         {isStudent(user) && <Route path="assignments" element={<MyAssignments />} />}
         {isStudent(user) && <Route path="assignments/:id" element={<AssignmentWork />} />}
         {isAdmin(user) && <Route path="admin" element={<Admin />} />}

@@ -1,0 +1,725 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-21T13:09:57Z",
+  "title": "Design System: Next Level",
+  "extensions": {
+    "colorMeta": {
+      "metro-blue": {
+        "role": "primary",
+        "displayName": "Metro Blue",
+        "canonical": "#1f4fb4",
+        "purpose": "Actions, links, focus, and the Computer Science line.",
+        "tonalRamp": [
+          "#0b1d41",
+          "#13306d",
+          "#1a4398",
+          "#2256c4",
+          "#4879e0",
+          "#85a6ea",
+          "#becff4",
+          "#e9effb"
+        ]
+      },
+      "metro-blue-ink": {
+        "role": "primary",
+        "displayName": "Metro Blue Ink",
+        "canonical": "#ffffff",
+        "purpose": "Text on metro blue fills.",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#949494",
+          "#b8b8b8",
+          "#d9d9d9",
+          "#f2f2f2"
+        ]
+      },
+      "chemistry-green": {
+        "role": "secondary",
+        "displayName": "Chemistry Green",
+        "canonical": "#138a4a",
+        "purpose": "The Chemistry line only.",
+        "tonalRamp": [
+          "#094324",
+          "#0f703c",
+          "#169d54",
+          "#1cca6c",
+          "#43e58e",
+          "#81eeb4",
+          "#bcf6d7",
+          "#e9fcf2"
+        ]
+      },
+      "biology-red": {
+        "role": "secondary",
+        "displayName": "Biology Red",
+        "canonical": "#c9302c",
+        "purpose": "The Biology line only.",
+        "tonalRamp": [
+          "#3f0f0e",
+          "#691917",
+          "#922320",
+          "#bc2d29",
+          "#d9534f",
+          "#e58c8a",
+          "#f1c1c0",
+          "#faeaea"
+        ]
+      },
+      "here-amber": {
+        "role": "tertiary",
+        "displayName": "Here Amber",
+        "canonical": "#f2a900",
+        "purpose": "You are here: ring on the current station, chapter or question.",
+        "tonalRamp": [
+          "#4c3500",
+          "#805900",
+          "#b27d00",
+          "#e6a000",
+          "#ffbe29",
+          "#ffd470",
+          "#ffe8b2",
+          "#fff7e5"
+        ]
+      },
+      "dombit-purple": {
+        "role": "tertiary",
+        "displayName": "Dombit Purple",
+        "canonical": "#623697",
+        "purpose": "Logo mark only.",
+        "tonalRamp": [
+          "#251438",
+          "#3d225e",
+          "#552f83",
+          "#6e3ca9",
+          "#8f61c7",
+          "#b496d9",
+          "#d7c7eb",
+          "#f2ecf8"
+        ]
+      },
+      "dombit-purple-deep": {
+        "role": "tertiary",
+        "displayName": "Dombit Purple Deep",
+        "canonical": "#260844",
+        "purpose": "Logo mark only (second path).",
+        "tonalRamp": [
+          "#260844",
+          "#400d72",
+          "#5913a0",
+          "#7318cd",
+          "#943fe8",
+          "#b87ff0",
+          "#d9bbf7",
+          "#f2e8fc"
+        ]
+      },
+      "tile-ground": {
+        "role": "neutral",
+        "displayName": "Tile Ground",
+        "canonical": "#f1f2f4",
+        "purpose": "Page background.",
+        "tonalRamp": [
+          "#22252b",
+          "#383d47",
+          "#4f5664",
+          "#656e81",
+          "#8790a1",
+          "#afb5c0",
+          "#d4d7dd",
+          "#f1f2f4"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "White Tile",
+        "canonical": "#ffffff",
+        "purpose": "Cards, sidebar, inputs, menus.",
+        "tonalRamp": [
+          "#262626",
+          "#404040",
+          "#595959",
+          "#737373",
+          "#949494",
+          "#b8b8b8",
+          "#d9d9d9",
+          "#f2f2f2"
+        ]
+      },
+      "surface-sunk": {
+        "role": "neutral",
+        "displayName": "Sunk Tile",
+        "canonical": "#f6f7f9",
+        "purpose": "Hover rows, active station, context blocks, badges.",
+        "tonalRamp": [
+          "#1f242e",
+          "#333b4c",
+          "#47536b",
+          "#5c6b8a",
+          "#7e8da9",
+          "#a9b3c6",
+          "#d1d6e0",
+          "#f0f1f5"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#14181f",
+        "purpose": "Text and headings.",
+        "tonalRamp": [
+          "#1e242e",
+          "#323c4e",
+          "#46546c",
+          "#5a6c8b",
+          "#7d8eab",
+          "#a8b3c7",
+          "#d0d6e1",
+          "#f0f2f5"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#566070",
+        "purpose": "Secondary text and captions.",
+        "tonalRamp": [
+          "#21252b",
+          "#373e48",
+          "#4e5765",
+          "#646f82",
+          "#8691a2",
+          "#aeb5c1",
+          "#d4d8de",
+          "#f1f2f4"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#dcdfe5",
+        "purpose": "1px borders and dividers.",
+        "tonalRamp": [
+          "#21242c",
+          "#363d49",
+          "#4c5566",
+          "#626d84",
+          "#848fa4",
+          "#adb4c2",
+          "#d3d7de",
+          "#f0f2f4"
+        ]
+      },
+      "hairline-strong": {
+        "role": "neutral",
+        "displayName": "Strong Hairline",
+        "canonical": "#b8bec9",
+        "purpose": "Input borders, missed mark points (dashed).",
+        "tonalRamp": [
+          "#21252b",
+          "#373d48",
+          "#4d5665",
+          "#636e82",
+          "#8590a2",
+          "#aeb5c1",
+          "#d4d7de",
+          "#f1f2f4"
+        ]
+      },
+      "ok": {
+        "role": "neutral",
+        "displayName": "Mark Green",
+        "canonical": "#157a3d",
+        "purpose": "Met mark points, full marks.",
+        "tonalRamp": [
+          "#0b4121",
+          "#136d36",
+          "#1a984c",
+          "#22c462",
+          "#48e084",
+          "#85eaad",
+          "#bef4d3",
+          "#e9fbf0"
+        ]
+      },
+      "warn": {
+        "role": "neutral",
+        "displayName": "Warning Brown",
+        "canonical": "#925400",
+        "purpose": "Warnings and part-marks text.",
+        "tonalRamp": [
+          "#4c2c00",
+          "#804900",
+          "#b26700",
+          "#e68400",
+          "#ffa429",
+          "#ffc270",
+          "#ffdfb2",
+          "#fff4e5"
+        ]
+      },
+      "bad": {
+        "role": "neutral",
+        "displayName": "Error Red",
+        "canonical": "#c4232b",
+        "purpose": "Errors.",
+        "tonalRamp": [
+          "#410c0e",
+          "#6c1318",
+          "#971b21",
+          "#c3232b",
+          "#df4951",
+          "#e9868b",
+          "#f3bec1",
+          "#fbe9ea"
+        ]
+      },
+      "station-wall": {
+        "role": "neutral",
+        "displayName": "Station Wall",
+        "canonical": "#14181f",
+        "purpose": "Dark hero, login panel and footer.",
+        "tonalRamp": [
+          "#1e242e",
+          "#323c4e",
+          "#46546c",
+          "#5a6c8b",
+          "#7d8eab",
+          "#a8b3c7",
+          "#d0d6e1",
+          "#f0f2f5"
+        ]
+      },
+      "dark-metro-blue": {
+        "role": "primary",
+        "displayName": "Dark Metro Blue",
+        "canonical": "#7fa6ff",
+        "purpose": "Dark-theme equivalent. Actions, links, focus, and the Computer Science line.",
+        "tonalRamp": [
+          "#00174c",
+          "#002780",
+          "#0036b2",
+          "#0046e6",
+          "#296aff",
+          "#709cff",
+          "#b2caff",
+          "#e5edff"
+        ]
+      },
+      "dark-metro-blue-ink": {
+        "role": "primary",
+        "displayName": "Dark Metro Blue Ink",
+        "canonical": "#0b1530",
+        "purpose": "Dark-theme equivalent. Text on metro blue fills.",
+        "tonalRamp": [
+          "#0e1b3e",
+          "#182d68",
+          "#214091",
+          "#2b52bb",
+          "#5175d7",
+          "#8ba3e4",
+          "#c1cef1",
+          "#eaeffa"
+        ]
+      },
+      "dark-chemistry-green": {
+        "role": "secondary",
+        "displayName": "Dark Chemistry Green",
+        "canonical": "#4cc487",
+        "purpose": "Dark-theme equivalent. The Chemistry line only.",
+        "tonalRamp": [
+          "#133a26",
+          "#20603f",
+          "#2c8659",
+          "#39ad72",
+          "#5eca93",
+          "#94dcb7",
+          "#c5ecd8",
+          "#ecf9f2"
+        ]
+      },
+      "dark-biology-red": {
+        "role": "secondary",
+        "displayName": "Dark Biology Red",
+        "canonical": "#ff6b66",
+        "purpose": "Dark-theme equivalent. The Biology line only.",
+        "tonalRamp": [
+          "#4c0300",
+          "#800400",
+          "#b20600",
+          "#e60800",
+          "#ff3029",
+          "#ff7570",
+          "#ffb5b2",
+          "#ffe6e5"
+        ]
+      },
+      "dark-here-amber": {
+        "role": "tertiary",
+        "displayName": "Dark Here Amber",
+        "canonical": "#f5b83d",
+        "purpose": "Dark-theme equivalent. You are here: ring on the current station, chapter or question.",
+        "tonalRamp": [
+          "#493204",
+          "#795306",
+          "#aa7409",
+          "#da960b",
+          "#f5b433",
+          "#f8cd77",
+          "#fbe4b6",
+          "#fef6e7"
+        ]
+      },
+      "dark-ground": {
+        "role": "neutral",
+        "displayName": "Dark dark-ground",
+        "canonical": "#0e1116",
+        "purpose": "Dark-theme equivalent. ",
+        "tonalRamp": [
+          "#1e242f",
+          "#323c4e",
+          "#45546d",
+          "#596c8c",
+          "#7c8eac",
+          "#a8b4c7",
+          "#d0d7e1",
+          "#eff2f5"
+        ]
+      },
+      "dark-surface": {
+        "role": "neutral",
+        "displayName": "Dark White Tile",
+        "canonical": "#171b22",
+        "purpose": "Dark-theme equivalent. Cards, sidebar, inputs, menus.",
+        "tonalRamp": [
+          "#1f242e",
+          "#333c4c",
+          "#48556a",
+          "#5d6d89",
+          "#7f8ea9",
+          "#aab4c5",
+          "#d1d7e0",
+          "#f0f2f5"
+        ]
+      },
+      "dark-surface-sunk": {
+        "role": "neutral",
+        "displayName": "Dark Sunk Tile",
+        "canonical": "#1d222b",
+        "purpose": "Dark-theme equivalent. Hover rows, active station, context blocks, badges.",
+        "tonalRamp": [
+          "#1f242e",
+          "#333c4c",
+          "#48546b",
+          "#5c6c89",
+          "#7f8ea9",
+          "#aab4c5",
+          "#d1d7e0",
+          "#f0f2f5"
+        ]
+      },
+      "dark-ink": {
+        "role": "neutral",
+        "displayName": "Dark Ink",
+        "canonical": "#e8ebf0",
+        "purpose": "Dark-theme equivalent. Text and headings.",
+        "tonalRamp": [
+          "#1e242e",
+          "#323c4d",
+          "#46556c",
+          "#5b6d8b",
+          "#7d8eaa",
+          "#a9b4c7",
+          "#d1d7e1",
+          "#f0f2f5"
+        ]
+      },
+      "dark-ink-muted": {
+        "role": "neutral",
+        "displayName": "Dark Muted Ink",
+        "canonical": "#a3abb9",
+        "purpose": "Dark-theme equivalent. Secondary text and captions.",
+        "tonalRamp": [
+          "#21252b",
+          "#373d48",
+          "#4d5665",
+          "#636e82",
+          "#8590a2",
+          "#aeb5c1",
+          "#d4d7de",
+          "#f1f2f4"
+        ]
+      },
+      "dark-hairline": {
+        "role": "neutral",
+        "displayName": "Dark Hairline",
+        "canonical": "#2b313c",
+        "purpose": "Dark-theme equivalent. 1px borders and dividers.",
+        "tonalRamp": [
+          "#20242d",
+          "#353d4a",
+          "#4b5568",
+          "#606d86",
+          "#828fa6",
+          "#acb4c3",
+          "#d2d7df",
+          "#f0f2f4"
+        ]
+      },
+      "dark-hairline-strong": {
+        "role": "neutral",
+        "displayName": "Dark Strong Hairline",
+        "canonical": "#46505f",
+        "purpose": "Dark-theme equivalent. Input borders, missed mark points (dashed).",
+        "tonalRamp": [
+          "#20252c",
+          "#363e49",
+          "#4c5767",
+          "#616f84",
+          "#8491a4",
+          "#adb5c2",
+          "#d3d8df",
+          "#f0f2f4"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Landing hero headline only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Page titles and landing course headings."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Card and section headings."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "All prose; question text at 1.05rem, 70ch measure. User-adjustable 14.5/16/18px."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Plates, badges, captions, counts; tabular figures."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Code, pseudocode, inline terms; ligatures off."
+      }
+    },
+    "shadows": [
+      {
+        "name": "tile",
+        "value": "0 1px 2px rgba(20,24,31,.06), 0 2px 8px rgba(20,24,31,.04)",
+        "purpose": "Cards, header bar, menus. Dark: 0 1px 2px rgba(0,0,0,.4)."
+      },
+      {
+        "name": "menu",
+        "value": "0 8px 28px rgba(20,24,31,.14)",
+        "purpose": "Static-site dropdown menus."
+      },
+      {
+        "name": "drawer",
+        "value": "0 0 0 1px var(--line), 0 12px 40px rgba(0,0,0,.18)",
+        "purpose": "Mobile sidebar drawer."
+      },
+      {
+        "name": "printed-sheet",
+        "value": "0 10px 30px rgba(0,0,0,.35)",
+        "purpose": "Sample exam part on the dark hero."
+      },
+      {
+        "name": "here-ring",
+        "value": "0 0 0 3px var(--here)",
+        "purpose": "You-are-here ring around the current station or chapter stop."
+      },
+      {
+        "name": "focus-ring",
+        "value": "0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent)",
+        "purpose": "Input focus."
+      }
+    ],
+    "motion": [
+      {
+        "name": "state",
+        "value": ".15s",
+        "purpose": "Border, background and colour changes on hover."
+      },
+      {
+        "name": "drawer",
+        "value": "transform .22s cubic-bezier(.2,.8,.2,1)",
+        "purpose": "Mobile sidebar slide-in."
+      },
+      {
+        "name": "meter",
+        "value": "width .4s",
+        "purpose": "Progress meter fill."
+      },
+      {
+        "name": "nudge",
+        "value": "transform .2s",
+        "purpose": "Arrow nudge on paper card hover, chevron rotation."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "drawer",
+        "value": "900px"
+      },
+      {
+        "name": "chapter-line-horizontal",
+        "value": "860px"
+      },
+      {
+        "name": "static-sidebar",
+        "value": "1100px"
+      },
+      {
+        "name": "static-burger",
+        "value": "980px"
+      },
+      {
+        "name": "marking-one-column",
+        "value": "960px"
+      },
+      {
+        "name": "phone",
+        "value": "640px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one solid action per view, e.g. Check my answer.",
+      "html": "<button class=\"ds-btn-primary\">Check my answer</button>",
+      "css": ":host{--accent:#1f4fb4;--accent-ink:#fff;--ink:#14181f;--ink2:#566070;--bg:#f1f2f4;--surface:#fff;--surface2:#f6f7f9;--line:#dcdfe5;--line-strong:#b8bec9;--here:#f2a900;--ok:#157a3d;--line-cs:#1f4fb4;--line-chem:#138a4a;--line-bio:#c9302c;font-family:\"Golos Text\",system-ui,sans-serif;color:var(--ink)} .ds-btn-primary{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:9px 18px;border-radius:8px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);font:600 16px \"Golos Text\",system-ui,sans-serif;cursor:pointer;transition:background .15s}.ds-btn-primary:hover{background:color-mix(in srgb,var(--accent) 86%,var(--ink))}.ds-btn-primary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined button for every other action.",
+      "html": "<button class=\"ds-btn\">Show mark scheme</button>",
+      "css": ":host{--accent:#1f4fb4;--accent-ink:#fff;--ink:#14181f;--ink2:#566070;--bg:#f1f2f4;--surface:#fff;--surface2:#f6f7f9;--line:#dcdfe5;--line-strong:#b8bec9;--here:#f2a900;--ok:#157a3d;--line-cs:#1f4fb4;--line-chem:#138a4a;--line-bio:#c9302c;font-family:\"Golos Text\",system-ui,sans-serif;color:var(--ink)} .ds-btn{display:inline-flex;align-items:center;min-height:40px;padding:9px 18px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 16px \"Golos Text\",system-ui,sans-serif;cursor:pointer;transition:border-color .15s}.ds-btn:hover{border-color:var(--accent)}.ds-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}"
+    },
+    {
+      "name": "Text Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Fields and the answer box.",
+      "html": "<input class=\"ds-input\" placeholder=\"Search questions\">",
+      "css": ":host{--accent:#1f4fb4;--accent-ink:#fff;--ink:#14181f;--ink2:#566070;--bg:#f1f2f4;--surface:#fff;--surface2:#f6f7f9;--line:#dcdfe5;--line-strong:#b8bec9;--here:#f2a900;--ok:#157a3d;--line-cs:#1f4fb4;--line-chem:#138a4a;--line-bio:#c9302c;font-family:\"Golos Text\",system-ui,sans-serif;color:var(--ink)} .ds-input{width:260px;padding:11px 14px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);font:16px \"Golos Text\",system-ui,sans-serif}.ds-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 40%,transparent)}"
+    },
+    {
+      "name": "Station Plate",
+      "kind": "chip",
+      "refersTo": "station-plate-code",
+      "description": "Paper code set like an enamel metro sign.",
+      "html": "<span class=\"ds-plate\"><span class=\"ds-plate-code\">9618/12</span><span>Paper 1</span></span>",
+      "css": ":host{--accent:#1f4fb4;--accent-ink:#fff;--ink:#14181f;--ink2:#566070;--bg:#f1f2f4;--surface:#fff;--surface2:#f6f7f9;--line:#dcdfe5;--line-strong:#b8bec9;--here:#f2a900;--ok:#157a3d;--line-cs:#1f4fb4;--line-chem:#138a4a;--line-bio:#c9302c;font-family:\"Golos Text\",system-ui,sans-serif;color:var(--ink)} .ds-plate{--line-c:var(--line-cs);display:inline-flex;border:1px solid var(--line-c);border-radius:4px;overflow:hidden;font:700 .86rem/1 \"Golos Text\",system-ui,sans-serif;color:var(--ink)}.ds-plate>span{padding:6px 9px}.ds-plate-code{background:var(--line-c);color:#fff;font-variant-numeric:tabular-nums;letter-spacing:.02em}"
+    },
+    {
+      "name": "Line Map Stations",
+      "kind": "nav",
+      "refersTo": "side-link",
+      "description": "Sidebar: a subject line with stations; the current one wears the amber ring.",
+      "html": "<nav class=\"ds-line\"><a class=\"ds-st\" href=\"#\"><i class=\"ds-stop done\"></i><span><b>Paper 1</b><small>Theory Fundamentals</small></span></a><a class=\"ds-st on\" href=\"#\"><i class=\"ds-stop part\"></i><span><b>Paper 2</b><small>Problem-solving</small></span></a><a class=\"ds-st\" href=\"#\"><i class=\"ds-stop\"></i><span><b>Paper 3</b><small>Advanced Theory</small></span></a></nav>",
+      "css": ":host{--accent:#1f4fb4;--accent-ink:#fff;--ink:#14181f;--ink2:#566070;--bg:#f1f2f4;--surface:#fff;--surface2:#f6f7f9;--line:#dcdfe5;--line-strong:#b8bec9;--here:#f2a900;--ok:#157a3d;--line-cs:#1f4fb4;--line-chem:#138a4a;--line-bio:#c9302c;font-family:\"Golos Text\",system-ui,sans-serif;color:var(--ink)} .ds-line{--line-c:var(--line-cs);position:relative;display:grid;width:244px;background:var(--surface);font:500 .93rem \"Golos Text\",system-ui,sans-serif}.ds-line::before{content:\"\";position:absolute;left:17px;top:18px;bottom:18px;width:4px;border-radius:2px;background:var(--line-c)}.ds-st{display:flex;align-items:center;gap:12px;min-height:40px;padding:7px 10px;border-radius:8px;color:var(--ink);text-decoration:none}.ds-st:hover{background:var(--surface2)}.ds-st:focus-visible{outline:2px solid var(--accent);outline-offset:2px}.ds-st span{display:grid;line-height:1.25}.ds-st b{font-weight:inherit}.ds-st small{color:var(--ink2);font-size:.78rem;font-weight:400}.ds-stop{position:relative;z-index:1;flex:none;width:14px;height:14px;margin:0 2px;border-radius:50%;box-sizing:border-box;border:3px solid var(--line-c);background:var(--surface)}.ds-stop.part{background:linear-gradient(90deg,var(--line-c) 50%,var(--surface) 50%)}.ds-stop.done{background:var(--line-c)}.ds-st.on{background:var(--surface2)}.ds-st.on .ds-stop{box-shadow:0 0 0 3px var(--surface),0 0 0 6px var(--here)}"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "White tile with hairline and ambient shadow.",
+      "html": "<div class=\"ds-card\"><h3>Hardest topics</h3><p>Data representation, 42% of marks earned.</p></div>",
+      "css": ":host{--accent:#1f4fb4;--accent-ink:#fff;--ink:#14181f;--ink2:#566070;--bg:#f1f2f4;--surface:#fff;--surface2:#f6f7f9;--line:#dcdfe5;--line-strong:#b8bec9;--here:#f2a900;--ok:#157a3d;--line-cs:#1f4fb4;--line-chem:#138a4a;--line-bio:#c9302c;font-family:\"Golos Text\",system-ui,sans-serif;color:var(--ink)} .ds-card{max-width:320px;padding:22px;border-radius:12px;border:1px solid var(--line);background:var(--surface);box-shadow:0 1px 2px rgba(20,24,31,.06),0 2px 8px rgba(20,24,31,.04);font:16px/1.6 \"Golos Text\",system-ui,sans-serif}.ds-card h3{margin:0 0 6px;font-size:1.12rem;font-weight:700;letter-spacing:-.015em}.ds-card p{margin:0;color:var(--ink2)}"
+    },
+    {
+      "name": "Verdict",
+      "kind": "custom",
+      "refersTo": "verdict",
+      "description": "AI marking result: mark, word, and the first missed point.",
+      "html": "<div class=\"ds-verdict\"><p class=\"ds-score\"><b>4</b><span>/ 6</span><em>Nearly there</em></p><p>To get more marks, also make this point: <q>data is sent one bit at a time</q></p></div>",
+      "css": ":host{--accent:#1f4fb4;--accent-ink:#fff;--ink:#14181f;--ink2:#566070;--bg:#f1f2f4;--surface:#fff;--surface2:#f6f7f9;--line:#dcdfe5;--line-strong:#b8bec9;--here:#f2a900;--ok:#157a3d;--line-cs:#1f4fb4;--line-chem:#138a4a;--line-bio:#c9302c;font-family:\"Golos Text\",system-ui,sans-serif;color:var(--ink)} .ds-verdict{max-width:460px;display:grid;gap:6px;padding:14px 16px;border-radius:8px;border:1px solid var(--here);background:color-mix(in srgb,#f2a900 16%,#fff);font:16px/1.6 \"Golos Text\",system-ui,sans-serif}.ds-verdict p{margin:0}.ds-score{display:flex;align-items:baseline;gap:6px;font-variant-numeric:tabular-nums}.ds-score b{font-size:2rem;line-height:1;font-weight:800}.ds-score span{font-size:1.1rem;color:var(--ink2);font-weight:600}.ds-score em{margin-left:8px;font-style:normal;font-weight:700;color:#925400}.ds-verdict q{font-weight:600}"
+    },
+    {
+      "name": "Badge",
+      "kind": "chip",
+      "refersTo": "badge",
+      "description": "Small count or status tag.",
+      "html": "<span class=\"ds-badge\">6 marks</span> <span class=\"ds-badge ok\">Done</span>",
+      "css": ":host{--accent:#1f4fb4;--accent-ink:#fff;--ink:#14181f;--ink2:#566070;--bg:#f1f2f4;--surface:#fff;--surface2:#f6f7f9;--line:#dcdfe5;--line-strong:#b8bec9;--here:#f2a900;--ok:#157a3d;--line-cs:#1f4fb4;--line-chem:#138a4a;--line-bio:#c9302c;font-family:\"Golos Text\",system-ui,sans-serif;color:var(--ink)} .ds-badge{display:inline-block;padding:2px 8px;border-radius:4px;border:1px solid var(--line);background:var(--surface2);color:var(--ink2);font:700 .78rem \"Golos Text\",system-ui,sans-serif;font-variant-numeric:tabular-nums}.ds-badge.ok{border-color:transparent;color:var(--ok);background:color-mix(in srgb,var(--ok) 11%,#fff)}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Line Map",
+    "overview": "**Creative North Star: \"The Line Map\"**\n\nNext Level is drawn as a metro network. Every subject is a line in one colour, every paper is a station on it, and every syllabus chapter is a stop along the paper's line. Navigation and progress are the same drawing: the left rail is the map, a station's dot fills as questions are tried, and an amber ring marks where the student is now. The world is modelled on a city metro map (the Tashkent line map), not on an edtech dashboard.\n\nSurfaces are flat white tiles on a cool grey ground, separated by 1px hairlines. Colour is spent on meaning, never on decoration: one colour per job, so a student can read the screen by colour alone (blue line = Computer Science, green = Chemistry, red = Biology, amber = you are here). The past-paper content itself (printed figures, `[n marks]` tags, mark-scheme wording) carries the page; the chrome stays quiet around a single question at a readable measure.\n\nThe system replaced an earlier purple-glass card-grid identity. Dombit purple survives only inside the \"D\" logo plate, which keeps the link to the school without letting one accent do every job.",
+    "keyCharacteristics": [
+      "Subjects as coloured lines, papers as stations, chapters as stops; the amber ring marks the current one.",
+      "One colour per meaning; metro blue is also the action and link colour.",
+      "Flat white tiles, 1px hairlines, a near-invisible ambient shadow; no glass, no glow.",
+      "Square-cornered enamel \"station plates\" carrying paper codes in tabular figures.",
+      "Golos Text throughout, heavy (800) for headings; JetBrains Mono for code and pseudocode.",
+      "Light and dark themes with matched line colours, every pairing aimed at WCAG AA."
+    ],
+    "rules": [
+      {
+        "name": "The One Meaning Rule",
+        "body": "Each saturated colour has one job. Blue is action and Computer Science; green is Chemistry; red is Biology; amber is \"you are here\". Never use green to mean \"go\" on a Biology page, or red as decoration.",
+        "section": "colors"
+      },
+      {
+        "name": "The Logo Plate Rule",
+        "body": "Dombit purple appears only inside the \"D\" logo mark. It is never a button, link, heading or background colour.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink-on-Light-Accent Rule",
+        "body": "In dark themes, text on any accent fill (buttons, plate codes, line labels) is dark (`dark-metro-blue-ink`, or `#0e1116` on plates), never white.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Figures Rule",
+        "body": "Every number a student compares (marks, counts, paper codes, table cells, percentages) is set in tabular figures.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sentence-Case Signage Rule",
+        "body": "Section titles and labels are sentence case at 600 weight in muted ink. Uppercase tracking is not part of the system.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Glass Rule",
+        "body": "No backdrop blur, no translucent panels, no glow. Every surface is opaque.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Stripe-Only Gradient Rule",
+        "body": "Gradients appear only as hard colour stops that draw metro lines: the three subject stripes across the hero and login panel, the three-colour footer rule, a half-filled station dot, the progress ring. No smooth or decorative colour fades.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** give every subject surface its line colour through one variable (`--line-c`): CS blue, Chemistry green, Biology red, and use it for the line, dots, plate and label together.",
+      "**Do** mark the current station, chapter or question with the 3px amber ring, and only that.",
+      "**Do** separate surfaces with 1px hairlines on the grey ground; keep shadows at the Tile level unless the element truly floats.",
+      "**Do** set paper codes in a station plate with tabular figures.",
+      "**Do** use dark ink on accent fills in dark themes and check every pairing at WCAG AA in both themes.",
+      "**Do** keep one primary blue button per view, at the end of the answer."
+    ],
+    "donts": [
+      "**Don't** use Dombit purple anywhere but the logo mark.",
+      "**Don't** reuse a line colour for a second meaning (no green \"success\" buttons, no red decoration, no amber fills).",
+      "**Don't** use glass, backdrop blur, glow, or smooth decorative gradients.",
+      "**Don't** return to a grid of identical purple cards where one accent does every job.",
+      "**Don't** put white text on the light dark-theme blue (`dark-metro-blue`); it is 2.6:1."
+    ]
+  }
+}

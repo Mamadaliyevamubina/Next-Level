@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import Icon from '../components/Icon.jsx';
+import SubjectPicker, { GradeSelect, choicesOf, choicesProblem } from '../components/SubjectPicker.jsx';
 import { initials, roleLabel } from '../components/Layout.jsx';
 import { usePapers } from '../papers.js';
 
@@ -29,7 +30,6 @@ export default function Account() {
       <section className="card account-head">
         <span className="avatar xl">{initials(user.name)}</span>
         <div>
-          <p className="eyebrow">Account</p>
           <h1>{user.name}</h1>
           <p className="muted">@{user.username} · {roleLabel(user)}{user.teacher_name ? ` · Teacher: ${user.teacher_name}` : ''}</p>
         </div>
@@ -102,22 +102,27 @@ function Profile() {
 function ClassDetails() {
   const { user, setUser } = useAuth();
   const [options, setOptions] = useState({ subjects: [], teachers: [] });
-  const [f, setF] = useState({ subject_id: String(user.subject_id || ''), teacher_id: String(user.teacher_id || ''), class_name: user.class_name });
+  const [f, setF] = useState({ grade: String(user.grade || ''), class_name: user.class_name });
+  const [choices, setChoices] = useState(() => choicesOf(user));
   const [state, run, note] = useSaver();
 
   useEffect(() => { api('/auth/options').then(setOptions).catch(() => {}); }, []);
 
-  const teachers = options.teachers.filter((t) => t.subject_ids.includes(Number(f.subject_id)));
-  const changesTeacher = Number(f.subject_id) !== user.subject_id || Number(f.teacher_id) !== user.teacher_id;
+  // A subject/teacher pair the student did not have before needs that teacher's approval.
+  const before = new Set(choicesOf(user).map((c) => `${c.subject_id}:${c.teacher_id}`));
+  const addsTeacher = choices.some((c) => c.teacher_id && !before.has(`${c.subject_id}:${c.teacher_id}`));
 
   const save = (e) => {
     e.preventDefault();
     run(async () => {
+      const problem = choicesProblem(f.grade, choices);
+      if (problem) throw new Error(problem);
       const d = await api('/account/profile', {
         method: 'PATCH',
-        body: { class_name: f.class_name, subject_id: Number(f.subject_id), teacher_id: Number(f.teacher_id) },
+        body: { grade: Number(f.grade), class_name: f.class_name, subjects: choices },
       });
       setUser(d.user);
+      setChoices(choicesOf(d.user));
       return d.needsApproval ? 'Saved. Your new teacher needs to approve you before you can continue.' : 'Saved.';
     });
   };
@@ -125,24 +130,12 @@ function ClassDetails() {
   return (
     <form onSubmit={save} className="stack">
       <h2>My class</h2>
-      <p className="muted small">Your teacher sees your progress for this subject.</p>
-      <label>
-        Subject
-        <select value={f.subject_id} onChange={(e) => setF({ ...f, subject_id: e.target.value, teacher_id: '' })} required>
-          <option value="">Choose a subject</option>
-          {options.subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-        </select>
-      </label>
-      <label>
-        Teacher
-        <select value={f.teacher_id} onChange={(e) => setF({ ...f, teacher_id: e.target.value })} required>
-          <option value="">Choose your teacher</option>
-          {teachers.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-        </select>
-      </label>
+      <p className="muted small">Each teacher sees your progress in the subject they teach you.</p>
+      <GradeSelect value={f.grade} onChange={(grade) => setF({ ...f, grade })} subjects={options.subjects} choices={choices} onChoices={setChoices} />
       <label>Class<input value={f.class_name} onChange={(e) => setF({ ...f, class_name: e.target.value })} required /></label>
-      {changesTeacher && f.teacher_id && (
-        <p className="notice small"><Icon name="hourglass" /> Changing subject or teacher sends your account back for approval.</p>
+      <SubjectPicker grade={f.grade} subjects={options.subjects} teachers={options.teachers} value={choices} onChange={setChoices} />
+      {addsTeacher && (
+        <p className="notice small"><Icon name="hourglass" /> Adding a subject or changing a teacher sends your account back for approval.</p>
       )}
       {note}
       <div><button className="btn primary" disabled={state.busy}>Save class details</button></div>

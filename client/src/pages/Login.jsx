@@ -4,6 +4,7 @@ import { api } from '../api.js';
 import { useAuth } from '../auth.jsx';
 import { DMark } from '../components/Logo.jsx';
 import Icon from '../components/Icon.jsx';
+import SubjectPicker, { GradeSelect, choicesProblem } from '../components/SubjectPicker.jsx';
 
 // Split layout like the school's portal login: big brand mark on one side, form card on the other.
 // /login and /signup share this page; ?next=… is kept when switching so the visitor ends up where they wanted.
@@ -163,31 +164,28 @@ function LoginForm({ onSwitch }) {
 function RegisterForm({ onSwitch }) {
   const { signIn } = useAuth();
   const [options, setOptions] = useState({ subjects: [], teachers: [] });
-  const [f, setF] = useState({ name: '', username: '', email: '', password: '', confirm: '', subject_id: '', teacher_id: '', class_name: '' });
+  const [f, setF] = useState({ name: '', username: '', email: '', password: '', confirm: '', grade: '', class_name: '' });
+  const [choices, setChoices] = useState([]);
   const [error, setError] = useState('');
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    api('/auth/options')
-      .then((d) => {
-        setOptions(d);
-        if (d.subjects.length === 1) setF((cur) => ({ ...cur, subject_id: String(d.subjects[0].id) }));
-      })
-      .catch((e) => setError(e.message));
+    api('/auth/options').then(setOptions).catch((e) => setError(e.message));
   }, []);
 
-  const set = (k) => (e) => setF({ ...f, [k]: e.target.value, ...(k === 'subject_id' ? { teacher_id: '' } : {}) });
-  const teachers = options.teachers.filter((t) => t.subject_ids.includes(Number(f.subject_id)));
+  const set = (k) => (e) => setF({ ...f, [k]: e.target.value });
 
   const submit = async (e) => {
     e.preventDefault();
     if (f.password !== f.confirm) return setError('The two passwords do not match.');
+    const problem = choicesProblem(f.grade, choices);
+    if (problem) return setError(problem);
     setBusy(true);
     setError('');
     try {
       await signIn('register', {
         name: f.name, username: f.username, email: f.email, password: f.password,
-        subject_id: Number(f.subject_id), teacher_id: Number(f.teacher_id), class_name: f.class_name,
+        grade: Number(f.grade), class_name: f.class_name, subjects: choices,
       });
     } catch (err) {
       setError(err.message);
@@ -210,21 +208,11 @@ function RegisterForm({ onSwitch }) {
         <label>Confirm password<PasswordInput value={f.confirm} onChange={set('confirm')} placeholder="Type it again" autoComplete="new-password" /></label>
 
         <p className="span2 form-section"><Icon name="school" /> Your class</p>
-        <label>
-          Subject
-          <select value={f.subject_id} onChange={set('subject_id')} required>
-            <option value="">Choose a subject</option>
-            {options.subjects.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-          </select>
-        </label>
-        <label>
-          Teacher
-          <select value={f.teacher_id} onChange={set('teacher_id')} required disabled={!f.subject_id}>
-            <option value="">{f.subject_id && !teachers.length ? 'No teachers for this subject yet' : 'Choose your teacher'}</option>
-            {teachers.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
-          </select>
-        </label>
-        <label className="span2">Class<input value={f.class_name} onChange={set('class_name')} placeholder="e.g. AS-1 or 12A" required /></label>
+        <GradeSelect value={f.grade} onChange={(grade) => setF({ ...f, grade })} subjects={options.subjects} choices={choices} onChoices={setChoices} />
+        <label>Class<input value={f.class_name} onChange={set('class_name')} placeholder="e.g. 10B or 12A" required /></label>
+        <div className="span2">
+          <SubjectPicker grade={f.grade} subjects={options.subjects} teachers={options.teachers} value={choices} onChange={setChoices} />
+        </div>
 
         {error && <p className="error span2">{error}</p>}
         <button className="btn primary block span2" disabled={busy}>{busy ? 'Creating account…' : 'Create account'}</button>

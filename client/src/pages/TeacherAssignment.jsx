@@ -39,7 +39,8 @@ export default function TeacherAssignment() {
   };
 
   if (!data) return error ? <p className="error">{error}</p> : <p className="muted">Loading…</p>;
-  const { assignment: a, questions, students } = data;
+  const { questions, students } = data;
+  const a = { ...data.assignment, question_count: questions.length };
   const submitted = students.filter((s) => s.submitted_at).length;
   const started = students.filter((s) => s.answered > 0).length;
   const earned = students.reduce((t, s) => t + s.earned, 0);
@@ -70,9 +71,11 @@ export default function TeacherAssignment() {
           <>
             <div className="row spread">
               <div>
-                <p className="eyebrow">Assignment · set by {a.teacher_name}</p>
                 <h1>{a.title}</h1>
-                <p className="muted">{a.due_at ? `Due ${formatDate(a.due_at)}` : 'No due date'} · {questions.length} questions · {a.marks} marks</p>
+                <p className="muted">
+                  {a.kind === 'mock' ? `Mock exam · ${a.time_limit_min} minutes` : 'Practice assignment'} · set by {a.teacher_name}
+                  <br />{a.due_at ? `Due ${formatDate(a.due_at)}` : 'No due date'} · {questions.length} questions · {a.marks} marks
+                </p>
               </div>
               <div className="row">
                 <button type="button" className="btn sm" onClick={() => setEditing(true)}>Edit</button>
@@ -85,6 +88,7 @@ export default function TeacherAssignment() {
       </section>
       {error && <p className="error">{error}</p>}
 
+      {a.kind === 'mock' ? <MockResults a={a} students={students} run={run} onReopen={reopen} onRemove={remove} /> : (<>
       <div className="stats">
         <Stat icon="users" value={students.length} label="students given this" />
         <Stat icon="flame" value={`${started} / ${students.length}`} label="have started" />
@@ -144,6 +148,7 @@ export default function TeacherAssignment() {
           </div>
         )}
       </section>
+      </>)}
 
       <section className="card">
         <h2>Questions</h2>
@@ -198,3 +203,89 @@ function AddStudents({ exclude, onAdd, onCancel }) {
     </div>
   );
 }
+
+// Mock exam: who has sat it, how far marking has got, and the release button.
+function MockResults({ a, students, run, onReopen, onRemove }) {
+  const handedIn = students.filter((s) => s.submitted_at);
+  const marked = handedIn.filter((s) => s.mock_marked >= questionsCount(a, s));
+  const done = marked.filter((s) => s.mock_total !== null);
+  const avg = done.length ? Math.round((done.reduce((t, s) => t + s.mock_total, 0) / (done.length * a.marks)) * 100) : null;
+  const released = Boolean(a.results_released_at);
+
+  const release = () => {
+    const left = handedIn.length - marked.length;
+    const msg = left
+      ? `${left} handed-in exam${left === 1 ? ' is' : 's are'} not fully marked. Release the marked answers anyway? Unmarked answers will not be shown.`
+      : `Release the results to ${handedIn.length} student${handedIn.length === 1 ? '' : 's'}? They will see their marks, the mark scheme and your comments.`;
+    if (!window.confirm(msg)) return;
+    run(() => api(`/teacher/assignments/${a.id}/release`, { method: 'POST', body: { force: left > 0 } }));
+  };
+
+  return (
+    <>
+      <div className="stats">
+        <Stat icon="users" value={students.length} label="students sitting it" />
+        <Stat icon="check" value={`${handedIn.length} / ${students.length}`} label="handed in" />
+        <Stat icon="list" value={`${marked.length} / ${handedIn.length}`} label="fully marked" tone={handedIn.length > marked.length ? 'warn' : ''} />
+        <Stat icon="chart" value={avg === null ? '—' : `${avg}%`} label="average of marked exams" />
+      </div>
+
+      <section className="card">
+        <div className="toolbar">
+          <h2 className="grow">Students</h2>
+          {released
+            ? <span className="badge ok">Results released {formatDate(a.results_released_at)}</span>
+            : <button type="button" className="btn primary sm" disabled={!handedIn.length} onClick={release}>Release results</button>}
+        </div>
+        <p className="muted small">
+          When a student hands in (or time runs out), the AI suggests a mark for every answer. Open each exam, check or change the marks,
+          then release the results. Students see nothing until you release.
+        </p>
+        {students.length === 0 ? <p className="muted">No students have this mock exam.</p> : (
+          <div className="table-wrap">
+            <table className="table">
+              <thead>
+                <tr><th>Student</th><th>Class</th><th>Status</th><th className="num">Answered</th><th>Marking</th><th className="num">Mark</th><th><span className="visually-hidden">Actions</span></th></tr>
+              </thead>
+              <tbody>
+                {students.map((s) => {
+                  const total = questionsCount(a, s);
+                  const status = s.submitted_at ? 'Handed in' : s.started_at ? 'Writing now' : 'Not started';
+                  return (
+                    <tr key={s.id}>
+                      <td>
+                        <Link to={`/teacher/student/${s.id}`} className="who-cell">
+                          <span className="avatar sm">{initials(s.name)}</span>
+                          <span><b>{s.name}</b><br /><span className="muted small">@{s.username}</span></span>
+                        </Link>
+                      </td>
+                      <td>{s.class_name}</td>
+                      <td><span className={`badge ${s.submitted_at ? 'ok' : s.started_at ? 'warn' : ''}`}>{status}</span>{s.submitted_at && <span className="muted small"> {formatDate(s.submitted_at)}</span>}</td>
+                      <td className="num">{s.mock_answered ?? 0} / {total}</td>
+                      <td>
+                        {!s.submitted_at ? <span className="muted">—</span>
+                          : s.mock_marked >= total ? <span className="badge ok">Marked</span>
+                            : <span className="small">{s.mock_marked} / {total} confirmed{s.mock_ai_pending ? <span className="muted"> · AI working…</span> : ''}</span>}
+                      </td>
+                      <td className="num">{s.submitted_at && s.mock_total !== null ? <b>{s.mock_total} / {a.marks}</b> : <span className="muted">—</span>}</td>
+                      <td>
+                        <div className="row nowrap">
+                          {s.submitted_at && <Link to={`/teacher/assignments/${a.id}/mark/${s.id}`} className={`btn sm ${s.mock_marked >= total ? '' : 'primary'}`}>{s.mock_marked >= total ? 'Review' : 'Mark'}</Link>}
+                          {s.submitted_at && !released && <button type="button" className="btn sm" onClick={() => onReopen(s)} title="Give the student a fresh clock to continue">Reopen</button>}
+                          <button type="button" className="btn sm ghost" onClick={() => onRemove(s)} title="Remove from this mock exam"><Icon name="x" size={14} /></button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+    </>
+  );
+}
+
+// Number of questions in the exam (the same for every student).
+const questionsCount = (a) => a.question_count;

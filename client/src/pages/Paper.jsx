@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { api } from '../api.js';
-import Meter, { ScoreBadge } from '../components/Meter.jsx';
+import { ScoreBadge } from '../components/Meter.jsx';
+import Icon from '../components/Icon.jsx';
 
 const STATUSES = [
   ['', 'All'],
@@ -57,79 +58,112 @@ export default function Paper() {
   if (!info) return <p className="muted">Loading…</p>;
 
   const chapter = params.get('chapter') || '';
+  const current = info.chapters.find((c) => String(c.number) === chapter);
+  const activeFilters = ['exam', 'status', 'bookmarked', 'search'].filter((k) => params.get(k)).length;
+  const line = /Chem/i.test(info.subject_name || '') ? 'chem' : /Bio/i.test(info.subject_name || '') ? 'bio' : 'cs';
+  const stop = (c) => (!c.attempted ? 'open' : c.attempted >= c.questions ? 'done' : 'part');
 
   return (
-    <div className="split">
-      <aside className="rail card">
-        <h2>{info.label}</h2>
-        <p className="muted small">{info.title}</p>
-        <button type="button" className={`rail-item ${chapter ? '' : 'active'}`} onClick={() => filter('chapter', '')}>
-          <Meter earned={info.earned} available={info.available} label="All chapters" />
-        </button>
-        {info.chapters.map((c) => (
-          <button
-            type="button"
-            key={c.number}
-            className={`rail-item ${chapter === String(c.number) ? 'active' : ''}`}
-            onClick={() => filter('chapter', String(c.number))}
-          >
-            <Meter earned={c.earned} available={c.available} label={`${c.number}. ${c.name}`} />
-            <span className="muted small">{c.attempted} / {c.questions} answered</span>
+    <div className={`paper-page line-${line}`}>
+      <header className="paper-head">
+        <div className="plate"><span className="plate-code">{info.subject_code || info.number}</span><span>{info.label}</span></div>
+        <h1>{current ? `${current.number}. ${current.name}` : info.title}</h1>
+        <p className="muted">
+          {current
+            ? `${current.attempted} of ${current.questions} questions tried in this chapter`
+            : `${info.attempted} of ${info.questions} questions tried · ${info.chapters.length} chapters`}
+        </p>
+        <div className="row">
+          <button type="button" className="primary" onClick={practise}>
+            {current ? `Practise ${current.name}` : 'Practise next question'} <Icon name="arrow" size={16} />
           </button>
-        ))}
-        <button type="button" className="link danger small" onClick={reset}>Reset my {info.label} progress</button>
-      </aside>
-
-      <section>
-        <div className="toolbar">
-          <form onSubmit={(e) => { e.preventDefault(); filter('search', search.trim()); }} className="search">
-            <input type="search" placeholder="Search questions or topics" value={search} onChange={(e) => setSearch(e.target.value)} />
-          </form>
-          <select value={params.get('exam') || ''} onChange={(e) => filter('exam', e.target.value)}>
-            <option value="">All exam sittings</option>
-            {info.exams.map((e) => <option key={e.code} value={e.code}>{e.label}</option>)}
-          </select>
-          <div className="seg">
-            {STATUSES.map(([value, label]) => (
-              <button type="button" key={value} className={(params.get('status') || '') === value ? 'on' : ''} onClick={() => filter('status', value)}>
-                {label}
-              </button>
-            ))}
-            <button type="button" className={params.get('bookmarked') ? 'on' : ''} onClick={() => filter('bookmarked', params.get('bookmarked') ? '' : '1')}>
-              ★ Saved
-            </button>
-          </div>
-          <button type="button" className="primary" onClick={practise}>Practise next</button>
         </div>
+      </header>
 
-        {!questions ? (
-          <p className="muted">Loading…</p>
-        ) : questions.length === 0 ? (
-          <p className="muted card">No questions match these filters.</p>
-        ) : (
-          <>
-            <p className="muted small">{questions.length} questions · {questions.reduce((t, q) => t + q.marks, 0)} marks</p>
-            <ul className="qlist">
-              {questions.map((q) => (
-                <li key={q.id}>
-                  <Link to={`/question/${q.id}`} className="card qrow">
-                    <div className="row spread">
-                      <strong>{q.exam_label} · Q{q.label}</strong>
-                      <span className="row">
-                        {q.bookmarked && <span title="Saved">★</span>}
-                        <span className="muted small">{q.marks} {q.marks === 1 ? 'mark' : 'marks'}</span>
-                        <ScoreBadge awarded={q.awarded} marks={q.marks} />
-                      </span>
-                    </div>
-                    <span className="tag">{q.subtopic}</span>
-                    <p className="preview">{q.preview.replace(/[`*#|]/g, '')}…</p>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </section>
+      <div className="split">
+        <nav className="chapter-line" aria-label={`${info.label} chapters`}>
+          <button type="button" className={`chapter-stop all ${chapter ? '' : 'active'}`} aria-current={chapter ? undefined : 'true'} onClick={() => filter('chapter', '')}>
+            <span className="stop md done" aria-hidden="true" />
+            <span><b>All chapters</b><small>{info.attempted} / {info.questions}</small></span>
+          </button>
+          {info.chapters.map((c) => (
+            <button
+              type="button"
+              key={c.number}
+              className={`chapter-stop ${chapter === String(c.number) ? 'active' : ''}`}
+              aria-current={chapter === String(c.number) ? 'true' : undefined}
+              onClick={() => filter('chapter', String(c.number))}
+            >
+              <span className={`stop sm ${stop(c)}`} aria-hidden="true" />
+              <span><b>{c.number}. {c.name}</b><small>{c.attempted} / {c.questions} tried{c.available ? ` · ${Math.round((c.earned / c.available) * 100)}% of marks` : ''}</small></span>
+            </button>
+          ))}
+          <button type="button" className="link danger small reset" onClick={reset}>Reset my {info.label} progress</button>
+        </nav>
+
+        <section className="paper-questions">
+          <div className="toolbar">
+            <form onSubmit={(e) => { e.preventDefault(); filter('search', search.trim()); }} className="search">
+              <input type="search" placeholder="Search questions or topics" aria-label="Search questions or topics" value={search} onChange={(e) => setSearch(e.target.value)} />
+            </form>
+            <details className="filters" open={activeFilters > 0 && !params.get('search') ? true : undefined}>
+              <summary className="btn">
+                <Icon name="list" size={16} /> Filters{activeFilters > 0 && <span className="count">{activeFilters}</span>}
+              </summary>
+              <div className="filters-panel">
+                <label>
+                  Exam sitting
+                  <select value={params.get('exam') || ''} onChange={(e) => filter('exam', e.target.value)}>
+                    <option value="">All exam sittings</option>
+                    {info.exams.map((e) => <option key={e.code} value={e.code}>{e.label}</option>)}
+                  </select>
+                </label>
+                <div className="seg" role="group" aria-label="Show">
+                  {STATUSES.map(([value, label]) => (
+                    <button type="button" key={value} aria-pressed={(params.get('status') || '') === value} className={(params.get('status') || '') === value ? 'on' : ''} onClick={() => filter('status', value)}>
+                      {label}
+                    </button>
+                  ))}
+                  <button type="button" aria-pressed={!!params.get('bookmarked')} className={params.get('bookmarked') ? 'on' : ''} onClick={() => filter('bookmarked', params.get('bookmarked') ? '' : '1')}>
+                    Saved only
+                  </button>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          {!questions ? (
+            <p className="muted">Loading…</p>
+          ) : questions.length === 0 ? (
+            <div className="card empty">
+              <p>No questions match these filters.</p>
+              <button type="button" onClick={() => setParams(chapter ? { chapter } : {}, { replace: true })}>Clear filters</button>
+            </div>
+          ) : (
+            <>
+              <p className="muted small">{questions.length} questions · {questions.reduce((t, q) => t + q.marks, 0)} marks</p>
+              <ul className="qlist">
+                {questions.map((q) => (
+                  <li key={q.id}>
+                    <Link to={`/question/${q.id}`} className="card qrow">
+                      <div className="row spread">
+                        <strong className="qcode">{q.exam_label} · Q{q.label}</strong>
+                        <span className="row">
+                          {q.bookmarked && <Icon name="star" size={16} className="saved-icon" />}
+                          <span className="muted small">[{q.marks}]</span>
+                          <ScoreBadge awarded={q.awarded} marks={q.marks} />
+                        </span>
+                      </div>
+                      <span className="tag">{q.subtopic}</span>
+                      <p className="preview">{q.preview.replace(/[`*#|]/g, '')}…</p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+        </section>
+      </div>
     </div>
   );
 }
