@@ -7,120 +7,125 @@
 <meta name="description" content="Cambridge IGCSE (0478) and AS & A Level (9618) Computer Science past-paper practice for Dombit International School, marked against the mark scheme.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
+/* Next Level, "Metro Lines": each course is a metro line, each paper a station. One colour per meaning:
+   metro blue = actions and Computer Science, green = Chemistry, red = Biology, amber = you are here. */
 :root{
-  --bg:#f6f0fd; --bg2:#fbf8ff; --surface:#ffffff; --surface2:#f7f2fc; --ink:#1e002b; --ink2:#6f667c; --line:#e9def5;
-  --accent:#8e00d5; --accent-soft:#f1e3fb; --brand:#623697;
-  --shadow:0 14px 40px rgba(98,54,151,.10),0 2px 6px rgba(98,54,151,.05);
+  --bg:#f1f2f4; --surface:#ffffff; --surface2:#f6f7f9; --ink:#14181f; --ink2:#566070; --line:#dcdfe5; --line-strong:#b8bec9;
+  --accent:#1f4fb4; --cs:#1f4fb4; --chem:#11793f; --bio:#c9302c; --here:#f2a900; --brand:#623697;
   color-scheme:light;
 }
 :root[data-theme="dark"]{
-  --bg:#12051c; --bg2:#1a0828; --surface:#22102f; --surface2:#2b1640; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
-  --accent:#c77dff; --accent-soft:#3a1a55; --shadow:0 14px 40px rgba(0,0,0,.35); color-scheme:dark;
+  --bg:#0e1116; --surface:#171b22; --surface2:#1d222b; --ink:#e8ebf0; --ink2:#a3abb9; --line:#2b313c; --line-strong:#46505f;
+  --accent:#7fa6ff; --cs:#7fa6ff; --chem:#4cc487; --bio:#ff6b66; --here:#f5b83d; color-scheme:dark;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#12051c; --bg2:#1a0828; --surface:#22102f; --surface2:#2b1640; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
-    --accent:#c77dff; --accent-soft:#3a1a55; --shadow:0 14px 40px rgba(0,0,0,.35); color-scheme:dark;
+    --bg:#0e1116; --surface:#171b22; --surface2:#1d222b; --ink:#e8ebf0; --ink2:#a3abb9; --line:#2b313c; --line-strong:#46505f;
+    --accent:#7fa6ff; --cs:#7fa6ff; --chem:#4cc487; --bio:#ff6b66; --here:#f5b83d; color-scheme:dark;
   }
 }
 *{box-sizing:border-box}
-html{background:var(--bg2)}
-body{margin:0;color:var(--ink);font:17px/1.6 "Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
-  background:radial-gradient(1000px 600px at 5% -10%,color-mix(in srgb,var(--accent) 15%,transparent),transparent 70%),
-             radial-gradient(900px 700px at 100% 15%,color-mix(in srgb,var(--accent) 9%,transparent),transparent 70%),
-             linear-gradient(180deg,var(--bg),var(--bg2));background-attachment:fixed}
+html{background:var(--bg)}
+body{margin:0;color:var(--ink);font:17px/1.6 "Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg)}
+::selection{background:color-mix(in srgb,var(--accent) 22%,transparent)}
 a{color:var(--accent)}
-h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
+h1,h2,h3{margin:0;letter-spacing:-.02em;line-height:1.15;text-wrap:balance}
 .wrap{max-width:1240px;margin:0 auto;padding:0 16px}
 
-/* Hero: glassy purple card, like the school's homepage */
-.hero{margin-top:22px;border-radius:32px;overflow:hidden;position:relative;color:#fff;padding:clamp(28px,5vw,60px);
-  display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center;
-  background:radial-gradient(700px 420px at 15% 10%,rgba(184,61,255,.55),transparent 70%),
-             radial-gradient(600px 600px at 95% 100%,rgba(98,54,151,.95),transparent 70%),
-             linear-gradient(150deg,#3b0a63,#1e002b 75%);box-shadow:0 30px 70px rgba(59,10,99,.35)}
-.hero::before{content:"";position:absolute;inset:0;opacity:.12;pointer-events:none;
-  background-image:linear-gradient(rgba(255,255,255,.6) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.6) 1px,transparent 1px);
-  background-size:46px 46px;-webkit-mask-image:radial-gradient(circle at 30% 30%,#000,transparent 75%);mask-image:radial-gradient(circle at 30% 30%,#000,transparent 75%)}
-.hero > *{position:relative}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:.09em;font-size:.76rem;font-weight:700;
-  padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2)}
-.hero h1{font-size:clamp(2.2rem,5vw,3.7rem);font-weight:800;margin:18px 0 14px}
-.hero h1 span{background:linear-gradient(90deg,#e7c6ff,#b98be8);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* Hero: a dark station wall crossed by the three subject lines. */
+.hero{margin-top:22px;border-radius:12px;overflow:hidden;position:relative;color:#fff;padding:clamp(28px,5vw,60px);
+  display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center;background:#14181f}
+.hero::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.9;
+  background:linear-gradient(#1f4fb4,#1f4fb4) 0 100%/100% 10px no-repeat,
+             linear-gradient(#11793f,#11793f) 0 calc(100% - 18px)/70% 10px no-repeat,
+             linear-gradient(#c9302c,#c9302c) 0 calc(100% - 36px)/40% 10px no-repeat}
+.hero > *{position:relative;min-width:0}
+.hero h1{font-size:clamp(2.2rem,5vw,3.6rem);font-weight:800;margin:0 0 14px;line-height:1.08;letter-spacing:-.03em}
+.hero h1 span{color:#9db8ff}
 .hero p{color:rgba(255,255,255,.82);font-size:1.1rem;max-width:52ch;margin:0}
+.hero .school{margin:22px 0 60px;font-size:.92rem;color:rgba(255,255,255,.7)}
 .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:999px;font-weight:700;text-decoration:none;transition:transform .15s,filter .15s}
-.btn:hover{transform:translateY(-2px)}
-.btn.light{background:#fff;color:#4a0b7a;box-shadow:0 10px 26px rgba(0,0,0,.25)}
-.btn.ghost{color:#fff;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08)}
-.facts{display:flex;flex-wrap:wrap;gap:22px;margin-top:30px}
-.facts div b{display:block;font-size:1.6rem;font-weight:800;letter-spacing:-.02em}
-.facts div span{font-size:.85rem;color:rgba(255,255,255,.72)}
+.btn{display:inline-flex;align-items:center;gap:8px;min-height:46px;padding:12px 22px;border-radius:8px;font-weight:700;text-decoration:none}
+.btn.light{background:#fff;color:#14181f}
+.btn.light:hover{background:#e6ebf5}
+.btn.ghost{color:#fff;border:1px solid rgba(255,255,255,.4)}
+.btn.ghost:hover{border-color:#fff}
+.btn:focus-visible{outline:2px solid #fff;outline-offset:3px}
+.facts{display:flex;flex-wrap:wrap;gap:26px;margin-top:30px}
+.facts div b{display:block;font-size:1.6rem;font-weight:800;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.facts div span{font-size:.88rem;color:rgba(255,255,255,.72)}
 
-.code-card{border-radius:22px;background:rgba(20,0,32,.55);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);
-  box-shadow:0 20px 50px rgba(0,0,0,.35);overflow:hidden;transform:rotate(1.5deg)}
-.code-top{display:flex;align-items:center;gap:6px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.1);font-size:.78rem;color:rgba(255,255,255,.65)}
-.code-top i{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,.25)}
-.code-top i:nth-child(1){background:#ff6b8b}.code-top i:nth-child(2){background:#ffc85c}.code-top i:nth-child(3){background:#5fd08c}
-.code-top span{margin-left:auto}
-.code-card pre{margin:0;padding:18px 20px;font:13.5px/1.75 "JetBrains Mono",ui-monospace,monospace;color:#efe4fb;font-variant-ligatures:none;overflow-x:auto}
-.code-card .k{color:#d9a6ff}.code-card .s{color:#9be8b4}.code-card .n{color:#ffcf8a}.code-card .c{color:rgba(255,255,255,.4)}
-.mark-chip{display:flex;justify-content:space-between;gap:10px;margin:0 16px 16px;padding:10px 14px;border-radius:14px;
-  background:rgba(95,208,140,.16);border:1px solid rgba(95,208,140,.35);font-size:.85rem}
-.mark-chip b{color:#7ee2a6}
+/* The sample: a printed exam part with its mark, not a code window. */
+.code-card{border-radius:8px;background:#fff;color:#14181f;overflow:hidden;margin-bottom:50px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.code-top{display:flex;align-items:center;gap:6px;padding:10px 16px;border-bottom:1px solid #dcdfe5;font-size:.8rem;font-weight:700;color:#566070;font-variant-numeric:tabular-nums}
+.code-top i{display:none}
+.code-top span{margin-left:0}
+.code-card pre{margin:0;padding:16px 18px;font:13.5px/1.75 "JetBrains Mono",ui-monospace,monospace;color:#14181f;font-variant-ligatures:none;overflow-x:auto}
+.code-card .k{color:#1f4fb4;font-weight:600}.code-card .s{color:#11793f}.code-card .n{color:#925400}.code-card .c{color:#566070}
+.mark-chip{display:flex;justify-content:space-between;gap:10px;margin:0 16px 16px;padding:10px 14px;border-radius:6px;
+  border:1px solid #157a3d;background:#e8f3ec;font-size:.85rem}
+.mark-chip b{color:#157a3d;white-space:nowrap;font-variant-numeric:tabular-nums}
 
-/* Feature tiles */
-.features{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:22px}
-.feature{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:20px;box-shadow:var(--shadow)}
-.tile{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);margin-bottom:12px}
-.feature h3{font-size:1rem;margin-bottom:4px}
-.feature p{margin:0;color:var(--ink2);font-size:.9rem;line-height:1.5}
-
-/* Courses */
-.course{margin-top:56px}
-.course-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:18px}
-.label{text-transform:uppercase;letter-spacing:.09em;font-size:.78rem;font-weight:700;color:var(--accent)}
-.course-head h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;margin-top:4px}
+/* Courses as lines, papers as stations on them. */
+.course{--line-c:var(--cs);margin-top:56px}
+.course.line-chem{--line-c:var(--chem)}
+.course.line-bio{--line-c:var(--bio)}
+.course-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px;padding-bottom:18px}
+.label{display:inline-block;font-size:.86rem;font-weight:700;color:#fff;background:var(--line-c);padding:3px 9px;border-radius:4px;font-variant-numeric:tabular-nums}
+:root[data-theme="dark"] .label{color:#0e1116}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .label{color:#0e1116}}
+.course-head > div{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px}
+.course-head > div > p{flex-basis:100%}
+.course-head h2{font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;order:-1}
 .course-head p{margin:6px 0 0;color:var(--ink2);max-width:62ch}
-.badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:.85rem;font-weight:600;color:var(--ink2)}
-.papers{display:grid;gap:18px}
+.badge{font-size:.88rem;font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums}
+.badge svg{display:none}
+.papers{position:relative;display:grid;gap:42px 16px;padding-top:26px}
+/* Every row of papers hangs from its own stretch of the line, one station per paper. */
+.paper::after{content:"";position:absolute;left:-9px;right:-9px;top:-30px;height:6px;background:var(--line-c);z-index:0}
 .papers.two{grid-template-columns:repeat(2,1fr)}
 .papers.four{grid-template-columns:repeat(4,1fr)}
 .papers.three{grid-template-columns:repeat(3,1fr)}
-.paper{position:relative;display:flex;flex-direction:column;gap:8px;padding:24px;border-radius:26px;background:var(--surface);border:1px solid var(--line);
-  color:inherit;text-decoration:none;box-shadow:var(--shadow);transition:transform .2s,border-color .2s,box-shadow .2s;overflow:hidden}
-.paper::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;pointer-events:none;
-  background:radial-gradient(circle,color-mix(in srgb,var(--accent) 16%,transparent),transparent 70%);transition:transform .3s}
-.paper:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 45%,transparent);box-shadow:0 22px 50px rgba(98,54,151,.18)}
-.paper:hover::after{transform:scale(1.3)}
-.paper:focus-visible{outline:3px solid color-mix(in srgb,var(--accent) 45%,transparent);outline-offset:3px}
+.paper{position:relative;display:flex;flex-direction:column;gap:8px;padding:22px;border-radius:12px;background:var(--surface);border:1px solid var(--line);
+  color:inherit;text-decoration:none;transition:border-color .15s}
+.paper::before{content:"";position:absolute;left:22px;top:-36px;width:18px;height:18px;border-radius:50%;box-sizing:border-box;background:var(--surface);border:4px solid var(--line-c);z-index:1}
+.paper:hover{border-color:var(--line-c)}
+
+.paper:hover::before{background:var(--line-c)}
+.paper:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .paper .top{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.paper .num{font-size:.76rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
-.paper h3{font-size:1.3rem;font-weight:800}
+.paper .tile{display:none}
+.paper .num{font-size:.9rem;font-weight:700;color:var(--ink2)}
+.paper h3{font-size:1.25rem;font-weight:800}
 .paper p{margin:0;color:var(--ink2);font-size:.93rem;line-height:1.55}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
-.chips span{font-size:.76rem;font-weight:600;padding:3px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.chips span{font-size:.78rem;font-weight:500;padding:1px 8px;border-radius:4px;background:var(--surface2);border:1px solid var(--line);color:var(--ink2)}
 .paper .foot{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:14px;border-top:1px solid var(--line)}
-.count{font-size:.85rem;color:var(--ink2)}
+.count{font-size:.85rem;color:var(--ink2);font-variant-numeric:tabular-nums}
 .count b{color:var(--ink)}
 .go{display:inline-flex;align-items:center;gap:6px;font-weight:700;color:var(--accent);font-size:.92rem}
 .go svg{transition:transform .2s}.paper:hover .go svg{transform:translateX(4px)}
-.big .tile{width:54px;height:54px;border-radius:16px;margin-bottom:0}
 
-/* How it works */
-.steps{margin-top:56px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;background:var(--surface);border:1px solid var(--line);
-  border-radius:28px;padding:28px;box-shadow:var(--shadow)}
-.step{display:flex;gap:14px}
-.step i{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;background:var(--accent);color:#fff}
-.step h3{font-size:1rem;margin-bottom:2px}
-.step p{margin:0;color:var(--ink2);font-size:.9rem;line-height:1.5}
+/* How it works: three stops on one line, because the order matters. */
+.steps{position:relative;margin-top:64px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px;padding-top:30px}
+.steps::before{content:"";position:absolute;left:18px;right:18px;top:17px;height:4px;border-radius:2px;background:var(--ink)}
+.step{display:grid;gap:10px}
+.step i{position:relative;margin-top:-30px;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;
+  background:var(--surface);border:4px solid var(--ink);color:var(--ink)}
+.step h3{font-size:1.05rem;margin-bottom:2px}
+.step p{margin:0;color:var(--ink2);font-size:.93rem;line-height:1.5}
 .note{margin-top:18px;color:var(--ink2);font-size:.88rem;text-align:center}
 
-@media (max-width:1040px){.papers.four,.papers.three{grid-template-columns:repeat(2,1fr)}.features{grid-template-columns:repeat(2,1fr)}}
-@media (max-width:860px){.hero{grid-template-columns:1fr}.code-card{transform:none}.steps{grid-template-columns:1fr}}
-@media (max-width:640px){.papers.two,.papers.three,.papers.four,.features{grid-template-columns:1fr}}
+@media (max-width:1040px){.papers.four,.papers.three{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:860px){.hero{grid-template-columns:1fr}.code-card{margin-bottom:40px}
+  .steps{grid-template-columns:1fr;padding:0 0 0 52px}.steps::before{left:16px;right:auto;top:0;bottom:0;width:4px;height:auto}
+  .step i{position:absolute;margin:0;left:0}.step{position:relative}}
+/* Phones: the line runs down the left and each paper hangs off its own station. */
+@media (max-width:640px){.papers.two,.papers.three,.papers.four{grid-template-columns:1fr;gap:16px;padding:0 0 0 30px}
+  .papers::before{content:"";position:absolute;left:7px;top:6px;bottom:6px;width:6px;background:var(--line-c)}
+  .paper::after{display:none}.paper::before{left:-32px;top:22px}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 <!-- nl:head -->
@@ -151,7 +156,6 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
 <div class="wrap">
   <section class="hero">
     <div>
-      <span class="eyebrow">Dombit International School · IGCSE &amp; A Level</span>
       <h1>Practise smarter.<br><span>Reach the next level.</span></h1>
       <p>Cambridge IGCSE and A Level Computer Science, Chemistry and Biology past-paper questions, sorted by topic and checked against the official mark scheme point by point.</p>
       <div class="cta">
@@ -165,6 +169,7 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
         <div><b>22</b><span>papers, 5 courses</span></div>
         <div><b>2021–2026</b><span>past papers</span></div>
       </div>
+      <p class="school">Dombit International School · Cambridge IGCSE &amp; A Level</p>
     </div>
     <div class="code-card" aria-hidden="true">
       <div class="code-top"><i></i><i></i><i></i><span>0478/21 · Q5 · 5 marks</span></div>
@@ -181,26 +186,7 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
     </div>
   </section>
 
-  <section class="features" aria-label="What you get">
-    <div class="feature">
-      <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5v14Z"/></svg></span>
-      <h3>Every topic</h3><p>Questions grouped by syllabus chapter and subtopic, from every recent paper.</p>
-    </div>
-    <div class="feature">
-      <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></span>
-      <h3>Real mark schemes</h3><p>Tick the examiner's mark points your answer makes and see the model answer.</p>
-    </div>
-    <div class="feature">
-      <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 3v18h18M7 15l4-4 3 3 6-6"/></svg></span>
-      <h3>Track progress</h3><p>See your score per topic and find the subtopics that lose you marks.</p>
-    </div>
-    <div class="feature">
-      <span class="tile"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM22 21v-2a4 4 0 0 0-3-3.870M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-      <h3>With your teacher</h3><p>Log in to the full app and your teacher sees your progress and weak spots.</p>
-    </div>
-  </section>
-
-  <section class="course" id="igcse">
+  <section class="course line-cs" id="igcse">
     <div class="course-head">
       <div>
         <span class="label">Cambridge IGCSE · 0478</span>
@@ -227,7 +213,7 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
     </div>
   </section>
 
-  <section class="course" id="chemistry">
+  <section class="course line-chem" id="chemistry">
     <div class="course-head">
       <div>
         <span class="label">Cambridge IGCSE · 0620</span>
@@ -282,7 +268,7 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
     </div>
   </section>
 
-  <section class="course" id="alevel">
+  <section class="course line-cs" id="alevel">
     <div class="course-head">
       <div>
         <span class="label">Cambridge International AS &amp; A Level · 9618</span>
@@ -319,7 +305,7 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
     </div>
   </section>
 
-  <section class="course" id="alevel-chemistry">
+  <section class="course line-chem" id="alevel-chemistry">
     <div class="course-head">
       <div>
         <span class="label">Cambridge International AS &amp; A Level · 9701</span>
@@ -368,7 +354,7 @@ h1,h2,h3{margin:0;letter-spacing:-.025em;line-height:1.15}
   </section>
 
 <!-- nl:biology -->
-  <section class="course" id="alevel-biology">
+  <section class="course line-bio" id="alevel-biology">
     <div class="course-head">
       <div>
         <span class="label">Cambridge International AS &amp; A Level · 9700</span>

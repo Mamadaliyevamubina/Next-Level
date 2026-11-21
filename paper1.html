@@ -24,25 +24,25 @@
 <!-- /nl:header -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 /* Layout: chapter rail on the left, one question at a time in the centre column, marking feedback directly under the answer box. */
 :root{
-  --bg:#f6f0fd; --surface:#ffffff; --surface2:#f7f2fc; --ink:#1e002b; --ink2:#6f667c; --line:#e6dcf2;
-  --accent:#8e00d5; --accent-soft:#f1e3fb; --ok:#1a7a47; --ok-soft:#dff3e8; --warn:#a9640a; --warn-soft:#fbefd8; --bad:#b0372b; --bad-soft:#fbe6e3;
-  --f-display:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
-  --f-body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --bg:#f1f2f4; --surface:#ffffff; --surface2:#f6f7f9; --ink:#14181f; --ink2:#566070; --line:#dcdfe5;
+  --accent:#1f4fb4; --accent-soft:#e8eefa; --ok:#1a7a47; --ok-soft:#dff3e8; --warn:#a9640a; --warn-soft:#fbefd8; --bad:#b0372b; --bad-soft:#fbe6e3;
+  --f-display:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-body:"Golos Text",system-ui,-apple-system,"Segoe UI",sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#12051c; --surface:#26103a; --surface2:#2e1645; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
-    --accent:#c77dff; --accent-soft:#3a1a55; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; color-scheme:dark;
+    --bg:#0e1116; --surface:#171b22; --surface2:#1d222b; --ink:#e8ebf0; --ink2:#a3abb9; --line:#2b313c;
+    --accent:#7fa6ff; --accent-soft:#1e2a44; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; color-scheme:dark;
   }
 }
 :root[data-theme="dark"]{
-  --bg:#12051c; --surface:#26103a; --surface2:#2e1645; --ink:#f3ecfa; --ink2:#b4a8c4; --line:#3d2656;
-  --accent:#c77dff; --accent-soft:#3a1a55; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; color-scheme:dark;
+  --bg:#0e1116; --surface:#171b22; --surface2:#1d222b; --ink:#e8ebf0; --ink2:#a3abb9; --line:#2b313c;
+  --accent:#7fa6ff; --accent-soft:#1e2a44; --ok:#5fd08c; --ok-soft:#173326; --warn:#f0b34d; --warn-soft:#3a2b10; --bad:#f28d80; --bad-soft:#3d1f1b; color-scheme:dark;
 }
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:17px;line-height:1.6;margin:0;padding-inline:16px;padding-block:0 60px}
@@ -77,7 +77,7 @@ select{width:100%;min-width:0;background:var(--surface2);border:1px solid var(--
 .marks{font-family:var(--f-display);font-weight:700;background:var(--accent);color:#fff;border-radius:6px;padding:2px 10px;font-size:.88rem}
 :root[data-theme="dark"] .marks{color:#0f141b}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .marks{color:#0f141b}}
-.qnav{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:14px;max-height:92px;overflow:auto;padding:2px}
+.qnav{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0 4px;max-height:240px;overflow:auto;padding:2px}
 .chip{min-width:34px;height:30px;border-radius:6px;border:1px solid var(--line);background:var(--surface);font-family:var(--f-mono);font-size:.76rem;cursor:pointer;padding:0 6px}
 .chip.cur{outline:2px solid var(--accent);outline-offset:1px}
 .chip.full{background:var(--ok-soft);border-color:var(--ok)} .chip.part{background:var(--warn-soft);border-color:var(--warn)} .chip.zero{background:var(--bad-soft);border-color:var(--bad)}
@@ -298,7 +298,7 @@ h1,h2,h3{letter-spacing:-.02em}
     }
     if(idx>=queue.length) idx=0;
     var it=queue[idx], a=latest(it.id), v=view[it.id]||(view[it.id]={});
-    var nav="<div class='qnav'>"+queue.map(function(q,i){ var l=level(latest(q.id)); return "<button class='chip "+(l!=="new"?l:"")+(i===idx?" cur":"")+"' data-i='"+i+"' title='"+esc(q.paper_code)+" Q"+esc(q.q)+"'>"+(i+1)+"</button>"; }).join("")+"</div>";
+    var nav="<details class='qjump'><summary><b>Question "+(idx+1)+" of "+queue.length+"</b> <span>Jump to question</span></summary><div class='qnav'>"+queue.map(function(q,i){ var l=level(latest(q.id)); return "<button class='chip "+(l!=="new"?l:"")+(i===idx?" cur":"")+"' data-i='"+i+"' aria-label='Question "+(i+1)+", "+{"new":"not tried","full":"full marks","part":"some marks","zero":"no marks"}[l]+"'"+(i===idx?" aria-current='true'":"")+" title='"+esc(q.paper_code)+" Q"+esc(q.q)+"'>"+(i+1)+"</button>"; }).join("")+"</div></details>";
     var paper=PAPERS[it.session+"-"+it.variant];
     var mono = (it.answer_type==="sql"||it.answer_type==="expression"||it.answer_type==="trace"||it.answer_type==="calculation");
     var html = nav + "<div class='card'>"+
