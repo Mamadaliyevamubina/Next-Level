@@ -136,6 +136,7 @@ export default function StudentDetail() {
                     <ScoreBadge awarded={r.awarded} marks={r.marks} />
                   </summary>
                   <pre className="past">{r.answer || '(no answer written)'}</pre>
+                  {r.ai_feedback && <p className="ai-note"><b>AI feedback</b>{r.ai_feedback}</p>}
                   <Link to={`/question/${r.question_id}`} className="small"><Icon name="arrow" size={14} /> Open the question</Link>
                 </details>
               </li>

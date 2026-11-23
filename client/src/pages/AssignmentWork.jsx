@@ -5,7 +5,7 @@ import Markdown from '../components/Markdown.jsx';
 import { MarksTag, MarksHint } from '../components/Marks.jsx';
 import { ScoreBadge } from '../components/Meter.jsx';
 import Icon from '../components/Icon.jsx';
-import Verdict from '../components/Verdict.jsx';
+import Verdict, { AiResult } from '../components/Verdict.jsx';
 import MockExam from './MockExam.jsx';
 import { CODE_TYPES, Figures, isContextFigure } from './Question.jsx';
 import { dueStatus, formatDate } from './MyAssignments.jsx';
@@ -129,6 +129,7 @@ function AssignmentQuestion({ assignmentId, q, number, locked, aiMarking, onSave
   const [checking, setChecking] = useState(false);
   const [ticked, setTicked] = useState(previous?.ticked || []);
   const [awarded, setAwarded] = useState(previous?.awarded || 0);
+  const [hint, setHint] = useState(previous?.ai_hint || null);
   const [touchedScore, setTouchedScore] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -172,6 +173,7 @@ function AssignmentQuestion({ assignmentId, q, number, locked, aiMarking, onSave
       setCorrect(d.correct);
       setTicked(d.attempt.ticked || []);
       setAwarded(d.attempt.awarded ?? 0);
+      setHint(d.attempt.ai_hint || null);
       setPhase('checked');
     } catch (e) {
       setError(e.message);
@@ -185,6 +187,7 @@ function AssignmentQuestion({ assignmentId, q, number, locked, aiMarking, onSave
     setCorrect(null);
     setTicked([]);
     setAwarded(0);
+    setHint(null);
     setTouchedScore(false);
   };
 
@@ -227,20 +230,44 @@ function AssignmentQuestion({ assignmentId, q, number, locked, aiMarking, onSave
                 {checking ? 'Checking…' : 'Check my answer'}
               </button>
             )}
-            <button type="button" className={aiMarking ? undefined : 'primary'} onClick={() => setPhase('marking')} disabled={checking}>
-              {aiMarking ? 'Mark it myself' : 'Mark my answer'}
-            </button>
+            {!q.scheme_hidden && (
+              <button type="button" className={aiMarking ? undefined : 'primary'} onClick={() => setPhase('marking')} disabled={checking}>
+                {aiMarking ? 'Mark it myself' : 'Mark my answer'}
+              </button>
+            )}
             <span className="muted small">
-              {aiMarking
-                ? 'Check my answer: the AI marker gives you a mark and shows which mark-scheme points you made.'
-                : 'You will tick the mark-scheme points your answer covers.'}
+              {q.scheme_hidden
+                ? 'The AI marks your answer and gives you a hint without telling you the answer. Your teacher sees its full feedback.'
+                : aiMarking
+                  ? 'Check my answer: the AI marker gives you a mark and shows which mark-scheme points you made.'
+                  : 'You will tick the mark-scheme points your answer covers.'}
             </span>
           </div>
           {error && <p className="error">{error}</p>}
         </>
       )}
 
-      {phase !== 'answer' && (
+      {phase !== 'answer' && q.scheme_hidden && (
+        <section className="card scheme">
+          {phase === 'checked' && <AiResult awarded={awarded} marks={q.marks} hint={hint} />}
+          {error && <p className="error">{error}</p>}
+          {phase === 'checked' && (
+            <div className="row">
+              {!locked && <button type="button" onClick={retry}>Try again</button>}
+              {onNext && <button type="button" className="primary" onClick={onNext}>Next question</button>}
+            </div>
+          )}
+          {phase !== 'checked' && (
+            <div className="row">
+              {previous ? <span className="ok-text">Saved: {previous.awarded} / {previous.marks}</span> : <span className="muted">Not answered.</span>}
+              {!locked && <button type="button" onClick={retry}>{previous ? 'Change my answer' : 'Answer it'}</button>}
+              {onNext && <button type="button" className="primary" onClick={onNext}>Next question</button>}
+            </div>
+          )}
+        </section>
+      )}
+
+      {phase !== 'answer' && !q.scheme_hidden && (
         <section className="card scheme">
           {phase === 'checked' && <Verdict awarded={awarded} marks={q.marks} criteria={q.criteria} ticked={ticked} />}
           <h2>Mark scheme</h2>

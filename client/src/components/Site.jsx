@@ -71,7 +71,6 @@ export function SiteHeader() {
       <nav className="site-nav" aria-label="Main">
         <NavLink to="/" end>Home</NavLink>
         {menuGroups(courses).map(([level, list]) => <Dropdown key={level} label={level} courses={list} current={location.pathname} />)}
-        <a href="https://school.dombit.uz" target="_blank" rel="noopener noreferrer">School website</a>
       </nav>
       <div className="topbar-actions">
         <ThemeButton />
@@ -107,7 +106,6 @@ export function SiteFooter() {
           <ul>
             <li>81, To‘raqo‘rg‘on street, Namangan, Uzbekistan</li>
             <li><a href="tel:+998953305509">+998 95 330 55 09</a></li>
-            <li><a href="https://school.dombit.uz" target="_blank" rel="noopener noreferrer">school.dombit.uz</a></li>
             <li>
               <a href="https://t.me/dombit_xalqaro_maktabi" target="_blank" rel="noopener noreferrer">Telegram</a> ·{' '}
               <a href="https://www.instagram.com/dombit_international_school/" target="_blank" rel="noopener noreferrer">Instagram</a> ·{' '}

@@ -27,3 +27,20 @@ export default function Verdict({ awarded = 0, marks, criteria = [], ticked = []
     </div>
   );
 }
+
+// Result of "Check my answer" while mark schemes are hidden from students: the mark and the AI's hint,
+// which points the way without giving the answer. The teacher gets the AI's full feedback.
+export function AiResult({ awarded = 0, marks, hint }) {
+  const full = awarded >= marks;
+  const tone = full ? 'ok' : awarded > 0 ? 'part' : 'none';
+  return (
+    <div className={`verdict ${tone}`} role="status">
+      <p className="verdict-score">
+        <b>{awarded}</b><span>/ {marks}</span>
+        <span className="verdict-word">{full ? 'Full marks' : awarded > 0 ? 'Nearly there' : 'Not yet'}</span>
+      </p>
+      {hint && <p className="verdict-hint"><Icon name="target" size={16} /> {hint}</p>}
+      {!full && <p className="muted small">Change your answer and check it again. Your teacher can see the AI's full feedback on it.</p>}
+    </div>
+  );
+}

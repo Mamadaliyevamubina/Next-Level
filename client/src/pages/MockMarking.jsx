@@ -173,6 +173,7 @@ function MarkQuestion({ n, q, disabled, onSave }) {
           <h3>Student's answer</h3>
           {answer ? <pre className={`past ${CODE_TYPES.has(q.answer_type) ? 'mono' : ''}`}>{q.answer}</pre> : <p className="muted">No answer written.</p>}
           {q.ai_error && <p className="error small">{q.ai_error}</p>}
+          {q.ai_feedback && <p className="ai-note"><b>AI feedback</b>{q.ai_feedback}</p>}
         </section>
         <section>
           <h3>Mark scheme</h3>

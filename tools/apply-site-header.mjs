@@ -53,7 +53,6 @@ function header(page) {
       <a href="index.html"${page === 'index.html' ? ' aria-current="page"' : ''}>Home</a>
       ${drop('IGCSE', IGCSE)}
       ${drop('A Level', ALEVEL)}
-      <a href="https://school.dombit.uz" target="_blank" rel="noopener">School website</a>
     </nav>
     <div class="nl-actions">
       <button type="button" class="nl-icon" data-nl-theme aria-label="Switch theme"></button>
@@ -82,7 +81,6 @@ const FOOTER = `<footer class="nl-footer">
       <ul>
         <li>81, To‘raqo‘rg‘on street, Namangan, Uzbekistan</li>
         <li><a href="tel:+998953305509">+998 95 330 55 09</a></li>
-        <li><a href="https://school.dombit.uz" target="_blank" rel="noopener">school.dombit.uz</a></li>
         <li><a href="https://t.me/dombit_xalqaro_maktabi" target="_blank" rel="noopener">Telegram</a> · <a href="https://www.instagram.com/dombit_international_school/" target="_blank" rel="noopener">Instagram</a> · <a href="https://www.youtube.com/@dombit_nextlevel" target="_blank" rel="noopener">YouTube</a></li>
       </ul>
     </div>

@@ -6,7 +6,7 @@ import { MarksTag, MarksHint } from '../components/Marks.jsx';
 import { ScoreBadge } from '../components/Meter.jsx';
 import ExaminerReport from '../components/ExaminerReport.jsx';
 import Icon from '../components/Icon.jsx';
-import Verdict from '../components/Verdict.jsx';
+import Verdict, { AiResult } from '../components/Verdict.jsx';
 
 export const CODE_TYPES = new Set(['code', 'pseudocode', 'sql', 'trace']);
 
@@ -56,6 +56,7 @@ function QuestionView({ data, setData }) {
   const [checking, setChecking] = useState(false);
   const [ticked, setTicked] = useState([]);
   const [awarded, setAwarded] = useState(0);
+  const [hint, setHint] = useState(null);
   const [touchedScore, setTouchedScore] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
@@ -97,6 +98,7 @@ function QuestionView({ data, setData }) {
       setCorrect(d.correct);
       setTicked(d.attempt.ticked || []);
       setAwarded(d.attempt.awarded ?? 0);
+      setHint(d.attempt.ai_hint || null);
       setPhase('checked');
     } catch (e) {
       setError(e.message);
@@ -110,6 +112,7 @@ function QuestionView({ data, setData }) {
     setCorrect(null);
     setTicked([]);
     setAwarded(0);
+    setHint(null);
     setTouchedScore(false);
   };
 
@@ -173,13 +176,17 @@ function QuestionView({ data, setData }) {
                 {checking ? 'Checking…' : 'Check my answer'}
               </button>
             )}
-            <button type="button" className={aiMarking ? undefined : 'primary'} onClick={() => setPhase('marking')} disabled={checking}>
-              {aiMarking ? 'Mark it myself' : 'Mark my answer'}
-            </button>
+            {!q.scheme_hidden && (
+              <button type="button" className={aiMarking ? undefined : 'primary'} onClick={() => setPhase('marking')} disabled={checking}>
+                {aiMarking ? 'Mark it myself' : 'Mark my answer'}
+              </button>
+            )}
             <span className="muted small">
-              {aiMarking
-                ? 'Check my answer: the AI marker gives you a mark and shows which mark-scheme points you made.'
-                : 'You will tick the mark-scheme points your answer covers.'}
+              {q.scheme_hidden
+                ? 'The AI marks your answer and gives you a hint without telling you the answer. Your teacher sees its full feedback.'
+                : aiMarking
+                  ? 'Check my answer: the AI marker gives you a mark and shows which mark-scheme points you made.'
+                  : 'You will tick the mark-scheme points your answer covers.'}
               {examiner && ' The examiner report for this question opens next to the mark scheme.'}
             </span>
           </div>
@@ -187,7 +194,26 @@ function QuestionView({ data, setData }) {
         </>
       )}
 
-      {phase !== 'answer' && (
+      {phase !== 'answer' && q.scheme_hidden && (
+        <section className="card scheme">
+          {phase === 'checked' && <AiResult awarded={awarded} marks={q.marks} hint={hint} />}
+          {error && <p className="error">{error}</p>}
+          {phase === 'checked' && (
+            <div className="row">
+              <button type="button" onClick={retry}>Try again</button>
+              <button type="button" className="primary" onClick={practiseNext}>Next question in this chapter</button>
+            </div>
+          )}
+          {phase !== 'checked' && (
+            <div className="row">
+              <button type="button" onClick={retry}>Answer it again</button>
+              <button type="button" className="primary" onClick={practiseNext}>Next question in this chapter</button>
+            </div>
+          )}
+        </section>
+      )}
+
+      {phase !== 'answer' && !q.scheme_hidden && (
         <div className={examiner ? 'marking-grid' : undefined}>
         <section className="card scheme">
           {phase === 'checked' && <Verdict awarded={awarded} marks={q.marks} criteria={q.criteria} ticked={ticked} />}

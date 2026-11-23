@@ -20,6 +20,8 @@ import MockMarking from './pages/MockMarking.jsx';
 import Admin from './pages/Admin.jsx';
 import TeacherHome from './pages/TeacherHome.jsx';
 import PracticeBank from './pages/PracticeBank.jsx';
+import Competition from './pages/Competition.jsx';
+import AiFeedback from './pages/AiFeedback.jsx';
 
 // Any page that needs an account sends visitors to log in, then back to that page.
 function LoginFirst() {
@@ -77,10 +79,12 @@ export default function App() {
         <Route path="question/:id" element={<Question />} />
         <Route path="bookmarks" element={<Bookmarks />} />
         <Route path="account" element={<Account />} />
+        <Route path="competition" element={<Competition />} />
         {isTeacher(user) && <Route path="practice" element={<PracticeBank />} />}
         {isTeacher(user) && <Route path="teacher" element={<Teacher />} />}
         {isTeacher(user) && <Route path="teacher/student/:id" element={<StudentDetail />} />}
         {isTeacher(user) && <Route path="teacher/assignments" element={<TeacherAssignments />} />}
+        {isTeacher(user) && <Route path="teacher/feedback" element={<AiFeedback />} />}
         {isTeacher(user) && <Route path="teacher/assignments/:id" element={<TeacherAssignment />} />}
         {isTeacher(user) && <Route path="teacher/assignments/:id/mark/:studentId" element={<MockMarking />} />}
         {isStudent(user) && <Route path="assignments" element={<MyAssignments />} />}
