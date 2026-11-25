@@ -1,5 +1,5 @@
 // AI marking for the IGCSE Computer Science (0478) practice page.
-// Shared by the browser (public/ai-client.js) and the Cloudflare Worker (worker/src/index.js),
+// Used by the Cloudflare Worker (worker/src/index.js),
 // so the prompt, the output schema and the result checks are the same on both paths.
 
 export const MODEL = "claude-opus-5-5";

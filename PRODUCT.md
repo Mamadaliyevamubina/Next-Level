@@ -22,7 +22,7 @@ The question bank is the school's own: real Cambridge past-paper questions with 
 
 ## Operating Context
 
-- Public static site at next-level.uz, served from GitHub Pages on the `main` branch: landing page plus paper practice pages (paper1–4.html, igcse.html, chemistry.html, chemistry-alevel.html, biology-alevel.html). No login is needed and progress is stored in the browser.
+- The website at next-level.uz is the React app (client/), built and published to GitHub Pages from `main`. Visitors practise every paper without an account (banks from data/*.json, progress in the browser); logged-in users use the API.
 - Logged-in app: React + Vite (`client/`), backed by the Express + PostgreSQL API in the separate `next-level-backend` repository. For now it runs locally (`localhost:5173`, API on `:4000`).
 - Sign-up: a student chooses grade, subjects, teacher and class, then waits until the teacher approves them.
 - Exam series: Cambridge May/June and Oct/Nov.

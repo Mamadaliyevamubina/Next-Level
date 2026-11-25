@@ -208,7 +208,6 @@ The app is a two-column grid: a 272px sticky line-map sidebar on the left, the w
 
 Paper pages split into a chapter line (vertical, sticky) and the question list. Below 860px the chapter line turns horizontal: a scrolling, snap-aligned row of stops with the line drawn across the top. The question view centres one question at up to 880px (1180px when the examiner report sits beside the mark scheme, collapsing to one column below 960px).
 
-The static site uses the same map: at 1100px and wider, site.js builds a fixed 272px sidebar from the header's links and hides the header bar; narrower screens keep a sticky header with a burger menu (980px).
 
 Rhythm comes from two tokens: `gap` (18px) between blocks and `pad` (22px) inside cards; the compact setting tightens them to 12px and 15px. Touch targets are at least 40px, and 44px under 900px. Fields are at least 16px on phones so iOS never zooms.
 

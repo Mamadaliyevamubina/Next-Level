@@ -1,5 +1,5 @@
 // Creates the database (if missing), creates the tables, and loads every question:
-// A Level 9618 from the paper1-4.html pages, IGCSE 0478 from data/igcse-paper1-2.json,
+// A Level 9618 from data/alevel-paper1-4.json, IGCSE 0478 from data/igcse-paper1-2.json,
 // IGCSE Chemistry 0620 from data/chemistry-paper2/4/6.json.
 // Run with: npm run db:setup
 import fs from 'node:fs';
@@ -22,10 +22,10 @@ const SUBJECTS = {
 // number: internal paper id. IGCSE Computer Science papers are 11 and 12 and IGCSE Chemistry papers are 21–26 (the paper's own number + 20) A Level Chemistry papers are 41–45 and A Level Biology papers are 51–55,
 // so they never clash with 9618 Papers 1-4.
 const PAPERS = [
-  { number: 1, subject: '9618', label: 'Paper 1', title: 'Theory Fundamentals', description: 'AS Level theory: data representation, hardware, networks, security, databases.', source: 'paper1.html' },
-  { number: 2, subject: '9618', label: 'Paper 2', title: 'Fundamental Problem-solving and Programming Skills', description: 'AS Level pseudocode, algorithms and program design.', source: 'paper2.html' },
-  { number: 3, subject: '9618', label: 'Paper 3', title: 'Advanced Theory', description: 'A Level theory: floating point, protocols, AI, further programming.', source: 'paper3.html' },
-  { number: 4, subject: '9618', label: 'Paper 4', title: 'Practical (Python)', description: 'A Level practical programming in Python.', source: 'paper4.html' },
+  { number: 1, subject: '9618', label: 'Paper 1', title: 'Theory Fundamentals', description: 'AS Level theory: data representation, hardware, networks, security, databases.', source: 'data/alevel-paper1.json' },
+  { number: 2, subject: '9618', label: 'Paper 2', title: 'Fundamental Problem-solving and Programming Skills', description: 'AS Level pseudocode, algorithms and program design.', source: 'data/alevel-paper2.json' },
+  { number: 3, subject: '9618', label: 'Paper 3', title: 'Advanced Theory', description: 'A Level theory: floating point, protocols, AI, further programming.', source: 'data/alevel-paper3.json' },
+  { number: 4, subject: '9618', label: 'Paper 4', title: 'Practical (Python)', description: 'A Level practical programming in Python.', source: 'data/alevel-paper4.json' },
   { number: 11, subject: '0478', label: 'IGCSE Paper 1', title: 'Computer Systems', description: 'IGCSE theory: data, transmission, hardware, software, the internet, emerging technologies.', source: 'data/igcse-paper1.json', examPrefix: 'ig-' },
   { number: 12, subject: '0478', label: 'IGCSE Paper 2', title: 'Algorithms, Programming and Logic', description: 'IGCSE algorithms, pseudocode programming, databases and Boolean logic.', source: 'data/igcse-paper2.json', examPrefix: 'ig-' },
   { number: 21, subject: '0620', label: 'Chemistry Paper 1', title: 'Multiple Choice (Core)', description: 'IGCSE Chemistry Core: 40 multiple-choice questions per paper.', source: 'data/chemistry-paper1.json', examPrefix: 'ch-' },

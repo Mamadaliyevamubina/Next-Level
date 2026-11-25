@@ -871,3 +871,16 @@ ul.feedback-list { gap: 10px; }
 .feedback-item.unread .feedback-text { font-weight: 600; }
 .feedback-q, .feedback-text { margin: 0; }
 .feedback-item .small-btn { justify-self: start; min-height: 0; padding: 4px 12px; font-size: .84rem; }
+
+/* ---- Open practice (visitors, no account) ---- */
+.icon.flip { transform: scaleX(-1); }
+.open-page { max-width: 1180px; margin: 0 auto; padding: 8px 20px 40px; }
+article.open-page { max-width: 880px; }
+.open-tabs { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; margin-bottom: 18px; border-bottom: 1px solid var(--line); }
+.open-tabs a { display: grid; flex: none; min-width: 0; max-width: 240px; padding: 8px 14px; border-radius: var(--radius-sm) var(--radius-sm) 0 0; color: var(--ink); border-bottom: 3px solid transparent; }
+.open-tabs a:hover { background: var(--surface2); text-decoration: none; }
+.open-tabs a b { font-size: .9rem; }
+.open-tabs a span { font-size: .78rem; color: var(--ink2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.open-tabs a.on { border-bottom-color: var(--line-c, var(--accent)); background: var(--surface); }
+.open-page.line-cs { --line-c: var(--line-cs); } .open-page.line-chem { --line-c: var(--line-chem); } .open-page.line-bio { --line-c: var(--line-bio); }
+.open-nav { margin-top: 18px; }

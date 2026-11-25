@@ -10,7 +10,6 @@ mkdir -p /tmp/igcse-json /tmp/igcse-pages
 node extract.mjs ~/igcse-pdfs /tmp/igcse-json                 # text + positions of every line
 node render-pages.mjs . ~/igcse-pdfs /tmp/igcse-pages          # page images (needs Google Chrome)
 node build-bank.mjs /tmp/igcse-json /tmp/igcse-pages ../..     # writes data/ and public/figures/igcse/ (uses macOS sips)
-cd ../.. && node tools/build-igcse-page.mjs                    # regenerates igcse.html
 cd server && npm run db:setup                                  # loads the new questions into PostgreSQL
 ```
 
@@ -30,7 +29,6 @@ node extract-chem.mjs ~/chem-pdfs /tmp/chem-json
 node render-pages.mjs . ~/chem-pdfs /tmp/chem-pages
 node build-chem-bank.mjs /tmp/chem-json /tmp/chem-pages ../.. 0620   # data/chemistry-paper1…6.json, public/figures/chemistry/
 node build-chem-bank.mjs /tmp/chem-json /tmp/chem-pages ../.. 9701   # data/chemistry-alevel-paper1…5.json, public/figures/chemistry-alevel/
-cd ../.. && node tools/build-igcse-page.mjs                          # regenerates igcse.html, chemistry.html, chemistry-alevel.html
 cp data/chemistry-*.json ../next-level-backend/seed/                 # the backend loads them from seed/
 cd ../next-level-backend && npm run db:setup
 ```

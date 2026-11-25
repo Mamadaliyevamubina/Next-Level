@@ -9,6 +9,8 @@ RUN cd client && npm ci
 COPY client client
 # Question images, the favicon and site.css live in the repo-level public/ folder (vite.config.js: publicDir '../public').
 COPY public public
+# Question banks for open practice (copied to /data/ by vite.config.js).
+COPY data data
 ARG VITE_API_URL=https://next-level-api.dombit.uz
 ENV VITE_API_URL=$VITE_API_URL
 RUN cd client && npm run build

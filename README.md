@@ -11,9 +11,9 @@ Every IGCSE and A Level Chemistry question comes from an official Cambridge (CAI
 | IGCSE Paper 1 – Computer Systems | 1 Data representation · 2 Data transmission · 3 Hardware · 4 Software · 5 The internet and its uses · 6 Automated and emerging technologies | 807 |
 | IGCSE Paper 2 – Algorithms, Programming and Logic | 7 Algorithm design and problem-solving · 8 Programming · 9 Databases · 10 Boolean logic | 504 |
 
-The questions and mark schemes are in `data/igcse-paper1.json` and `data/igcse-paper2.json`. Diagrams, tables, flowcharts and logic circuits are images in `public/figures/igcse/`. Static page: `igcse.html` (rebuild with `node tools/build-igcse-page.mjs`). How the bank was built, and how to add new papers: [tools/igcse/README.md](tools/igcse/README.md).
+The questions and mark schemes are in `data/igcse-paper1.json` and `data/igcse-paper2.json`. Diagrams, tables, flowcharts and logic circuits are images in `public/figures/igcse/`. How the bank was built, and how to add new papers: [tools/igcse/README.md](tools/igcse/README.md).
 
-**Check with AI** (IGCSE Computer Science only): next to *Mark my answer*, students can have Claude mark their answer against the official mark scheme. It ticks the points it would award, gives a reason for each and a short comment, and the student can change the ticks before saving. The prompt and output format are in `public/ai-mark.js`. On the public site the API key is held by a small Cloudflare Worker ([worker/README.md](worker/README.md)). The button stays hidden until that Worker is deployed and its address is set in `public/ai-client.js`. Students never need a key.
+**Check my answer** (logged-in students): the backend's AI marker marks the answer against the official mark scheme. The student gets a mark and a hint that does not give the answer away; the teacher gets the full feedback. Visitors without an account mark their own answers.
 
 **IGCSE Chemistry 0620** (Core and Extended, every question paper from Feb/March 2023 to May/June 2026: 147 papers, 5,563 question parts):
 
@@ -26,7 +26,7 @@ The questions and mark schemes are in `data/igcse-paper1.json` and `data/igcse-p
 | Chemistry Paper 5 – Practical Test | Experiments, observations, tests for ions and gases | 410 |
 | Chemistry Paper 6 – Alternative to Practical | Apparatus, readings, tests for ions and gases, titrations, planning | 542 |
 
-All six are sorted into the 12 syllabus topics (1 States of matter … 12 Experimental techniques and chemical analysis). Questions: `data/chemistry-paper1.json` … `-paper6.json`; images: `public/figures/chemistry/`; static page: `chemistry.html`.
+All six are sorted into the 12 syllabus topics (1 States of matter … 12 Experimental techniques and chemical analysis). Questions: `data/chemistry-paper1.json` … `-paper6.json`; images: `public/figures/chemistry/`.
 
 **AS & A Level Chemistry 9701** (every question paper from Feb/March 2023 to May/June 2026: 132 papers, 4,523 question parts):
 
@@ -38,7 +38,7 @@ All six are sorted into the 12 syllabus topics (1 States of matter … 12 Experi
 | A Level Chemistry Paper 4 – A Level Structured Questions | Lattice energy, electrochemistry, kinetics, transition elements, arenes, NMR | 1,425 |
 | A Level Chemistry Paper 5 – Planning, Analysis and Evaluation | Planning experiments, processing data, evaluating results | 551 |
 
-Sorted into the 37 syllabus topics (1–22 AS Level, 23–37 A Level; the AS papers use 1–22 only). Questions: `data/chemistry-alevel-paper1.json` … `-paper5.json`; images: `public/figures/chemistry-alevel/`; static page: `chemistry-alevel.html`. Topics are assigned by keyword rules, so a few questions sit in a neighbouring topic.
+Sorted into the 37 syllabus topics (1–22 AS Level, 23–37 A Level; the AS papers use 1–22 only). Questions: `data/chemistry-alevel-paper1.json` … `-paper5.json`; images: `public/figures/chemistry-alevel/`. Topics are assigned by keyword rules, so a few questions sit in a neighbouring topic.
 
 **AS & A Level Biology 9700** (every question paper from Feb/March 2023 to May/June 2026: 135 papers, 3,424 question parts):
 
@@ -50,26 +50,32 @@ Sorted into the 37 syllabus topics (1–22 AS Level, 23–37 A Level; the AS pap
 | A Level Biology Paper 4 – A Level Structured Questions | Respiration, photosynthesis, homeostasis, coordination, inheritance, evolution, genetic technology | 885 |
 | A Level Biology Paper 5 – Planning, Analysis and Evaluation | Planning investigations, statistics, evaluating results | 334 |
 
-Sorted into the 19 syllabus topics (1–11 AS Level, 12–19 A Level). Questions: `data/biology-alevel-paper1.json` … `-paper5.json`; images: `public/figures/biology-alevel/`; static page: `biology-alevel.html`. Built with `node tools/igcse/build-chem-bank.mjs <json> <pages> . 9700` (topics in `tools/igcse/bio-syllabus-9700.mjs`). In the database the papers are numbers 51–55 (subject 9700).
+Sorted into the 19 syllabus topics (1–11 AS Level, 12–19 A Level). Questions: `data/biology-alevel-paper1.json` … `-paper5.json`; images: `public/figures/biology-alevel/`. Built with `node tools/igcse/build-chem-bank.mjs <json> <pages> . 9700` (topics in `tools/igcse/bio-syllabus-9700.mjs`). In the database the papers are numbers 51–55 (subject 9700).
 
 **Examiner reports:** every question in the app shows what the Cambridge examiners wrote about it in the Principal Examiner Report, next to the mark scheme once you mark your answer, plus the key messages and general comments for its paper and a link to the full report. Built with `tools/examiner/` (see its README) into `data/examiner-reports.json`, which the backend loads from its `seed/` folder.
 
 **A Level 9618:**
 
-| Page | Paper | Question parts |
+| Bank | Paper | Question parts |
 |---|---|---|
-| `paper1.html` | Paper 1 – Theory Fundamentals | 409 |
-| `paper2.html` | Paper 2 – Fundamental Problem-solving and Programming Skills | 463 |
-| `paper3.html` | Paper 3 – Advanced Theory | 373 |
-| `paper4.html` | Paper 4 – Practical (Python) | 242 |
+| `data/alevel-paper1.json` | Paper 1 – Theory Fundamentals | 409 |
+| `data/alevel-paper2.json` | Paper 2 – Fundamental Problem-solving and Programming Skills | 463 |
+| `data/alevel-paper3.json` | Paper 3 – Advanced Theory | 373 |
+| `data/alevel-paper4.json` | Paper 4 – Practical (Python) | 242 |
 
-There are two versions of the site in this repository.
+## The website: React
 
-## 1. Static version (no setup)
+The whole website is the React app in `client/`. Visitors without an account can practise every paper
+(`/paper/<number>`): the app reads the question banks from `data/*.json`, which the build publishes at `/data/`,
+and keeps their progress in the browser. Logged-in students and teachers use the API (below) for saved progress,
+AI marking, assignments, mock exams and the competition. Old links such as `/igcse.html` or `/paper2.html` redirect
+to the same paper.
 
-Open `index.html` in a browser. `igcse.html` has both IGCSE Computer Science papers, `chemistry.html` the six IGCSE Chemistry papers and `chemistry-alevel.html` the five A Level Chemistry papers (rebuild both with `node tools/build-igcse-page.mjs`). Each 9618 paper page is a self-contained HTML file with questions grouped by chapter, a mark scheme for every part, and progress saved in the browser (localStorage).
+**Deploying:** pushing to `main` builds the app and publishes it to GitHub Pages (next-level.uz) with
+`.github/workflows/pages.yml`; the API address is set there (`VITE_API_URL`). The `Dockerfile` builds the same app
+for Coolify or any Docker host.
 
-## 2. Full app: React + Node.js + PostgreSQL
+## Running it: React + Node.js + PostgreSQL
 
 Styled to match the Dombit International School website. Students sign up with a login name, choose their subject, teacher and class, and wait until their teacher approves them. Every account, answer, mark and bookmark is stored in a PostgreSQL database that you can open in pgAdmin.
 
@@ -111,7 +117,7 @@ You need [Node.js](https://nodejs.org) 20+ and PostgreSQL (the installer from po
    npm install
    npm run db:setup
    ```
-   This creates a `next_level` database, creates the tables and loads every question: 9618 from `paper1.html`–`paper4.html`, and IGCSE 0478 and Chemistry 0620 from `data/`. It is safe to run again; it updates questions without touching student data.
+   This creates a `next_level` database, creates the tables and loads every question from `data/`. It is safe to run again; it updates questions without touching student data.
 
 4. **Start the API** (keep this terminal open):
    ```bash

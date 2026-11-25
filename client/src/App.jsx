@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { isAdmin, isStudent, isTeacher, useAuth } from './auth.jsx';
 import Layout from './components/Layout.jsx';
 import PublicLayout from './components/Site.jsx';
@@ -20,6 +20,8 @@ import MockMarking from './pages/MockMarking.jsx';
 import Admin from './pages/Admin.jsx';
 import TeacherHome from './pages/TeacherHome.jsx';
 import PracticeBank from './pages/PracticeBank.jsx';
+import OpenPaper from './pages/OpenPaper.jsx';
+import { OLD_PAGES } from './open/banks.js';
 import Competition from './pages/Competition.jsx';
 import AiFeedback from './pages/AiFeedback.jsx';
 
@@ -29,6 +31,15 @@ function LoginFirst() {
   const { signedOut } = useAuth();
   if (signedOut) return <Navigate to="/" replace />;
   return <Navigate to={`/login?next=${encodeURIComponent(pathname + search)}`} replace />;
+}
+
+// Links to the old static pages (/igcse.html, /paper2.html …) go to the same paper in the app.
+const oldPageRoutes = () => Object.entries(OLD_PAGES).map(([file, to]) => <Route key={file} path={file} element={<Navigate to={to} replace />} />);
+
+// A shared open-practice link (/paper/11/q/<id>) opens the full question page for logged-in users.
+function ToQuestion() {
+  const { qid } = useParams();
+  return <Navigate to={`/question/${qid}`} replace />;
 }
 
 // After logging in, /login and /signup forward to the page the visitor wanted (or the dashboard).
@@ -46,9 +57,13 @@ export default function App() {
       <Routes>
         <Route element={<PublicLayout />}>
           <Route index element={<Home />} />
+          {/* Visitors practise every paper without an account; progress stays in their browser. */}
+          <Route path="paper/:paper" element={<OpenPaper />} />
+          <Route path="paper/:paper/q/:qid" element={<OpenPaper />} />
         </Route>
         <Route path="login" element={<Login mode="login" />} />
         <Route path="signup" element={<Login mode="register" />} />
+        {oldPageRoutes()}
         <Route path="*" element={<LoginFirst />} />
       </Routes>
     );
@@ -71,6 +86,8 @@ export default function App() {
     <Routes>
       <Route path="login" element={<AfterLogin />} />
       <Route path="signup" element={<AfterLogin />} />
+      {oldPageRoutes()}
+      <Route path="paper/:paper/q/:qid" element={<ToQuestion />} />
       <Route element={<Layout />}>
         {/* Teachers' main page shows their classes; the question bank has its own section (/practice). */}
         <Route index element={isTeacher(user) ? <TeacherHome /> : <Dashboard />} />

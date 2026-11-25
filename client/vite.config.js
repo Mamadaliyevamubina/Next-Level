@@ -1,11 +1,39 @@
+import fs from 'node:fs';
+import path from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+
+// The question banks (repo-level data/*.json) are published at /data/ for open practice: served from the
+// folder during development and copied into dist/data/ by the build.
+const dataDir = path.resolve(__dirname, '../data');
+const BANK = /^[\w-]+\.json$/;
+function questionBanks() {
+  return {
+    name: 'question-banks',
+    configureServer(server) {
+      server.middlewares.use('/data', (req, res, next) => {
+        const name = decodeURIComponent((req.url || '').split('?')[0].replace(/^\//, ''));
+        const file = path.join(dataDir, name);
+        if (!BANK.test(name) || !fs.existsSync(file)) return next();
+        res.setHeader('Content-Type', 'application/json');
+        fs.createReadStream(file).pipe(res);
+      });
+    },
+    writeBundle(options) {
+      const out = path.join(options.dir, 'data');
+      fs.mkdirSync(out, { recursive: true });
+      for (const name of fs.readdirSync(dataDir)) {
+        if (BANK.test(name) && name !== 'examiner-reports.json') fs.copyFileSync(path.join(dataDir, name), path.join(out, name));
+      }
+    },
+  };
+}
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
-    plugins: [react()],
-    // Shared with the static pages: favicon and the IGCSE figure images live in the repo-level public/ folder.
+    plugins: [react(), questionBanks()],
+    // Shared files: favicon and the question figure images live in the repo-level public/ folder.
     publicDir: '../public',
     server: {
       port: 5173,
