@@ -36,6 +36,7 @@ export function GradeSelect({ value, onChange, subjects, choices, onChoices }) {
 }
 
 // value: [{ subject_id, teacher_id }]. A subject with exactly one teacher gets that teacher straight away.
+// A subject nobody teaches yet can still be chosen: teacher_id is null and an admin assigns a teacher later.
 export default function SubjectPicker({ grade, subjects, teachers, value, onChange }) {
   const level = levelForGrade(grade);
   if (!level) return <p className="muted small">Choose your grade first: it decides whether you see IGCSE or A Level subjects.</p>;
@@ -47,7 +48,7 @@ export default function SubjectPicker({ grade, subjects, teachers, value, onChan
   const toggle = (s) => {
     if (chosen(s.id)) return onChange(value.filter((c) => c.subject_id !== s.id));
     const list = teachersOf(s.id);
-    return onChange([...value, { subject_id: s.id, teacher_id: list.length === 1 ? list[0].id : '' }]);
+    return onChange([...value, { subject_id: s.id, teacher_id: list.length === 1 ? list[0].id : list.length ? '' : null }]);
   };
   const setTeacher = (subjectId, teacherId) => onChange(value.map((c) => (c.subject_id === subjectId ? { ...c, teacher_id: Number(teacherId) || '' } : c)));
 
@@ -60,10 +61,10 @@ export default function SubjectPicker({ grade, subjects, teachers, value, onChan
         return (
           <div key={s.id} className={`subject-row${pick ? ' on' : ''}`}>
             <label className="subject-check">
-              <input type="checkbox" checked={Boolean(pick)} onChange={() => toggle(s)} disabled={!pick && !list.length} />
-              <span>{s.name}{!list.length && <span className="label-note"> · no teacher yet</span>}</span>
+              <input type="checkbox" checked={Boolean(pick)} onChange={() => toggle(s)} />
+              <span>{s.name}{!list.length && <span className="label-note"> · teacher assigned later</span>}</span>
             </label>
-            {pick && (
+            {pick && list.length > 0 && (
               <select value={pick.teacher_id} onChange={(e) => setTeacher(s.id, e.target.value)} required aria-label={`Teacher for ${s.name}`}>
                 <option value="">Choose your teacher</option>
                 {list.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -80,6 +81,6 @@ export default function SubjectPicker({ grade, subjects, teachers, value, onChan
 export function choicesProblem(grade, choices) {
   if (!levelForGrade(grade)) return 'Choose your grade.';
   if (!choices.length) return 'Choose at least one subject.';
-  if (choices.some((c) => !c.teacher_id)) return 'Choose your teacher for every subject you ticked.';
+  if (choices.some((c) => c.teacher_id === '')) return 'Choose your teacher for every subject you ticked.';
   return '';
 }
